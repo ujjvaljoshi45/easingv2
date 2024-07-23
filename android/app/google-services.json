@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "524498097652",
+    "project_id": "easypg-316db",
+    "storage_bucket": "easypg-316db.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:524498097652:android:395f39cc4b817b2a8315a1",
+        "android_client_info": {
+          "package_name": "com.fuinc.easypg"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBskOtseuCuslIjkS1_Fv3W-wgXxg_iq6c"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

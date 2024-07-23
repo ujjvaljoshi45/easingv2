@@ -1,0 +1,112 @@
+import 'package:easypg/screens/add_property/option_elevated_button.dart';
+import 'package:easypg/screens/add_property/save_and_next_btn.dart';
+import 'package:easypg/utils/colors.dart';
+import 'package:easypg/utils/styles.dart';
+import 'package:easypg/utils/tools.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
+import 'package:numberpicker/numberpicker.dart';
+
+class OtherInformationPage extends StatefulWidget {
+  const OtherInformationPage({super.key, required this.handelPageChange});
+  final Function handelPageChange;
+  @override
+  State<OtherInformationPage> createState() => _OtherInformationPageState();
+}
+
+class _OtherInformationPageState extends State<OtherInformationPage> {
+  int _currentBhkSelection = 0;
+  int _currentFurnishedSelection = 0;
+  int _bathrooms = 1;
+  List<String> furnished = [
+    'Un Furnished',
+    'Semi Furnished',
+    'Furnished',
+  ];
+  String rent = '';
+  String deposit = '';
+
+  _handelSave() {
+    widget.handelPageChange();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        space(20),
+        printHeading('BHK /Bedroom(s)'),
+        space(10),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: [
+            for (int i = 0; i < 4; i++)
+              OptionElevatedButton(
+                  isSelected: _currentBhkSelection == i,
+                  text: i == 3 ? '3+' : '${i + 1}',
+                  onPressed: () => setState(() => _currentBhkSelection = i))
+          ],
+        ),
+        space(20),
+        printHeading('Bathrooms'),
+        Align(
+          alignment: Alignment.center,
+          child: NumberPicker(
+            minValue: 1,
+            maxValue: 3,
+            infiniteLoop: false,
+            decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                border: Border.all(
+                  width: 2,
+                  color: black,
+                ),),
+            value: _bathrooms,
+            selectedTextStyle: montserrat.copyWith(fontWeight: FontWeight.bold,),
+
+            onChanged: (value) => setState(
+              () => _bathrooms = value,
+            ),
+            haptics: true,
+            axis: Axis.horizontal,
+          ),
+        ),
+        space(10),
+        printHeading('Furniture Type'),
+        space(10),
+        Column(
+          children: [
+            for (int i = 0; i < furnished.length; i++)
+              Row(
+                children: [
+                  Expanded(
+                      child: OptionElevatedButton(
+                    isSelected: _currentFurnishedSelection == i,
+                    text: furnished[i],
+                    onPressed: () =>
+                        setState(() => _currentFurnishedSelection = i),
+                  )),
+                ],
+              )
+          ],
+        ),
+        space(20),
+        printHeading('Expected Rent'),
+        space(20),
+        TextField(
+          onChanged: (value) => setState(() => rent = value),
+          decoration: InputDecoration(hintText: 'Enter Rent Here...'),
+        ),
+        space(20),
+        TextField(
+          onChanged: (value) => setState(() => deposit = value),
+          decoration: InputDecoration(hintText: 'Enter Deposit Here...'),
+        ),
+        Spacer(),
+        SaveAndNextBtn(onPressed: _handelSave, msg: 'Save And Next'),
+        space(20),
+      ],
+    );
+  }
+}
