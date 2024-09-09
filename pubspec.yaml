@@ -48,6 +48,10 @@ dependencies:
   awesome_bottom_bar: ^1.2.4
   numberpicker: ^2.1.2
   dotted_border: ^2.1.0
+  image_picker: ^1.1.2
+  cached_network_image: ^3.3.1
+  curved_labeled_navigation_bar: ^2.0.2
+  geolocator: ^12.0.0
 
 dev_dependencies:
   flutter_test:

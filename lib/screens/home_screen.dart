@@ -1,5 +1,7 @@
 import 'package:awesome_bottom_bar/awesome_bottom_bar.dart';
-import 'package:easypg/model/data_provider.dart';
+import 'package:curved_labeled_navigation_bar/curved_navigation_bar.dart';
+import 'package:curved_labeled_navigation_bar/curved_navigation_bar_item.dart';
+import 'package:easypg/model/providers/data_provider.dart';
 import 'package:easypg/model/user.dart';
 import 'package:easypg/screens/pages/bookmarks.dart';
 import 'package:easypg/screens/pages/home.dart';
@@ -40,26 +42,40 @@ class _HomeScreenState extends State<HomeScreen> {
       canPop: false,
       child: Scaffold(
 
-
-        bottomNavigationBar: BottomNavigationBar(
-          currentIndex: _currentIndex,
-          onTap: _handelPageChange,
-          type: BottomNavigationBarType.fixed,
-          backgroundColor: Colors.black,
-          showUnselectedLabels: true,
-          showSelectedLabels: true,
-          unselectedItemColor: white,
-          selectedItemColor: myOrange,
-          selectedLabelStyle: montserrat.copyWith(color: white,fontWeight: FontWeight.bold),
-          unselectedLabelStyle: montserrat.copyWith(color: white,fontWeight: FontWeight.bold),
-          iconSize: 20,
+        bottomNavigationBar: CurvedNavigationBar(
           items: [
-            BottomNavigationBarItem(icon: Image.asset('assets/home.png',color: _currentIndex == 0 ? myOrange : white ,),label: 'Home'),
-            BottomNavigationBarItem(icon: Image.asset('assets/search.png',color: _currentIndex == 1 ? myOrange : white),label: 'Search'),
-            BottomNavigationBarItem(icon: Image.asset('assets/bookmarks.png',color: _currentIndex == 2 ? myOrange : white),label: 'Bookmarks'),
-            BottomNavigationBarItem(icon: Image.asset('assets/rent.png',color: _currentIndex == 3 ? myOrange : white),label: 'Rent'),
+            CurvedNavigationBarItem(child: Image.asset('assets/home.png'),label: 'Home',labelStyle: bottomBarLabelTextStyle),
+            CurvedNavigationBarItem(child: Image.asset('assets/search.png'),label: 'Search',labelStyle: bottomBarLabelTextStyle),
+            CurvedNavigationBarItem(child: Image.asset('assets/bookmarks.png'),label: 'Bookmark',labelStyle: bottomBarLabelTextStyle),
+            CurvedNavigationBarItem(child: Image.asset('assets/rent.png'),label: 'Rent',labelStyle: bottomBarLabelTextStyle),
           ],
+          animationCurve: Curves.easeOutCirc,
+          buttonBackgroundColor: myOrange,
+          backgroundColor: Colors.transparent,
+          color: Colors.black,
+          onTap: _handelPageChange,
+          index: _currentIndex,
+
         ),
+        // bottomNavigationBar: BottomNavigationBar(
+        //   currentIndex: _currentIndex,
+        //   onTap: _handelPageChange,
+        //   type: BottomNavigationBarType.fixed,
+        //   backgroundColor: Colors.black,
+        //   showUnselectedLabels: true,
+        //   showSelectedLabels: true,
+        //   unselectedItemColor: white,
+        //   selectedItemColor: myOrange,
+        //   selectedLabelStyle: montserrat.copyWith(color: white,fontWeight: FontWeight.bold),
+        //   unselectedLabelStyle: montserrat.copyWith(color: white,fontWeight: FontWeight.bold),
+        //   iconSize: 20,
+        //   items: [
+        //     BottomNavigationBarItem(icon: Image.asset('assets/home.png',color: _currentIndex == 0 ? myOrange : white ,),label: 'Home'),
+        //     BottomNavigationBarItem(icon: Image.asset('assets/search.png',color: _currentIndex == 1 ? myOrange : white),label: 'Search'),
+        //     BottomNavigationBarItem(icon: Image.asset('assets/bookmarks.png',color: _currentIndex == 2 ? myOrange : white),label: 'Bookmarks'),
+        //     BottomNavigationBarItem(icon: Image.asset('assets/rent.png',color: _currentIndex == 3 ? myOrange : white),label: 'Rent'),
+        //   ],
+        // ),
         body: SafeArea(
           child: Padding(
             padding: const EdgeInsets.symmetric( horizontal:  18.0),

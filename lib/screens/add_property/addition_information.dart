@@ -28,9 +28,8 @@ class _AdditionInformationPageState extends State<AdditionInformationPage> {
                 Text(myItem[i],style: montserrat.copyWith(fontWeight: FontWeight.bold, fontSize: 18),),Checkbox(value: status[i], onChanged: (value) => setState(()=>status[i]=value ?? status[i]),),
               ],
             ),
-          space(20),
-          const TextField(decoration: InputDecoration(hintText: 'Other...'),),
-          Spacer(),
+
+          const Spacer(),
           SaveAndNextBtn(onPressed: _manageSave, msg: 'Save And Next'),
           space(20),
         ],
@@ -38,6 +37,14 @@ class _AdditionInformationPageState extends State<AdditionInformationPage> {
     );
   }
   _manageSave() {
+    List<String> tempList = [];
+    for (int i = 0; i < status.length; i++) {
+      if (status[i]) {
+        tempList.add(myItem[i]);
+      }
+    }
+
+    getPropertyProvider(context).amenities = tempList;
     widget.handelPageChange();
   }
 }

@@ -26,6 +26,31 @@ ButtonStyle unSelectedOptionButtonStyle = ButtonStyle(
 TextStyle unSelectedOptionTextStyle = montserrat.copyWith(
   fontSize: 16,
   fontWeight: FontWeight.bold,
+  color: myOrange,
+);
+
+ButtonStyle selectedPropertyTypeButtonStyle = ButtonStyle(
+  shape: WidgetStatePropertyAll(RoundedRectangleBorder(borderRadius: BorderRadius.circular(20),),
+  ),
+  backgroundColor: WidgetStatePropertyAll(myOrange),
+);
+
+TextStyle selectedPropertyTypeTextStyle = montserrat.copyWith(
+  fontSize: 16,
+  fontWeight: FontWeight.bold,
+  color: white,
+);
+
+ButtonStyle unSelectedPropertyTypeButtonStyle = ButtonStyle(
+  shape: WidgetStatePropertyAll(RoundedRectangleBorder(borderRadius: BorderRadius.circular(20),side: BorderSide(color: black, width: 2)),
+  ),
+  backgroundColor: WidgetStatePropertyAll(white),
+);
+
+TextStyle unSelectedPropertyTypeTextStyle = montserrat.copyWith(
+  fontSize: 16,
+  fontWeight: FontWeight.bold,
   color: black,
 );
 
+TextStyle bottomBarLabelTextStyle = montserrat.copyWith(color: Colors.white);

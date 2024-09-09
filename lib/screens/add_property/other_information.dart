@@ -27,86 +27,110 @@ class _OtherInformationPageState extends State<OtherInformationPage> {
   String deposit = '';
 
   _handelSave() {
-    widget.handelPageChange();
+    if (!_validate()) {
+      showToast('Enter All The Fields', Colors.redAccent);
+      return;
+    } else {
+      getPropertyProvider(context).bhk = _currentBhkSelection.toString();
+      getPropertyProvider(context).bathroom = _bathrooms.toString();
+      getPropertyProvider(context).furniture = furnished[_currentFurnishedSelection];
+      getPropertyProvider(context).rent = rent;
+      getPropertyProvider(context).deposit = deposit;
+      widget.handelPageChange();
+    }
+  }
+
+  _validate() {
+    if (rent.isEmpty) return false;
+    if (deposit.isEmpty) return false;
+    return true;
   }
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        space(20),
-        printHeading('BHK /Bedroom(s)'),
-        space(10),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: [
-            for (int i = 0; i < 4; i++)
-              OptionElevatedButton(
-                  isSelected: _currentBhkSelection == i,
-                  text: i == 3 ? '3+' : '${i + 1}',
-                  onPressed: () => setState(() => _currentBhkSelection = i))
-          ],
-        ),
-        space(20),
-        printHeading('Bathrooms'),
-        Align(
-          alignment: Alignment.center,
-          child: NumberPicker(
-            minValue: 1,
-            maxValue: 3,
-            infiniteLoop: false,
-            decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                border: Border.all(
-                  width: 2,
-                  color: black,
-                ),),
-            value: _bathrooms,
-            selectedTextStyle: montserrat.copyWith(fontWeight: FontWeight.bold,),
+    return Padding(
+      padding: EdgeInsets.only(bottom: MediaQuery.viewInsetsOf(context).bottom),
+      child: SingleChildScrollView(
+        child: SizedBox(
+          height: getHeight(context) - kToolbarHeight - kBottomNavigationBarHeight,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              space(20),
+              printHeading('BHK /Bedroom(s)'),
+              space(10),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  for (int i = 0; i < 4; i++)
+                    OptionElevatedButton(
+                        isSelected: _currentBhkSelection == i,
+                        text: i == 3 ? '3+' : '${i + 1}',
+                        onPressed: () => setState(() => _currentBhkSelection = i))
+                ],
+              ),
+              space(20),
+              printHeading('Bathrooms'),
+              Align(
+                alignment: Alignment.center,
+                child: NumberPicker(
+                  minValue: 1,
+                  maxValue: 3,
+                  infiniteLoop: false,
+                  decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      border: Border.all(
+                        width: 2,
+                        color: black,
+                      ),),
+                  value: _bathrooms,
+                  selectedTextStyle: montserrat.copyWith(fontWeight: FontWeight.bold,),
 
-            onChanged: (value) => setState(
-              () => _bathrooms = value,
-            ),
-            haptics: true,
-            axis: Axis.horizontal,
+                  onChanged: (value) => setState(
+                    () => _bathrooms = value,
+                  ),
+                  haptics: true,
+                  axis: Axis.horizontal,
+                ),
+              ),
+              space(10),
+              printHeading('Furniture Type'),
+              space(10),
+              Column(
+                children: [
+                  for (int i = 0; i < furnished.length; i++)
+                    Row(
+                      children: [
+                        Expanded(
+                            child: OptionElevatedButton(
+                          isSelected: _currentFurnishedSelection == i,
+                          text: furnished[i],
+                          onPressed: () =>
+                              setState(() => _currentFurnishedSelection = i),
+                        )),
+                      ],
+                    )
+                ],
+              ),
+              space(20),
+              printHeading('Expected Rent'),
+              space(20),
+              TextField(
+                onChanged: (value) => setState(() => rent = value),
+                decoration: InputDecoration(hintText: 'Enter Rent Here...'),
+              ),
+              space(20),
+              TextField(
+                onChanged: (value) => setState(() => deposit = value),
+                decoration: InputDecoration(hintText: 'Enter Deposit Here...'),
+              ),
+              Spacer(),
+              SaveAndNextBtn(onPressed: _handelSave, msg: 'Save And Next'),
+              space(20),
+            ],
           ),
         ),
-        space(10),
-        printHeading('Furniture Type'),
-        space(10),
-        Column(
-          children: [
-            for (int i = 0; i < furnished.length; i++)
-              Row(
-                children: [
-                  Expanded(
-                      child: OptionElevatedButton(
-                    isSelected: _currentFurnishedSelection == i,
-                    text: furnished[i],
-                    onPressed: () =>
-                        setState(() => _currentFurnishedSelection = i),
-                  )),
-                ],
-              )
-          ],
-        ),
-        space(20),
-        printHeading('Expected Rent'),
-        space(20),
-        TextField(
-          onChanged: (value) => setState(() => rent = value),
-          decoration: InputDecoration(hintText: 'Enter Rent Here...'),
-        ),
-        space(20),
-        TextField(
-          onChanged: (value) => setState(() => deposit = value),
-          decoration: InputDecoration(hintText: 'Enter Deposit Here...'),
-        ),
-        Spacer(),
-        SaveAndNextBtn(onPressed: _handelSave, msg: 'Save And Next'),
-        space(20),
-      ],
+      ),
     );
   }
 }

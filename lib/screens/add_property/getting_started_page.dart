@@ -1,8 +1,10 @@
+import 'package:easypg/model/providers/property_provider.dart';
 import 'package:easypg/screens/add_property/option_elevated_button.dart';
 import 'package:easypg/screens/add_property/save_and_next_btn.dart';
 import 'package:easypg/utils/styles.dart';
 import 'package:easypg/utils/tools.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 class GettingStartedPage extends StatefulWidget {
   const GettingStartedPage({super.key, required this.handelPageChange});
   final Function handelPageChange;
@@ -17,6 +19,9 @@ class _GettingStartedPageState extends State<GettingStartedPage> {
   int selectedOption = 0;
   int selectedPurpose = 0;
   _manageSave() {
+    getPropertyProvider(context).position = ownership[selectedOption];
+    getPropertyProvider(context).motive = motive[selectedPurpose];
+    logEvent("CHECK : ${getPropertyProvider(context).toJson().toString()}");
     // Save and then call
     widget.handelPageChange();
   }

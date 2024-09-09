@@ -2,7 +2,7 @@ import 'package:easypg/auth/login.dart';
 import 'package:easypg/auth/register_screen.dart';
 import 'package:easypg/model/api_handler/api_handler.dart';
 import 'package:easypg/model/cache_manager.dart';
-import 'package:easypg/model/data_provider.dart';
+import 'package:easypg/model/providers/data_provider.dart';
 import 'package:easypg/model/user.dart';
 import 'package:easypg/screens/home_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';

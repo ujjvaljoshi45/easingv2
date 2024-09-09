@@ -13,8 +13,10 @@ class Property {
   String deposit = '';
   List<String> amenities = [];
   List<String> photos = [];
+  String uploaderId = '';
   int createdAt = DateTime.now().millisecondsSinceEpoch;
 
+  Property();
   Property.required({
     required this.position,
     required this.motive,
@@ -31,31 +33,34 @@ class Property {
     required this.amenities,
     required this.photos,
     required this.createdAt,
+    required this.uploaderId,
   });
 
   factory Property.fromJson(Map<String, dynamic> json) {
     return Property.required(
-        position: json[positionKey],
-        motive: json[motiveKey],
-        propertyType: json[propertyTypeKey],
-        streetAddress: json[streetAddressKey],
-        pinCode: json[pinCodeKey],
-        city: json[cityKey],
-        state: json[stateKey],
-        bhk: json[bhkKey],
-        bathroom: json[bathroomsKey],
-        furniture: json[furnitureKey],
-        rent: json[rentKey],
-        deposit: json[depositKey],
-        amenities: List.generate(
-          json[amenitiesKey].length,
-          (index) => json[amenitiesKey][index],
-        ),
-        photos: List.generate(
-          json[photosKey].length,
-          (index) => json[photosKey][index],
-        ),
-        createdAt: json[createdAtKey]);
+      position: json[positionKey],
+      motive: json[motiveKey],
+      propertyType: json[propertyTypeKey],
+      streetAddress: json[streetAddressKey],
+      pinCode: json[pinCodeKey],
+      city: json[cityKey],
+      state: json[stateKey],
+      bhk: json[bhkKey],
+      bathroom: json[bathroomsKey],
+      furniture: json[furnitureKey],
+      rent: json[rentKey],
+      deposit: json[depositKey],
+      amenities: List.generate(
+        json[amenitiesKey].length,
+        (index) => json[amenitiesKey][index],
+      ),
+      photos: List.generate(
+        json[photosKey].length,
+        (index) => json[photosKey][index],
+      ),
+      createdAt: json[createdAtKey],
+      uploaderId: json[uploaderIdKey],
+    );
   }
 
   Map<String, dynamic> toJson() => {
@@ -74,6 +79,7 @@ class Property {
         amenitiesKey: amenities,
         photosKey: photos,
         createdAtKey: createdAt,
+        uploaderIdKey: uploaderId,
       };
 }
 
@@ -92,3 +98,4 @@ String depositKey = 'deposit';
 String amenitiesKey = 'amenities';
 String photosKey = 'photos';
 String createdAtKey = 'created_at';
+String uploaderIdKey = 'uploader_id';

@@ -1,3 +1,7 @@
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:easypg/model/api_handler/api_handler.dart';
+import 'package:easypg/model/property.dart';
 import 'package:easypg/utils/colors.dart';
 import 'package:easypg/utils/styles.dart';
 import 'package:easypg/utils/tools.dart';
@@ -13,26 +17,52 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
-    return  SingleChildScrollView(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          RichText(text: TextSpan(children: [
-            TextSpan(text: 'Find Your',style: montserrat.copyWith(fontSize: 24,fontWeight: FontWeight.bold,color: black)),
-            TextSpan(text: ' Dream', style: montserrat.copyWith(fontSize: 24,fontWeight: FontWeight.bold,color: myOrange),),
-            TextSpan(text: '\nHome Today',style: montserrat.copyWith(fontSize: 24,fontWeight: FontWeight.bold,color: black)),
-          ])),
-          space(20),
-          const HouseCard(),
-        ],
+    return SingleChildScrollView(
+      child: SizedBox(
+        height:
+            getHeight(context) - kToolbarHeight - kBottomNavigationBarHeight,
+        child: FutureBuilder<QuerySnapshot<Object?>>(
+          future: ApiHandler.instance.propertyRef.get(),
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return const Center(
+                child: CircularProgressIndicator(),
+              );
+            }
+            if (snapshot.hasError || snapshot.requireData.docs.isEmpty) {
+              return const Center(
+                child: Text('Unable to Get Data'),
+              );
+            }
+            List<Property> properties = List.generate(
+              snapshot.requireData.docs.length,
+              (index) => Property.fromJson(
+                  snapshot.requireData.docs[index].data() as Map<String, dynamic>),
+            );
+            return Column(
+              children: [
+                Align(
+                  alignment: Alignment.topLeft,
+                  child: RichText(text: TextSpan(children: [
+                    TextSpan(text: 'Find Your',style: montserrat.copyWith(fontSize: 24,fontWeight: FontWeight.bold,color: black)),
+                    TextSpan(text: ' Dream', style: montserrat.copyWith(fontSize: 24,fontWeight: FontWeight.bold,color: myOrange),),
+                    TextSpan(text: '\nHome Today',style: montserrat.copyWith(fontSize: 24,fontWeight: FontWeight.bold,color: black)),
+                  ])),
+                ),
+                space(20),
+                for (var property in properties) HouseCard(property: property),
+              ],
+            );
+          },
+        ),
       ),
     );
   }
 }
 
 class HouseCard extends StatelessWidget {
-  const HouseCard({super.key});
-
+  final Property property;
+  const HouseCard({super.key, required this.property});
 
   @override
   Widget build(BuildContext context) {
@@ -51,8 +81,14 @@ class HouseCard extends StatelessWidget {
                   topLeft: Radius.circular(12.0),
                   topRight: Radius.circular(12.0),
                 ),
-                child: Image.asset(
-                  'assets/demo1.png', // Replace with your image asset
+                // child: Image.asset(
+                //   'assets/demo1.png', // Replace with your image asset
+                //   height: 200,
+                //   width: double.infinity,
+                //   fit: BoxFit.cover,
+                // ),
+                child: Image.network(
+                   property.photos.first,
                   height: 200,
                   width: double.infinity,
                   fit: BoxFit.cover,
@@ -62,13 +98,14 @@ class HouseCard extends StatelessWidget {
                 top: 10,
                 left: 10,
                 child: Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                   decoration: BoxDecoration(
                     color: myOrangeSecondary,
                     borderRadius: BorderRadius.circular(8.0),
                   ),
-                  child:  Text(
-                    'House',
+                  child: Text(
+                    property.propertyType,
                     style: montserrat.copyWith(
                       color: myOrange,
                       fontWeight: FontWeight.bold,
@@ -83,28 +120,44 @@ class HouseCard extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                 Text(
-                  'Dream House',
-                  style: montserrat.copyWith(fontSize: 20,fontWeight: FontWeight.bold),
+                Text(
+                  '${property.bhk} BHK in ${property.city}',
+                  softWrap: true,
+                  style: montserrat.copyWith(
+                      fontSize: 18, fontWeight: FontWeight.bold),
                 ),
                 const SizedBox(height: 4),
                 Row(
                   children: [
-                     Icon(
+                    Icon(
                       Icons.location_pin,
                       color: pinColor,
                       size: 14,
                     ),
                     const SizedBox(width: 4),
-                    Text(
-                      'New Satellite Road, Ahmedabad',
-                        style: montserrat.copyWith(fontSize: 14, color: secondaryColor, fontWeight: FontWeight.bold)),
+                    Text(property.streetAddress,
+                        softWrap: true,
+                        style: montserrat.copyWith(
+                            fontSize: 14,
+                            color: secondaryColor,
+                            fontWeight: FontWeight.bold)),
                   ],
                 ),
                 const SizedBox(height: 12),
                 Row(
                   children: [
-                    Text('₹ 9500', style: montserrat.copyWith(fontSize: 17,fontWeight: FontWeight.w600),),Text(' /Month',style: montserrat.copyWith(fontSize: 13,fontWeight: FontWeight.w600,color: secondaryColor),)
+                    Text(
+                      '₹ ${property.rent}',
+                      style: montserrat.copyWith(
+                          fontSize: 17, fontWeight: FontWeight.w600),
+                    ),
+                    Text(
+                      ' /Month',
+                      style: montserrat.copyWith(
+                          fontSize: 13,
+                          fontWeight: FontWeight.w600,
+                          color: secondaryColor),
+                    )
                   ],
                 ),
               ],

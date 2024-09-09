@@ -1,7 +1,8 @@
 import 'package:easypg/auth/login.dart';
 import 'package:easypg/auth/register_screen.dart';
 import 'package:easypg/firebase_options.dart';
-import 'package:easypg/model/data_provider.dart';
+import 'package:easypg/model/providers/data_provider.dart';
+import 'package:easypg/model/providers/property_provider.dart';
 import 'package:easypg/screens/home_screen.dart';
 import 'package:easypg/screens/splash.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -13,7 +14,14 @@ void main() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
-  runApp(ChangeNotifierProvider(create: (context) => DataProvider(),child: const MyApp(),));
+  runApp(MultiProvider(providers: [
+    ChangeNotifierProvider<DataProvider>(create: (context) => DataProvider(),),
+    ChangeNotifierProvider<PropertyProvider>(create: (context) => PropertyProvider(),),
+  ],child: const MyApp(),));
+  // runApp(ChangeNotifierProvider(
+  //   create: (context) => DataProvider(),
+  //   child: const MyApp(),
+  // ));
 }
 
 class MyApp extends StatelessWidget {
@@ -28,11 +36,11 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-     home: const Splash(),
+      home: const Splash(),
       routes: {
-        LoginScreen.route : (context) => const LoginScreen(),
-        RegisterScreen.route : (context) => const RegisterScreen(),
-        HomeScreen.route : (context) => const HomeScreen(),
+        LoginScreen.route: (context) => const LoginScreen(),
+        RegisterScreen.route: (context) => const RegisterScreen(),
+        HomeScreen.route: (context) => const HomeScreen(),
       },
     );
   }

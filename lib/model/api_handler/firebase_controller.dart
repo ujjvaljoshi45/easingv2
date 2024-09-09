@@ -1,11 +1,13 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:easypg/model/api_handler/api_handler.dart';
+import 'package:easypg/model/property.dart';
 import 'package:easypg/model/user.dart';
 import 'package:easypg/utils/tools.dart';
 
 class FirebaseController extends ApiHandler{
   FirebaseFirestore instance = FirebaseFirestore.instance;
   CollectionReference userRef = FirebaseFirestore.instance.collection('users');
+  CollectionReference propertyRef = FirebaseFirestore.instance.collection('properties');
 
   @override
   Future<AppUser?> getUser(String uid) async {
@@ -32,6 +34,14 @@ class FirebaseController extends ApiHandler{
       logError('setUser()', e.toString(),stackTrace );
     } catch (e, stackTrace) {
       logError('setUser()', e.toString(),stackTrace );
+    }
+  }
+
+  Future<void> saveProperty(Property property) async {
+    try{
+      await propertyRef.add(property.toJson());
+    }  catch (e, stackTrace) {
+      logError('Error in saving property', e, stackTrace);
     }
   }
 }
