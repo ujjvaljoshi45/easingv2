@@ -1,5 +1,5 @@
 import 'package:easypg/model/api_handler/api_handler.dart';
-import 'package:easypg/model/data_provider.dart';
+import 'package:easypg/provider/data_provider.dart';
 import 'package:easypg/model/user.dart';
 import 'package:easypg/screens/home_screen.dart';
 import 'package:easypg/utils/tools.dart';

@@ -1,4 +1,4 @@
-import 'package:easypg/model/add_property_provider.dart';
+import 'package:easypg/provider/add_property_provider.dart';
 import 'package:easypg/screens/add_property/option_elevated_button.dart';
 import 'package:easypg/screens/add_property/save_and_next_btn.dart';
 import 'package:easypg/utils/colors.dart';

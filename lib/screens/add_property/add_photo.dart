@@ -1,6 +1,6 @@
 import 'dart:io';
 import 'package:dotted_border/dotted_border.dart';
-import 'package:easypg/model/add_property_provider.dart';
+import 'package:easypg/provider/add_property_provider.dart';
 import 'package:easypg/screens/add_property/save_and_next_btn.dart';
 import 'package:easypg/utils/colors.dart';
 import 'package:easypg/utils/tools.dart';

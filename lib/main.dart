@@ -1,8 +1,8 @@
 import 'package:easypg/auth/login.dart';
 import 'package:easypg/auth/register_screen.dart';
 import 'package:easypg/firebase_options.dart';
-import 'package:easypg/model/add_property_provider.dart';
-import 'package:easypg/model/data_provider.dart';
+import 'package:easypg/provider/add_property_provider.dart';
+import 'package:easypg/provider/data_provider.dart';
 import 'package:easypg/screens/home_screen.dart';
 import 'package:easypg/screens/splash.dart';
 import 'package:firebase_core/firebase_core.dart';
