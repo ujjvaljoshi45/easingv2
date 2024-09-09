@@ -1,3 +1,6 @@
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:easypg/model/api_handler/api_handler.dart';
+import 'package:easypg/model/property.dart';
 import 'package:easypg/utils/colors.dart';
 import 'package:easypg/utils/styles.dart';
 import 'package:easypg/utils/tools.dart';
@@ -23,7 +26,20 @@ class _HomePageState extends State<HomePage> {
             TextSpan(text: '\nHome Today',style: montserrat.copyWith(fontSize: 24,fontWeight: FontWeight.bold,color: black)),
           ])),
           space(20),
-          const HouseCard(),
+          // const HouseCard(),
+          ConstrainedBox(
+              constraints: BoxConstraints(maxHeight: getHeight(context) - kBottomNavigationBarHeight - kToolbarHeight - getHeight(context)*0.2 - 10),
+              child: FutureBuilder(future: ApiHandler.instance.getProperties(), builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return Center(child: CircularProgressIndicator(color: myOrange,));
+                }
+                if (snapshot.hasError || !snapshot.hasData) {
+                  return const Center(child: Text('No Data Found!'),);
+                }
+                List<Property> properties = snapshot.requireData;
+                return ListView.builder(itemBuilder: (context, index) => HouseCard(property: properties[index],),itemCount: properties.length,);
+              },),),
+          space(10)
         ],
       ),
     );
@@ -31,9 +47,8 @@ class _HomePageState extends State<HomePage> {
 }
 
 class HouseCard extends StatelessWidget {
-  const HouseCard({super.key});
-
-
+  const HouseCard({super.key, required this.property});
+  final Property property;
   @override
   Widget build(BuildContext context) {
     return Card(
@@ -51,12 +66,9 @@ class HouseCard extends StatelessWidget {
                   topLeft: Radius.circular(12.0),
                   topRight: Radius.circular(12.0),
                 ),
-                child: Image.asset(
-                  'assets/demo1.png', // Replace with your image asset
-                  height: 200,
+                child:CachedNetworkImage(imageUrl: property.photos.first,height: 200,
                   width: double.infinity,
-                  fit: BoxFit.cover,
-                ),
+                  fit: BoxFit.cover,)
               ),
               Positioned(
                 top: 10,
@@ -68,7 +80,7 @@ class HouseCard extends StatelessWidget {
                     borderRadius: BorderRadius.circular(8.0),
                   ),
                   child:  Text(
-                    'House',
+                    property.propertyType,
                     style: montserrat.copyWith(
                       color: myOrange,
                       fontWeight: FontWeight.bold,
@@ -84,7 +96,7 @@ class HouseCard extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                  Text(
-                  'Dream House',
+                   property.name,
                   style: montserrat.copyWith(fontSize: 20,fontWeight: FontWeight.bold),
                 ),
                 const SizedBox(height: 4),
@@ -97,14 +109,14 @@ class HouseCard extends StatelessWidget {
                     ),
                     const SizedBox(width: 4),
                     Text(
-                      'New Satellite Road, Ahmedabad',
+                      '${property.streetAddress}, ${property.city}',
                         style: montserrat.copyWith(fontSize: 14, color: secondaryColor, fontWeight: FontWeight.bold)),
                   ],
                 ),
                 const SizedBox(height: 12),
                 Row(
                   children: [
-                    Text('₹ 9500', style: montserrat.copyWith(fontSize: 17,fontWeight: FontWeight.w600),),Text(' /Month',style: montserrat.copyWith(fontSize: 13,fontWeight: FontWeight.w600,color: secondaryColor),)
+                    Text('₹ ${property.rent}', style: montserrat.copyWith(fontSize: 17,fontWeight: FontWeight.w600),),Text(' /Month',style: montserrat.copyWith(fontSize: 13,fontWeight: FontWeight.w600,color: secondaryColor),)
                   ],
                 ),
               ],

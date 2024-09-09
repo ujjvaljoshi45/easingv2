@@ -6,3 +6,5 @@ String phoneNoKey = 'phone_no';
 String genderKey = 'gender';
 String profileUrlKey = 'profile_url';
 String fcmKey = 'fcm';
+String bookMarksKey = 'bookmarks';
+String myPropertiesKey = 'property';

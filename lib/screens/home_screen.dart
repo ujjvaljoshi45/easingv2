@@ -1,4 +1,3 @@
-import 'package:awesome_bottom_bar/awesome_bottom_bar.dart';
 import 'package:easypg/model/data_provider.dart';
 import 'package:easypg/model/user.dart';
 import 'package:easypg/screens/pages/bookmarks.dart';
@@ -9,7 +8,6 @@ import 'package:easypg/utils/colors.dart';
 import 'package:easypg/utils/styles.dart';
 import 'package:easypg/utils/tools.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 
 class HomeScreen extends StatefulWidget {
   static String route = 'home_screen';
@@ -26,7 +24,7 @@ class _HomeScreenState extends State<HomeScreen> {
   int _currentIndex = 0;
   @override
   void initState() {
-    appUser = Provider.of<DataProvider>(context,listen: false).getUser;
+    appUser = DataProvider.instance.getUser;
     super.initState();
   }
 

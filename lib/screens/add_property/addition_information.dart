@@ -1,3 +1,4 @@
+import 'package:easypg/model/add_property_provider.dart';
 import 'package:easypg/screens/add_property/save_and_next_btn.dart';
 import 'package:easypg/utils/styles.dart';
 import 'package:easypg/utils/tools.dart';
@@ -14,6 +15,10 @@ class AdditionInformationPage extends StatefulWidget {
 class _AdditionInformationPageState extends State<AdditionInformationPage> {
   List<String> myItem = ['Breakfast','Lunch', 'Dinner', 'Drinking Water' ,'AC','Laundry','Cleaning'];
   List<bool> status = List.generate(10, (index) => false,);
+  _manageSave() {
+    AddPropertyProvider.instance.setAmenities(List.generate(myItem.length, (index) => status[index] ? myItem[index] : 'null',).toSet().toList());
+    widget.handelPageChange();
+  }
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -30,14 +35,11 @@ class _AdditionInformationPageState extends State<AdditionInformationPage> {
             ),
           space(20),
           const TextField(decoration: InputDecoration(hintText: 'Other...'),),
-          Spacer(),
+          const Spacer(),
           SaveAndNextBtn(onPressed: _manageSave, msg: 'Save And Next'),
           space(20),
         ],
       ),
     );
-  }
-  _manageSave() {
-    widget.handelPageChange();
   }
 }

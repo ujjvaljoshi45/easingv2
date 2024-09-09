@@ -8,7 +8,6 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:pinput/pinput.dart';
-import 'package:provider/provider.dart';
 
 class LoginScreen extends StatefulWidget {
   static String route = 'login_screen';
@@ -57,10 +56,10 @@ class _LoginScreenState extends State<LoginScreen> {
       logEvent('USER : ${userCredential.user?.uid} | ${userCredential.user?.phoneNumber}');
     appUser = AppUser.fromFirebaseUser(userCredential.user!);
     await ApiHandler.instance.saveUser(appUser);
-    Navigator.pushNamed(context, 'register');
+    mounted ? Navigator.pushNamed(context, 'register')  :null;
     } else {
-      Provider.of<DataProvider>(context, listen: false).initUser(appUser);
-      Navigator.pushNamed(context, HomeScreen.route);
+      mounted ? DataProvider.instance.initUser(appUser) : null;
+      mounted ? Navigator.pushNamed(context, HomeScreen.route) : null;
     }
 
   }
@@ -82,10 +81,10 @@ class _LoginScreenState extends State<LoginScreen> {
     UserCredential userCredential = await _auth.signInWithCredential(phoneAuthCredential);
 
     if (userCredential.user != null) {
-      Provider.of<DataProvider>(context, listen:  false).initUser(AppUser.fromFirebaseUser(userCredential.user!));
-      Navigator.pushNamed(context, HomeScreen.route);
+      mounted ? DataProvider.instance.initUser(AppUser.fromFirebaseUser(userCredential.user!)) : null;
+      mounted ? Navigator.pushNamed(context, HomeScreen.route) : null;
     } else {
-      Navigator.pop(context);
+      mounted ? Navigator.pop(context) : null;
       showToast('Error Occurred in Verifying OTP', Colors.redAccent);
     }
   }

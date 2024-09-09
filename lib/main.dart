@@ -1,6 +1,7 @@
 import 'package:easypg/auth/login.dart';
 import 'package:easypg/auth/register_screen.dart';
 import 'package:easypg/firebase_options.dart';
+import 'package:easypg/model/add_property_provider.dart';
 import 'package:easypg/model/data_provider.dart';
 import 'package:easypg/screens/home_screen.dart';
 import 'package:easypg/screens/splash.dart';
@@ -13,7 +14,12 @@ void main() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
-  runApp(ChangeNotifierProvider(create: (context) => DataProvider(),child: const MyApp(),));
+  runApp(
+    MultiProvider(providers: [
+      ChangeNotifierProvider(create: (context) => DataProvider.instance,),
+      ChangeNotifierProvider(create: (context) => AddPropertyProvider.instance,),
+    ],child: const MyApp(),)
+  );
 }
 
 class MyApp extends StatelessWidget {

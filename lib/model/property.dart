@@ -1,4 +1,5 @@
 class Property {
+  String name = '';
   String position = '';
   String motive = '';
   String propertyType = '';
@@ -13,9 +14,10 @@ class Property {
   String deposit = '';
   List<String> amenities = [];
   List<String> photos = [];
-  int createdAt = DateTime.now().millisecondsSinceEpoch;
+  DateTime createdAt = DateTime.now();
 
   Property.required({
+    required this.name,
     required this.position,
     required this.motive,
     required this.propertyType,
@@ -33,8 +35,11 @@ class Property {
     required this.createdAt,
   });
 
+  factory Property.empty() => Property.required(name: '' ,position: '', motive: '', propertyType: '', streetAddress: '', pinCode: '', city: '', state: '', bhk: '', bathroom: '', furniture: '', rent: '', deposit: '', amenities: [], photos: [], createdAt: DateTime.now());
+
   factory Property.fromJson(Map<String, dynamic> json) {
     return Property.required(
+      name: json[nameKey],
         position: json[positionKey],
         motive: json[motiveKey],
         propertyType: json[propertyTypeKey],
@@ -55,10 +60,11 @@ class Property {
           json[photosKey].length,
           (index) => json[photosKey][index],
         ),
-        createdAt: json[createdAtKey]);
+        createdAt: json[createdAtKey].toDate());
   }
 
   Map<String, dynamic> toJson() => {
+    nameKey:name,
         positionKey: position,
         motiveKey: motive,
         propertyTypeKey: propertyType,
@@ -92,3 +98,4 @@ String depositKey = 'deposit';
 String amenitiesKey = 'amenities';
 String photosKey = 'photos';
 String createdAtKey = 'created_at';
+String nameKey = 'name';

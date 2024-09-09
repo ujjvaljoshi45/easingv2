@@ -1,6 +1,6 @@
+import 'package:easypg/model/add_property_provider.dart';
 import 'package:easypg/screens/add_property/option_elevated_button.dart';
 import 'package:easypg/screens/add_property/save_and_next_btn.dart';
-import 'package:easypg/utils/styles.dart';
 import 'package:easypg/utils/tools.dart';
 import 'package:flutter/material.dart';
 class GettingStartedPage extends StatefulWidget {
@@ -17,6 +17,8 @@ class _GettingStartedPageState extends State<GettingStartedPage> {
   int selectedOption = 0;
   int selectedPurpose = 0;
   _manageSave() {
+    AddPropertyProvider.instance.setPosition(ownership[selectedOption]);
+    AddPropertyProvider.instance.setMotive(motive[selectedPurpose]);
     // Save and then call
     widget.handelPageChange();
   }

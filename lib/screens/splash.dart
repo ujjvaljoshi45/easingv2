@@ -1,13 +1,11 @@
 import 'package:easypg/auth/login.dart';
 import 'package:easypg/auth/register_screen.dart';
 import 'package:easypg/model/api_handler/api_handler.dart';
-import 'package:easypg/model/cache_manager.dart';
 import 'package:easypg/model/data_provider.dart';
 import 'package:easypg/model/user.dart';
 import 'package:easypg/screens/home_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 
 class Splash extends StatefulWidget {
   static String route = 'splash';
@@ -26,14 +24,14 @@ class _SplashState extends State<Splash> {
       AppUser? appUser = await ApiHandler.instance.getUser(user.uid);
       if (appUser == null) {
         appUser = AppUser.fromFirebaseUser(user);
-        Provider.of<DataProvider>(context, listen: false).initUser(appUser);
-        Navigator.pushNamed(context, RegisterScreen.route);
+        mounted ? DataProvider.instance.initUser(appUser) : null;
+        mounted ? Navigator.pushNamed(context, RegisterScreen.route) : null;
       } else {
-        Provider.of<DataProvider>(context,listen: false).initUser(appUser);
-        Navigator.pushNamed(context, HomeScreen.route);
+        DataProvider.instance.initUser(appUser);
+        mounted ? Navigator.pushNamed(context, HomeScreen.route) : null;
       }
     } else {
-      Navigator.of(context).pushNamed(LoginScreen.route);
+      mounted ?  Navigator.of(context).pushNamed(LoginScreen.route): null;
     }
     super.didChangeDependencies();
   }

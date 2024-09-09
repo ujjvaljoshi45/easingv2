@@ -6,7 +6,6 @@ import 'package:easypg/utils/tools.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
-import 'package:provider/provider.dart';
 
 class RegisterScreen extends StatefulWidget {
   static String route = 'register';
@@ -22,13 +21,13 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
   _manageRegister() async {
     if (name.length < 3) return;
-    AppUser appUser = Provider.of<DataProvider>(context,listen: false).getUser;
+    AppUser appUser = DataProvider.instance.getUser;
     appUser.displayName = name;
     appUser.gender = gender;
     await ApiHandler.instance.saveUser(appUser);
     await FirebaseAuth.instance.currentUser!.updateDisplayName(name);
-    Provider.of<DataProvider>(context,listen: false).setUser(appUser);
-    Navigator.pushNamed(context, HomeScreen.route);
+    mounted ? DataProvider.instance.setUser(appUser) : null;
+    mounted ? Navigator.pushNamed(context, HomeScreen.route) : null;
   }
   @override
   Widget build(BuildContext context) {
