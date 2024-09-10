@@ -2,6 +2,7 @@ import 'package:easypg/auth/login.dart';
 import 'package:easypg/auth/register_screen.dart';
 import 'package:easypg/firebase_options.dart';
 import 'package:easypg/provider/add_property_provider.dart';
+import 'package:easypg/provider/auh_provider.dart';
 import 'package:easypg/provider/data_provider.dart';
 import 'package:easypg/screens/home_screen.dart';
 import 'package:easypg/screens/splash.dart';
@@ -16,6 +17,7 @@ void main() async {
   );
   runApp(
     MultiProvider(providers: [
+      ChangeNotifierProvider(create: (context) => AuthProvider.instance,),
       ChangeNotifierProvider(create: (context) => DataProvider.instance,),
       ChangeNotifierProvider(create: (context) => AddPropertyProvider.instance,),
     ],child: const MyApp(),)

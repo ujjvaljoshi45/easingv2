@@ -1,3 +1,5 @@
+import 'package:awesome_bottom_bar/awesome_bottom_bar.dart';
+import 'package:awesome_bottom_bar/widgets/inspired/inspired.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:easypg/auth/login.dart';
 import 'package:easypg/model/cache_manager.dart';
@@ -80,25 +82,21 @@ class _HomeScreenState extends State<HomeScreen> {
                   children: [
                     space(20),
                     Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      mainAxisAlignment: MainAxisAlignment.end,
                       children: [
-                        IconButton(
-                          icon: Image.asset(
-                            'assets/burger.png',
-                            height: 48,
-                            width: 48,
-                          ),
-                          onPressed: () {},
-                        ),
                         InkWell(
                           onTap: () async {
                             CacheManager.user = null;
                             await FirebaseAuth.instance.signOut();
-                            mounted ? Navigator.pushReplacementNamed(context, LoginScreen.route) : null;
+                            mounted
+                                ? Navigator.pushReplacementNamed(context, LoginScreen.route)
+                                : null;
                           },
                           child: CircleAvatar(
                             radius: 24,
-                            backgroundImage: CachedNetworkImageProvider(DataProvider.instance.getUser.profileUrl,),
+                            backgroundImage: CachedNetworkImageProvider(
+                              DataProvider.instance.getUser.profileUrl,
+                            ),
                           ),
                         ),
                       ],
