@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:easypg/auth/login.dart';
 import 'package:easypg/auth/register_screen.dart';
 import 'package:easypg/firebase_options.dart';
@@ -12,9 +14,13 @@ import 'package:provider/provider.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp(
-    options: DefaultFirebaseOptions.currentPlatform,
-  );
+  if (Platform.isAndroid) {
+    await Firebase.initializeApp(
+      options: DefaultFirebaseOptions.currentPlatform,
+    );
+  } else {
+    await Firebase.initializeApp();
+  }
   runApp(
     MultiProvider(providers: [
       ChangeNotifierProvider(create: (context) => AuthProvider.instance,),
