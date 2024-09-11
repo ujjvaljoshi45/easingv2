@@ -2,7 +2,6 @@ import 'package:easypg/model/api_handler/api_handler.dart';
 import 'package:easypg/model/property.dart';
 import 'package:easypg/screens/widgets/property_card.dart';
 import 'package:easypg/utils/colors.dart';
-import 'package:easypg/utils/styles.dart';
 import 'package:easypg/utils/tools.dart';
 import 'package:flutter/material.dart';
 
@@ -20,11 +19,6 @@ class _HomePageState extends State<HomePage> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          RichText(text: TextSpan(children: [
-            TextSpan(text: 'Find Your',style: montserrat.copyWith(fontSize: 24,fontWeight: FontWeight.bold,color: black)),
-            TextSpan(text: ' Dream', style: montserrat.copyWith(fontSize: 24,fontWeight: FontWeight.bold,color: myOrange),),
-            TextSpan(text: '\nHome Today',style: montserrat.copyWith(fontSize: 24,fontWeight: FontWeight.bold,color: black)),
-          ])),
           space(20),
           // const HouseCard(),
           ConstrainedBox(

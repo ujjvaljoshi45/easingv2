@@ -1,4 +1,5 @@
 class Property {
+  String id = '';
   String name = '';
   String position = '';
   String motive = '';
@@ -14,6 +15,7 @@ class Property {
   String deposit = '';
   List<String> amenities = [];
   List<String> photos = [];
+  bool status = false;
   DateTime createdAt = DateTime.now();
 
   Property.required({
@@ -33,13 +35,30 @@ class Property {
     required this.amenities,
     required this.photos,
     required this.createdAt,
+    required this.status,
   });
 
-  factory Property.empty() => Property.required(name: '' ,position: '', motive: '', propertyType: '', streetAddress: '', pinCode: '', city: '', state: '', bhk: '', bathroom: '', furniture: '', rent: '', deposit: '', amenities: [], photos: [], createdAt: DateTime.now());
+  factory Property.empty() => Property.required(
+      name: '',
+      position: '',
+      motive: '',
+      propertyType: '',
+      streetAddress: '',
+      pinCode: '',
+      city: '',
+      state: '',
+      bhk: '',
+      bathroom: '',
+      furniture: '',
+      rent: '',
+      deposit: '',
+      amenities: [],
+      photos: [],
+      createdAt: DateTime.now(),status: false);
 
-  factory Property.fromJson(Map<String, dynamic> json) {
+  factory Property.fromJson(Map<String, dynamic> json,id) {
     return Property.required(
-      name: json[nameKey],
+        name: json[nameKey],
         position: json[positionKey],
         motive: json[motiveKey],
         propertyType: json[propertyTypeKey],
@@ -60,11 +79,12 @@ class Property {
           json[photosKey].length,
           (index) => json[photosKey][index],
         ),
-        createdAt: json[createdAtKey].toDate());
+        createdAt: json[createdAtKey].toDate(),
+        status: json[statusKey])..id=id ?? '';
   }
 
   Map<String, dynamic> toJson() => {
-    nameKey:name,
+        nameKey: name,
         positionKey: position,
         motiveKey: motive,
         propertyTypeKey: propertyType,
@@ -80,6 +100,7 @@ class Property {
         amenitiesKey: amenities,
         photosKey: photos,
         createdAtKey: createdAt,
+        statusKey: status,
       };
 }
 
@@ -99,3 +120,4 @@ String amenitiesKey = 'amenities';
 String photosKey = 'photos';
 String createdAtKey = 'created_at';
 String nameKey = 'name';
+String statusKey = 'status';

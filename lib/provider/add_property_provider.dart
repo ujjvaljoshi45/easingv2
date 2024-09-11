@@ -24,10 +24,12 @@ class AddPropertyProvider extends ChangeNotifier {
   void setAmenities(List<String> lis) => property.amenities = lis;
   void setPhotos(List<String> lis) => property.photos.addAll(lis);
   Future<void> save() async {
+    int time = DateTime.now().millisecondsSinceEpoch;
     logEvent(property.toJson());
-    List<String> urls = await ApiHandler.instance.saveImages(property.photos);
+    List<String> urls = await ApiHandler.instance.saveImages(property.photos,time);
     property.photos = urls;
-    ApiHandler.instance.saveProperty(property);
+    property.id = time.toString();
+    await ApiHandler.instance.saveProperty(property);
   }
   void clear() => property = Property.empty();
 }

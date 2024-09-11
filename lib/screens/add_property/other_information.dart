@@ -27,6 +27,44 @@ class _OtherInformationPageState extends State<OtherInformationPage> {
   String rent = '';
   String deposit = '';
 
+  @override
+  void initState() {
+    rent = AddPropertyProvider.instance.property.rent;
+    deposit = AddPropertyProvider.instance.property.deposit;
+    switch (AddPropertyProvider.instance.property.bhk) {
+      case '2':
+        _currentBhkSelection = 1;
+        break;
+      case '3':
+        _currentBhkSelection = 2;
+        break;
+      case '3+':
+        _currentBhkSelection = 3;
+        break;
+      default:
+        _currentBhkSelection = 0;
+        break;
+    }
+    switch (AddPropertyProvider.instance.property.bathroom) {
+      case '2':
+        _bathrooms = 2;
+        break;
+      case '3':
+        _bathrooms = 3;
+        break;
+      default:
+        _bathrooms = 1;
+        break;
+    }
+    for (var element in furnished) {
+      element == AddPropertyProvider.instance.property.furniture
+          ? _currentFurnishedSelection = furnished.indexOf(element)
+          : null;
+    }
+    AddPropertyProvider.instance.property.bathroom;
+    super.initState();
+  }
+
   _handelSave() {
     AddPropertyProvider.instance.setBHK(_currentBhkSelection.toString());
     AddPropertyProvider.instance.setBathroom(_bathrooms.toString());
@@ -37,8 +75,13 @@ class _OtherInformationPageState extends State<OtherInformationPage> {
   }
 
   _validate() {
-    return AddPropertyProvider.instance.property.bhk.isNotEmpty && AddPropertyProvider.instance.property.bathroom.isNotEmpty && AddPropertyProvider.instance.property.furniture.isNotEmpty && AddPropertyProvider.instance.property.rent.isNotEmpty && AddPropertyProvider.instance.property.deposit.isNotEmpty;
+    return AddPropertyProvider.instance.property.bhk.isNotEmpty &&
+        AddPropertyProvider.instance.property.bathroom.isNotEmpty &&
+        AddPropertyProvider.instance.property.furniture.isNotEmpty &&
+        AddPropertyProvider.instance.property.rent.isNotEmpty &&
+        AddPropertyProvider.instance.property.deposit.isNotEmpty;
   }
+
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
@@ -69,14 +112,16 @@ class _OtherInformationPageState extends State<OtherInformationPage> {
                 maxValue: 3,
                 infiniteLoop: false,
                 decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    border: Border.all(
-                      width: 2,
-                      color: black,
-                    ),),
+                  shape: BoxShape.circle,
+                  border: Border.all(
+                    width: 2,
+                    color: black,
+                  ),
+                ),
                 value: _bathrooms,
-                selectedTextStyle: montserrat.copyWith(fontWeight: FontWeight.bold,),
-
+                selectedTextStyle: montserrat.copyWith(
+                  fontWeight: FontWeight.bold,
+                ),
                 onChanged: (value) => setState(
                   () => _bathrooms = value,
                 ),
@@ -96,8 +141,7 @@ class _OtherInformationPageState extends State<OtherInformationPage> {
                           child: OptionElevatedButton(
                         isSelected: _currentFurnishedSelection == i,
                         text: furnished[i],
-                        onPressed: () =>
-                            setState(() => _currentFurnishedSelection = i),
+                        onPressed: () => setState(() => _currentFurnishedSelection = i),
                       )),
                     ],
                   )
@@ -106,14 +150,18 @@ class _OtherInformationPageState extends State<OtherInformationPage> {
             space(20),
             printHeading('Expected Rent'),
             space(20),
-            TextField(
+            TextFormField(
+              initialValue: AddPropertyProvider.instance.property.rent,
               onChanged: (value) => setState(() => rent = value),
               decoration: const InputDecoration(hintText: 'Enter Rent Here...'),
+              keyboardType: TextInputType.number,
             ),
             space(20),
-            TextField(
+            TextFormField(
+              initialValue: AddPropertyProvider.instance.property.deposit,
               onChanged: (value) => setState(() => deposit = value),
               decoration: const InputDecoration(hintText: 'Enter Deposit Here...'),
+              keyboardType: TextInputType.number,
             ),
             const Spacer(),
             SaveAndNextBtn(onPressed: _handelSave, msg: 'Save And Next'),

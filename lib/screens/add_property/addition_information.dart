@@ -13,10 +13,19 @@ class AdditionInformationPage extends StatefulWidget {
 }
 
 class _AdditionInformationPageState extends State<AdditionInformationPage> {
-  List<String> myItem = ['Breakfast','Lunch', 'Dinner', 'Drinking Water' ,'AC','Laundry','Cleaning'];
-  List<bool> status = List.generate(10, (index) => false,);
+  Map<String,bool> myAmenities = {"Breakfast": false, "Lunch": false, "Dinner": false, "Drinking Water": false, "AC": false, "Laundry": false, "Cleaning": false};
+  // List<bool> status = List.generate(10, (index) => false,);
+  @override
+  void initState() {
+
+    for (String key in AddPropertyProvider.instance.property.amenities) {
+      myAmenities[key] = true;
+    }
+
+    super.initState();
+  }
   _manageSave() {
-    AddPropertyProvider.instance.setAmenities(List.generate(myItem.length, (index) => status[index] ? myItem[index] : 'null',).toSet().toList());
+    AddPropertyProvider.instance.setAmenities(List.generate(myAmenities.length, (index) =>  myAmenities[myAmenities.keys.toList()[index]]! ? myAmenities.keys.toList()[index] : '',));
     widget.handelPageChange();
   }
   @override
@@ -26,11 +35,11 @@ class _AdditionInformationPageState extends State<AdditionInformationPage> {
       child: Column(
         children: [
           space(10),
-          for (int i = 0; i < myItem.length; i++)
+          for (int i = 0; i < myAmenities.length; i++)
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text(myItem[i],style: montserrat.copyWith(fontWeight: FontWeight.bold, fontSize: 18),),Checkbox(value: status[i], onChanged: (value) => setState(()=>status[i]=value ?? status[i]),),
+                Text(myAmenities.keys.toList()[i],style: montserrat.copyWith(fontWeight: FontWeight.bold, fontSize: 18),),Checkbox(value: myAmenities[myAmenities.keys.toList()[i]], onChanged: (value) => setState(()=>myAmenities[myAmenities.keys.toList()[i]]= value ?? myAmenities[myAmenities.keys.toList()[i]]!),),
               ],
             ),
           space(20),

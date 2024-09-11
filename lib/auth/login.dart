@@ -1,4 +1,3 @@
-import 'package:easypg/auth/otp_screen.dart';
 import 'package:easypg/provider/auh_provider.dart';
 import 'package:easypg/utils/colors.dart';
 import 'package:easypg/utils/styles.dart';

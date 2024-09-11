@@ -5,8 +5,9 @@ import 'package:easypg/utils/styles.dart';
 import 'package:flutter/material.dart';
 
 class PropertyCard extends StatelessWidget {
-  const PropertyCard({super.key, required this.property});
+  const PropertyCard({super.key, required this.property, this.topWidget});
   final Property property;
+  final Map<String, dynamic>? topWidget;
   @override
   Widget build(BuildContext context) {
     return Card(
@@ -24,10 +25,12 @@ class PropertyCard extends StatelessWidget {
                     topLeft: Radius.circular(12.0),
                     topRight: Radius.circular(12.0),
                   ),
-                  child:CachedNetworkImage(imageUrl: property.photos.first,height: 200,
+                  child: CachedNetworkImage(
+                    imageUrl: property.photos.first,
+                    height: 200,
                     width: double.infinity,
-                    fit: BoxFit.cover,)
-              ),
+                    fit: BoxFit.cover,
+                  )),
               Positioned(
                 top: 10,
                 left: 10,
@@ -37,7 +40,7 @@ class PropertyCard extends StatelessWidget {
                     color: myOrangeSecondary,
                     borderRadius: BorderRadius.circular(8.0),
                   ),
-                  child:  Text(
+                  child: Text(
                     property.propertyType,
                     style: montserrat.copyWith(
                       color: myOrange,
@@ -46,6 +49,10 @@ class PropertyCard extends StatelessWidget {
                   ),
                 ),
               ),
+              Positioned(
+                  top: 10,
+                  right: 10,
+                  child: topWidget != null ? topWidget!['widget'] : const SizedBox.shrink(),)
             ],
           ),
           Padding(
@@ -55,7 +62,7 @@ class PropertyCard extends StatelessWidget {
               children: [
                 Text(
                   property.name,
-                  style: montserrat.copyWith(fontSize: 20,fontWeight: FontWeight.bold),
+                  style: montserrat.copyWith(fontSize: 20, fontWeight: FontWeight.bold),
                 ),
                 const SizedBox(height: 4),
                 Row(
@@ -66,15 +73,23 @@ class PropertyCard extends StatelessWidget {
                       size: 14,
                     ),
                     const SizedBox(width: 4),
-                    Text(
-                        '${property.streetAddress}, ${property.city}',
-                        style: montserrat.copyWith(fontSize: 14, color: secondaryColor, fontWeight: FontWeight.bold)),
+                    Text('${property.streetAddress}, ${property.city}',
+                        style: montserrat.copyWith(
+                            fontSize: 14, color: secondaryColor, fontWeight: FontWeight.bold)),
                   ],
                 ),
                 const SizedBox(height: 12),
                 Row(
                   children: [
-                    Text('₹ ${property.rent}', style: montserrat.copyWith(fontSize: 17,fontWeight: FontWeight.w600),),Text(' /Month',style: montserrat.copyWith(fontSize: 13,fontWeight: FontWeight.w600,color: secondaryColor),)
+                    Text(
+                      '₹ ${property.rent}',
+                      style: montserrat.copyWith(fontSize: 17, fontWeight: FontWeight.w600),
+                    ),
+                    Text(
+                      ' /Month',
+                      style: montserrat.copyWith(
+                          fontSize: 13, fontWeight: FontWeight.w600, color: secondaryColor),
+                    )
                   ],
                 ),
               ],

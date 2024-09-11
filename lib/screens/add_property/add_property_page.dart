@@ -1,3 +1,4 @@
+import 'package:easypg/provider/add_property_provider.dart';
 import 'package:easypg/screens/add_property/add_location.dart';
 import 'package:easypg/screens/add_property/add_photo.dart';
 import 'package:easypg/screens/add_property/addition_information.dart';
@@ -46,6 +47,7 @@ class _AddPropertyPageState extends State<AddPropertyPage> {
   _manageBack() {
     debugPrint("clicked : $_currentIndex");
     if (_currentIndex <= 0) {
+      AddPropertyProvider.instance.clear();
       Navigator.pop(context);
     } else {
       _currentIndex--;

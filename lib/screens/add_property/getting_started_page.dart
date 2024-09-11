@@ -3,6 +3,7 @@ import 'package:easypg/screens/add_property/option_elevated_button.dart';
 import 'package:easypg/screens/add_property/save_and_next_btn.dart';
 import 'package:easypg/utils/tools.dart';
 import 'package:flutter/material.dart';
+
 class GettingStartedPage extends StatefulWidget {
   const GettingStartedPage({super.key, required this.handelPageChange});
   final Function handelPageChange;
@@ -16,12 +17,23 @@ class _GettingStartedPageState extends State<GettingStartedPage> {
   List<String> motive = ['Rent / Lease', 'List as PG'];
   int selectedOption = 0;
   int selectedPurpose = 0;
+  @override
+  void initState() {
+    selectedOption = ownership.indexOf(AddPropertyProvider.instance.property.position);
+    selectedPurpose = motive.indexOf(AddPropertyProvider.instance.property.motive);
+
+    selectedOption < 0 ? selectedOption = 0 : null;
+    selectedPurpose < 0 ? selectedPurpose = 0 : null;
+    super.initState();
+  }
+
   _manageSave() {
     AddPropertyProvider.instance.setPosition(ownership[selectedOption]);
     AddPropertyProvider.instance.setMotive(motive[selectedPurpose]);
     // Save and then call
     widget.handelPageChange();
   }
+
   @override
   Widget build(BuildContext context) {
     return SizedBox(
@@ -53,7 +65,7 @@ class _GettingStartedPageState extends State<GettingStartedPage> {
             ],
           ),
           space(20),
-        printHeading('You Are Here To'),
+          printHeading('You Are Here To'),
           space(20),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -78,5 +90,3 @@ class _GettingStartedPageState extends State<GettingStartedPage> {
     );
   }
 }
-
-
