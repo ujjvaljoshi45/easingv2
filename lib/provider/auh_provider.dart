@@ -38,9 +38,11 @@ class AuthProvider extends ChangeNotifier {
         },
         codeSent: (verificationId, forceResendingToken) async {
           _verificationId = verificationId;
-          Navigator.of(context).push(MaterialPageRoute(
+          await Navigator.of(context).push(MaterialPageRoute(
             builder: (context) {
-              return OptInputScreen(phoneNumber: phoneNumber,);
+              return OptInputScreen(
+                phoneNumber: phoneNumber,
+              );
             },
           ));
         },
@@ -76,27 +78,19 @@ class AuthProvider extends ChangeNotifier {
 
   Future<void> _signInWIthPhoneAuthCredential(
       PhoneAuthCredential credential, BuildContext context, String phoneNumber) async {
-    try {
-      final userCredential = await auth.signInWithCredential(credential);
-      if (userCredential.additionalUserInfo!.isNewUser) {
-        _saveNewEntry(userCredential,context);
-      } else {
-        try {
-          AppUser? user = await ApiHandler.instance.getUser(userCredential.user!.uid);
-          if (user == null) throw ('Null User');
-          DataProvider.instance.setUser(user);
-          Navigator.of(context).pushReplacementNamed(HomeScreen.route);
-        } catch (e) {
-          _saveNewEntry(userCredential,context);
-        }
-      }
-
-    } catch (e) {
-      Navigator.of(context).pushReplacementNamed(LoginScreen.route);
+    final userCredential = await auth.signInWithCredential(credential);
+    if (userCredential.user == null) {Navigator.pushReplacementNamed(context, LoginScreen.route);return;}
+    AppUser? appUser = await ApiHandler.instance.getUser(userCredential.user!.uid);
+    if (appUser == null) {
+      _saveNewEntry(userCredential, context);
+      return;
+    } else {
+      DataProvider.instance.initUser(appUser);
+      Navigator.pushReplacementNamed(context, HomeScreen.route);
     }
   }
 
-  _saveNewEntry(userCredential,context) async {
+  _saveNewEntry(userCredential, context) async {
     AppUser user = AppUser.fromFirebaseUser(userCredential.user!);
     await ApiHandler.instance.saveUser(user);
     DataProvider.instance.initUser(user);

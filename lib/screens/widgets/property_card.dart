@@ -52,7 +52,7 @@ class PropertyCard extends StatelessWidget {
               Positioned(
                   top: 10,
                   right: 10,
-                  child: topWidget != null ? topWidget!['widget'] : const SizedBox.shrink(),)
+                  child: topWidget != null ? GestureDetector(child: topWidget!['widget'],onTap: topWidget!['callback'],) : const SizedBox.shrink(),)
             ],
           ),
           Padding(
@@ -98,5 +98,15 @@ class PropertyCard extends StatelessWidget {
         ],
       ),
     );
+  }
+}
+
+class DisplayData extends StatelessWidget {
+  const DisplayData({super.key, required this.title, required this.subtitle});
+  final String  title;
+  final String  subtitle;
+  @override
+  Widget build(BuildContext context) {
+    return Row( mainAxisAlignment: MainAxisAlignment.spaceBetween , children: [Text(title,style: unSelectedOptionTextStyle,),Text(subtitle,style: unSelectedOptionTextStyle)],);
   }
 }

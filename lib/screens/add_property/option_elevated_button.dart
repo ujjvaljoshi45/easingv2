@@ -6,17 +6,18 @@ class OptionElevatedButton extends StatelessWidget {
       {super.key,
         required this.isSelected,
         required this.text,
-        required this.onPressed});
+        required this.onPressed, this.color});
   final bool isSelected;
   final String text;
   final void Function() onPressed;
+  final Color? color;
 
   @override
   Widget build(BuildContext context) {
     return ElevatedButton(
       onPressed: onPressed,
       style:
-      isSelected ? selectedOptionButtonStyle : unSelectedOptionButtonStyle,
+      isSelected ? selectedOptionButtonStyle.copyWith(backgroundColor: WidgetStatePropertyAll(color ?? Colors.black)) : unSelectedOptionButtonStyle,
       child: Text(
         text,
         style: isSelected ? selectedOptionTextStyle : unSelectedOptionTextStyle,

@@ -1,5 +1,6 @@
 import 'package:easypg/model/api_handler/api_handler.dart';
 import 'package:easypg/model/property.dart';
+import 'package:easypg/provider/data_provider.dart';
 import 'package:easypg/utils/tools.dart';
 import 'package:flutter/material.dart';
 
@@ -24,6 +25,7 @@ class AddPropertyProvider extends ChangeNotifier {
   void setAmenities(List<String> lis) => property.amenities = lis;
   void setPhotos(List<String> lis) => property.photos.addAll(lis);
   Future<void> save() async {
+    property.uploaderId = DataProvider.instance.getUser.uid;
     int time = DateTime.now().millisecondsSinceEpoch;
     logEvent(property.toJson());
     List<String> urls = await ApiHandler.instance.saveImages(property.photos,time);

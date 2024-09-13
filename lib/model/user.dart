@@ -34,8 +34,8 @@ class AppUser {
   factory AppUser.fromFirebaseUser(User user) {
     return AppUser(
         uid: user.uid,
-        displayName: user.displayName ?? 'U',
-        profileUrl: user.photoURL ?? 'U',
+        displayName: user.displayName ?? '',
+        profileUrl: user.photoURL ?? '',
         phoneNo: user.phoneNumber!,
         bDate: DateTime.now(),
         gender: 'NOT SET');

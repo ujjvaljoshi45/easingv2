@@ -33,14 +33,17 @@ class _OptInputScreenState extends State<OptInputScreen> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  const Text(
+                   Text(
                     "Verify your\nPhone Number",
-                    // style: AppTextStyles.kOnboardingTitleTextStyle
-                    //     .copyWith(color: AppColors.kDarkColor),
-                    textAlign: TextAlign.center,
+                    style: montserrat.copyWith(color:myOrange,
+                      fontSize: 22.0,
+                      fontWeight: FontWeight.bold,
+                      ),textAlign: TextAlign.center,
                   ),
-                  const Text("Enter your OTP code here.",
-                      // style: AppTextStyles.kOnboardingSubtitleTextStyle,
+                   Text("Enter your OTP code here.",
+                      style: montserrat.copyWith( color: Colors.black38,
+                        fontSize: 18.0,
+                        fontWeight: FontWeight.bold,),
                       textAlign: TextAlign.center),
                   const SizedBox(
                     height: 40,
@@ -58,10 +61,11 @@ class _OptInputScreenState extends State<OptInputScreen> {
                           ),
                           textStyle:
                           montserrat.copyWith(
-                            color: Colors.black,
+                            color: myOrangeSecondary,
                             fontWeight: FontWeight.w600,
                             fontSize: 18,
                           )),
+
                       submittedPinTheme: PinTheme(
                         width: 60,
                         height: 60,
@@ -69,8 +73,8 @@ class _OptInputScreenState extends State<OptInputScreen> {
                           color: myOrange,
                           shape: BoxShape.circle,
                         ),
-                        // textStyle: AppTextStyles.kPhoneInputTextFieldTextStyle
-                        //     .copyWith(color: Colors.white),
+                        textStyle: montserrat
+                            .copyWith(color: myOrangeSecondary,fontWeight: FontWeight.bold,),
                       ),
                       onChanged: (value) {
                         otp = value;
@@ -92,13 +96,16 @@ class _OptInputScreenState extends State<OptInputScreen> {
                           widget.phoneNumber,
                         );
                       },
+
                     ),
                   ),
                   const SizedBox(
                     height: 40,
                   ),
-                  const Text("Didn't receive any code?",
-                      // style: AppTextStyles.kOnboardingSubtitleTextStyle,
+                   Text("Didn't receive any code?",
+                       style: montserrat.copyWith( color: Colors.black38,
+                         fontSize: 16.0,
+                         fontWeight: FontWeight.bold,),
                       textAlign: TextAlign.center),
                   TextButton(
                       onPressed: () {},

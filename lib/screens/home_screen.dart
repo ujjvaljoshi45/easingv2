@@ -160,7 +160,8 @@ class _HomeScreenState extends State<HomeScreen> {
                             borderType: BorderType.Circle,
                             child: CircleAvatar(
                               radius: 24,
-                              backgroundImage: CachedNetworkImageProvider(
+                              backgroundImage: DataProvider.instance.getUser.profileUrl.isEmpty ?  const AssetImage('assets/user_icon.png') : CachedNetworkImageProvider(
+
                                 DataProvider.instance.getUser.profileUrl,
                               ),
                             ),

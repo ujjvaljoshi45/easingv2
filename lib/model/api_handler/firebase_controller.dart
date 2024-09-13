@@ -41,6 +41,18 @@ class FirebaseController extends ApiHandler {
       logError('setUser()', e.toString(), stackTrace);
     }
   }
+  
+  Future<void> saveBookMark(String id,bool add) async {
+    DataProvider.instance.manageBookmark(id,add);
+    try {
+      await userRef.doc(DataProvider.instance.getUser.uid).update({
+        'bookmarks': add ? FieldValue.arrayUnion([id]) : FieldValue.arrayRemove([id])
+      });
+      logEvent('bookmark added');
+    } catch (e,stackTrace) {
+      logError('Error Saving Bookmark', e, stackTrace);
+    }
+  }
 
   Future<List<Property>> getProperties() async {
     List<Property> properties = [];
@@ -62,7 +74,7 @@ class FirebaseController extends ApiHandler {
           'property/${DataProvider.instance.getUser.uid}/$time/${paths.indexOf(path)}.jpg');
       logEvent("REF:${ref.fullPath}");
       await ref.putFile(File(path));
-      // urls.add(await ref.getDownloadURL());
+      urls.add(await ref.getDownloadURL());
       logEvent(FirebaseStorage.instance.refFromURL(await ref.getDownloadURL()).fullPath);
     }
     return urls;
@@ -70,10 +82,6 @@ class FirebaseController extends ApiHandler {
 
   Future<void> saveProperty(Property property) async {
     Map res = property.toJson();
-    res.putIfAbsent(
-      'uploader_id',
-      () => DataProvider.instance.getUser.uid,
-    );
     await propertyRef.doc(property.id).set(res);
     await userRef.doc(DataProvider.instance.getUser.uid).update({
       myPropertiesKey: FieldValue.arrayUnion([property.id])
@@ -83,8 +91,17 @@ class FirebaseController extends ApiHandler {
 
   Future<List<Property>> getPropertiesById([bool? mine]) async {
     List<Property> properties = [];
+    if (mine != null) {
+      if (mine) {
+        final response = (await propertyRef.where('uploader_id',isEqualTo: DataProvider.instance.getUser.uid).get()).docs;
+        for(var json in response) {
+          properties.add(Property.fromJson(json.data() as Map<String,dynamic>, json.id));
+        }
+        return properties;
+      }
+    }
     final response = await userRef.doc(DataProvider.instance.getUser.uid).get();
-    final ids = mine != null && mine ? response.get(myPropertiesKey) : response.get(bookMarksKey);
+    final ids = response.get(bookMarksKey);
     for (var id in ids) {
       properties.add(
           Property.fromJson((await propertyRef.doc(id).get()).data() as Map<String, dynamic>, id));
@@ -92,5 +109,5 @@ class FirebaseController extends ApiHandler {
     return properties;
   }
 
-  Future<void> deleteProperty(String id) async => await propertyRef.doc(id).delete().whenComplete(() async => userRef.doc(DataProvider.instance.getUser.uid).update({'property':FieldValue.arrayRemove([id])}),);
+  Future<void> deleteProperty(String id) async => await propertyRef.doc(id).delete().whenComplete(() async => await userRef.doc(DataProvider.instance.getUser.uid).update({'property':FieldValue.arrayRemove([id])}),);
 }

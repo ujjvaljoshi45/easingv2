@@ -17,6 +17,7 @@ class Property {
   List<String> photos = [];
   bool status = false;
   DateTime createdAt = DateTime.now();
+  String uploaderId = '';
 
   Property.required({
     required this.name,
@@ -36,6 +37,7 @@ class Property {
     required this.photos,
     required this.createdAt,
     required this.status,
+    required this.uploaderId,
   });
 
   factory Property.empty() => Property.required(
@@ -54,7 +56,7 @@ class Property {
       deposit: '',
       amenities: [],
       photos: [],
-      createdAt: DateTime.now(),status: false);
+      createdAt: DateTime.now(),status: false,uploaderId: '');
 
   factory Property.fromJson(Map<String, dynamic> json,id) {
     return Property.required(
@@ -80,7 +82,9 @@ class Property {
           (index) => json[photosKey][index],
         ),
         createdAt: json[createdAtKey].toDate(),
-        status: json[statusKey])..id=id ?? '';
+        status: json[statusKey],
+        uploaderId: json[uploaderIdKey]
+    )..id=id ?? '';
   }
 
   Map<String, dynamic> toJson() => {
@@ -101,7 +105,9 @@ class Property {
         photosKey: photos,
         createdAtKey: createdAt,
         statusKey: status,
+    uploaderIdKey:uploaderId,
       };
+  String getAddress() => "$streetAddress, $city,$state - $pinCode";
 }
 
 String positionKey = 'position';
@@ -121,3 +127,4 @@ String photosKey = 'photos';
 String createdAtKey = 'created_at';
 String nameKey = 'name';
 String statusKey = 'status';
+String uploaderIdKey = 'uploader_id';
