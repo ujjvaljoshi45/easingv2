@@ -1,5 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:dotted_border/dotted_border.dart';
 import 'package:easypg/model/property.dart';
 import 'package:easypg/screens/add_property/save_and_next_btn.dart';
 import 'package:easypg/utils/colors.dart';
@@ -20,7 +21,6 @@ class _PropertyCardState extends State<PropertyCard> {
   final CarouselSliderController _carouselSliderController = CarouselSliderController();
   final Duration _pageChangeDuration = const Duration(milliseconds: 150);
   int _currentPhotoIndex = 0;
-  final FocusNode _focusNode = FocusNode();
 
   @override
   Widget build(BuildContext context) {
@@ -33,8 +33,6 @@ class _PropertyCardState extends State<PropertyCard> {
         elevation: 4,
         child: ExpansionTile(
           showTrailingIcon: false,
-          initiallyExpanded: true,
-          onExpansionChanged: (value) => value ? _focusNode.requestFocus() : null,
           shape:
               const OutlineInputBorder(borderSide: BorderSide(width: 0, color: Colors.transparent)),
           title: _buildTitleWidget(),
@@ -52,49 +50,25 @@ class _PropertyCardState extends State<PropertyCard> {
               topLeft: Radius.circular(12.0),
               topRight: Radius.circular(12.0),
             ),
-            child:
-              CarouselSlider.builder(itemCount: widget.property.photos.length, itemBuilder: (context, index, realIndex) =>
-                        CachedNetworkImage(
-                          imageUrl: widget.property.photos[index],
-                          height: 225,
-                          width: double.infinity,
-                          fit: BoxFit.cover,
-                        )
-                  , options:
-                    CarouselOptions(
-                      autoPlay: false,
-                      autoPlayAnimationDuration: _pageChangeDuration,
-                      onPageChanged: (index, reason) => setState(() => _currentPhotoIndex = index,),
-                      enableInfiniteScroll: false,
-                      viewportFraction: 0.8,
-                      aspectRatio: 16/9,
-                      enlargeFactor: 0.3,
-                      enlargeStrategy: CenterPageEnlargeStrategy.scale
-                    ),
-              )
-            // CarouselSlider(
-            //   carouselController: _carouselSliderController ,
-            //     items: List.generate(
-            //       widget.property.photos.length,
-            //       (index) =>
-            //       CachedNetworkImage(
-            //         imageUrl: widget.property.photos[index],
-            //         height: 225,
-            //         width: double.infinity,
-            //         fit: BoxFit.cover,
-            //       ),
-            //     ),
-            //     options:
-            //     CarouselOptions(
-            //       autoPlay: false,
-            //       autoPlayAnimationDuration: _pageChangeDuration,
-            //       onPageChanged: (index, reason) => setState(() => _currentPhotoIndex = index,),
-            //       enableInfiniteScroll: false,
-            //       viewportFraction: 0.8,
-            //       aspectRatio: 16/9,
-            //       enlargeFactor: 0.3,
-            //       enlargeStrategy: CenterPageEnlargeStrategy.scale
-            //     ),),
+            child: CarouselSlider.builder(
+              itemCount: widget.property.photos.length,
+              itemBuilder: (context, index, realIndex) => CachedNetworkImage(
+                imageUrl: widget.property.photos[index],
+                width: double.infinity,
+                fit: BoxFit.fitHeight,
+              ),
+              options: CarouselOptions(
+                  autoPlay: false,
+                  autoPlayAnimationDuration: _pageChangeDuration,
+                  onPageChanged: (index, reason) => setState(
+                        () => _currentPhotoIndex = index,
+                      ),
+                  enableInfiniteScroll: false,
+                  viewportFraction: 1,
+              aspectRatio: 16/9,
+                height: 250
+              ),
+            ),
           ),
           Positioned(
             top: 10,
@@ -109,6 +83,7 @@ class _PropertyCardState extends State<PropertyCard> {
                 widget.property.propertyType,
                 style: montserrat.copyWith(
                   color: myOrange,
+                  fontSize: 13,
                   fontWeight: FontWeight.bold,
                 ),
               ),
@@ -125,20 +100,30 @@ class _PropertyCardState extends State<PropertyCard> {
                 : const SizedBox.shrink(),
           ),
           Positioned(
-            bottom: 10,
+              bottom: 10,
               right: 10,
-              child: Row(
-                children: [
-                  for (int i = 0; i < widget.property.photos.length; i++)
-                    AnimatedContainer(
-                      duration: _pageChangeDuration,
-                      curve: Curves.decelerate,
-                      margin: const EdgeInsets.all(2.0),
-                      width: 10,height: 10,decoration: BoxDecoration(shape: BoxShape.circle, color : i == _currentPhotoIndex ? myOrange : myOrangeSecondary),
-                    )
-                ],
-              )
-          )
+              child: Container(
+                padding: const EdgeInsets.all(2.0),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(12),
+                  color: Colors.black.withOpacity(0.2)
+                ),
+                child: Row(
+                  children: [
+                    for (int i = 0; i < widget.property.photos.length; i++)
+                      AnimatedContainer(
+                        duration: _pageChangeDuration,
+                        curve: Curves.decelerate,
+                        margin: const EdgeInsets.all(2.0),
+                        width: 10,
+                        height: 10,
+                        decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            color: i == _currentPhotoIndex ? myOrange : myOrangeSecondary),
+                      )
+                  ],
+                ),
+              ))
         ],
       );
 
@@ -184,37 +169,76 @@ class _PropertyCardState extends State<PropertyCard> {
       );
 
   _buildChildren() => <Widget>[
-        ListTile(
-          title: const Text("Address"),
-          subtitle: Text(
-              '${widget.property.name}, ${widget.property.streetAddress}, ${widget.property.city}, ${widget.property.streetAddress} - ${widget.property.pinCode}'),
-        ),
-        ListTile(
-          title: const Text('Information'),
-          subtitle: Column(
-            children: [
-              DisplayData(title: 'Rent', subtitle: widget.property.rent),
-              DisplayData(title: 'Deposit', subtitle: widget.property.deposit),
-              DisplayData(title: 'BHK', subtitle: widget.property.bhk),
-              DisplayData(title: 'Bathroom(s)', subtitle: widget.property.bathroom),
-              DisplayData(title: 'Furniture', subtitle: widget.property.furniture),
-            ],
+        Card(
+          margin: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 8.0),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12.0),
+            side: BorderSide(color: myOrange, width: 2),
+          ),
+          color: myOrangeSecondary,
+          shadowColor: myOrange,
+          elevation: 1.3,
+          child: ListTile(
+            title: Text(
+              "Address",
+              style: unSelectedOptionTextStyle,
+            ),
+            subtitle: Text(
+                '${widget.property.name}, ${widget.property.streetAddress}, ${widget.property.city}, ${widget.property.streetAddress} - ${widget.property.pinCode}',
+                style: unSelectedOptionTextStyle),
           ),
         ),
-        ListTile(
-          title: const Text('Amenities'),
-          subtitle: Wrap(
-            children: [
-              for (String amenity in widget.property.amenities.where(
-                (element) => element.isNotEmpty,
-              ))
-                Text('$amenity,\t')
-            ],
+        Card(
+          margin: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 8.0),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12.0),
+            side: BorderSide(color: myOrange, width: 2),
+          ),
+          color: myOrangeSecondary,
+          shadowColor: myOrange,
+          elevation: 1.3,
+          child: ListTile(
+            // tileColor: myOrangeSecondary,
+            title: Text('Information', style: unSelectedOptionTextStyle),
+            subtitle: Column(
+              children: [
+                DisplayData(title: 'Rent', subtitle: widget.property.rent),
+                DisplayData(title: 'Deposit', subtitle: widget.property.deposit),
+                DisplayData(title: 'BHK', subtitle: widget.property.bhk),
+                DisplayData(title: 'Bathroom(s)', subtitle: widget.property.bathroom),
+                DisplayData(title: 'Furniture', subtitle: widget.property.furniture),
+              ],
+            ),
+          ),
+        ),
+        Card(
+          margin: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 8.0),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12.0),
+            side: BorderSide(color: myOrange, width: 2),
+          ),
+          color: myOrangeSecondary,
+          shadowColor: myOrange,
+          elevation: 1.3,
+          child: ListTile(
+            tileColor: myOrangeSecondary,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(12),
+            ),
+            title: Text('Amenities', style: unSelectedOptionTextStyle),
+            subtitle: Wrap(
+              children: [
+                for (String amenity in widget.property.amenities.where(
+                  (element) => element.isNotEmpty,
+                ))
+                  Text('$amenity,\t', style: unSelectedOptionTextStyle)
+              ],
+            ),
           ),
         ),
         Focus(
           autofocus: true,
-          focusNode: _focusNode,
+
           child: Padding(
             padding: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 8.0),
             child: SaveAndNextBtn(

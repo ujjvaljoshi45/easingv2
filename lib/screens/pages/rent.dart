@@ -123,23 +123,38 @@ class _RentPageState extends State<RentPage> {
           child: Text('Empty!'),
         )
             : ListView.builder(
-          itemBuilder: (context, index) => PropertyCard(
-            property: properties[index],
-            topWidget: {
-              'callback': () {
-                Fluttertoast.showToast(
-                  msg: 'hi',
-                );
-              },
-              'widget': FloatingActionButton.small(
-                onPressed: () => _handelDelete(properties[index]),
-                backgroundColor: Colors.black,
-                child: const Icon(
-                  Icons.close,
-                  color: Colors.white,
+          itemBuilder: (context, index) => Card(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                ListTile(
+                  leading: Text(!properties[index].status ? 'Active' : 'Not Active' ,style: montserrat.copyWith( fontSize: 14, fontWeight: FontWeight.bold,color: properties[index].status ? Colors.green : Colors.red),),
+                  trailing: !properties[index].status ? ElevatedButton(
+                      style: ButtonStyle(backgroundColor: WidgetStatePropertyAll(myOrangeSecondary),shape: WidgetStatePropertyAll(RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)))),
+                      onPressed: (){
+                      }, child: Text("Activate",style: montserrat.copyWith(color: myOrange, fontWeight:  FontWeight.bold,),)): null,
                 ),
-              )
-            },
+                PropertyCard(
+                  property: properties[index],
+                  topWidget: {
+                    'callback': () {
+                      Fluttertoast.showToast(
+                        msg: 'hi',
+                      );
+                    },
+                    'widget': FloatingActionButton.small(
+                      onPressed: () => _handelDelete(properties[index]),
+                      backgroundColor: Colors.black,
+                      child: const Icon(
+                        Icons.close,
+                        color: Colors.white,
+                      ),
+                    )
+                  },
+                ),
+
+              ],
+            ),
           ),
           itemCount: properties.length,
         );

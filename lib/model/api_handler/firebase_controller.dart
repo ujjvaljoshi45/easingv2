@@ -57,16 +57,16 @@ class FirebaseController extends ApiHandler {
     }
   }
 
-  //TODO: REMOVE THIS!!!
+
 
   Future<List<Property>> getProperties() async {
     List<Property> properties = [];
-    if (CacheManager.propertyCache.isNotEmpty) {
-      logEvent('Getting old ones...');
-      return CacheManager.propertyCache;
-    }
+    // if (CacheManager.propertyCache.isNotEmpty) {
+    //   logEvent('Getting old ones...');
+    //   return CacheManager.propertyCache;
+    // }
     try {
-      List response = (await propertyRef.get()).docs;
+      List response = (await propertyRef.where('uploader_id',isNotEqualTo: DataProvider.instance.getUser.uid).get()).docs;
       for (var data in response) {
         properties.add(Property.fromJson(data.data(), data.id));
       }
@@ -119,11 +119,14 @@ class FirebaseController extends ApiHandler {
     }
     final response = await userRef.doc(DataProvider.instance.getUser.uid).get();
     final ids = response.get(bookMarksKey);
+    logEvent('ids : ${ids.length}');
     for (var id in ids) {
+      logEvent('searching... id: $id');
       properties.add(Property.fromJson(
           (await propertyRef.doc(id).get()).data() as Map<String, dynamic>,
           id));
     }
+    logEvent('properties ${properties.length}');
     return properties;
   }
 
