@@ -138,52 +138,54 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
             ),
           ),
-          body: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 18.0),
-              child: Column(
-                children: [
-                  space(20),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Flexible(child: titleWidget[_currentIndex]),
-                      InkWell(
-                        onTap: () async {
-                          CacheManager.user = null;
-                          await FirebaseAuth.instance.signOut();
-                          mounted
-                              ? Navigator.pushReplacementNamed(context, LoginScreen.route)
-                              : null;
-                        },
-                        child: DottedBorder(
-                          borderType: BorderType.Circle,
-                          child: CircleAvatar(
-                            radius: 24,
-                            backgroundImage: DataProvider.instance.getUser.profileUrl.isEmpty ?  const AssetImage('assets/user_icon.png') : CachedNetworkImageProvider(
-
-                              DataProvider.instance.getUser.profileUrl,
+          body: SafeArea(
+            child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 18.0),
+                child: Column(
+                  children: [
+                    space(20),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Flexible(child: titleWidget[_currentIndex]),
+                        InkWell(
+                          onTap: () async {
+                            CacheManager.user = null;
+                            await FirebaseAuth.instance.signOut();
+                            mounted
+                                ? Navigator.pushReplacementNamed(context, LoginScreen.route)
+                                : null;
+                          },
+                          child: DottedBorder(
+                            borderType: BorderType.Circle,
+                            child: CircleAvatar(
+                              radius: 24,
+                              backgroundImage: DataProvider.instance.getUser.profileUrl.isEmpty ?  const AssetImage('assets/user_icon.png') : CachedNetworkImageProvider(
+            
+                                DataProvider.instance.getUser.profileUrl,
+                              ),
                             ),
                           ),
                         ),
-                      ),
-                    ],
-                  ),
-                  space(20),
-                  Expanded(
-                    child: PageView(
-                      controller: _pageController,
-                      physics: const NeverScrollableScrollPhysics(),
-                      onPageChanged: _handelPageChange,
-                      children: const [
-                        HomePage(),
-                        SearchPage(),
-                        BookmarksPage(),
-                        RentPage(),
                       ],
                     ),
-                  ),
-                ],
-              ))),
+                    space(20),
+                    Expanded(
+                      child: PageView(
+                        controller: _pageController,
+                        physics: const NeverScrollableScrollPhysics(),
+                        onPageChanged: _handelPageChange,
+                        children: const [
+                          HomePage(),
+                          SearchPage(),
+                          BookmarksPage(),
+                          RentPage(),
+                        ],
+                      ),
+                    ),
+                  ],
+                )),
+          )),
     );
   }
 }
