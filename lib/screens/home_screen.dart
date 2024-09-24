@@ -83,7 +83,7 @@ class _HomeScreenState extends State<HomeScreen> {
       child: Scaffold(
           bottomNavigationBar: Container(
             margin: const EdgeInsets.only(bottom: 6, left: 12, right: 12),
-            decoration: BoxDecoration(color: Colors.green, borderRadius: BorderRadius.circular(12)),
+            decoration: BoxDecoration(color: Colors.transparent, borderRadius: BorderRadius.circular(12)),
             child: ClipRRect(
               borderRadius: BorderRadius.circular(12),
               child: BottomNavigationBar(
@@ -138,54 +138,52 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
             ),
           ),
-          body: SafeArea(
-            child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 18.0),
-                child: Column(
-                  children: [
-                    space(20),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Flexible(child: titleWidget[_currentIndex]),
-                        InkWell(
-                          onTap: () async {
-                            CacheManager.user = null;
-                            await FirebaseAuth.instance.signOut();
-                            mounted
-                                ? Navigator.pushReplacementNamed(context, LoginScreen.route)
-                                : null;
-                          },
-                          child: DottedBorder(
-                            borderType: BorderType.Circle,
-                            child: CircleAvatar(
-                              radius: 24,
-                              backgroundImage: DataProvider.instance.getUser.profileUrl.isEmpty ?  const AssetImage('assets/user_icon.png') : CachedNetworkImageProvider(
+          body: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 18.0),
+              child: Column(
+                children: [
+                  space(20),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Flexible(child: titleWidget[_currentIndex]),
+                      InkWell(
+                        onTap: () async {
+                          CacheManager.user = null;
+                          await FirebaseAuth.instance.signOut();
+                          mounted
+                              ? Navigator.pushReplacementNamed(context, LoginScreen.route)
+                              : null;
+                        },
+                        child: DottedBorder(
+                          borderType: BorderType.Circle,
+                          child: CircleAvatar(
+                            radius: 24,
+                            backgroundImage: DataProvider.instance.getUser.profileUrl.isEmpty ?  const AssetImage('assets/user_icon.png') : CachedNetworkImageProvider(
 
-                                DataProvider.instance.getUser.profileUrl,
-                              ),
+                              DataProvider.instance.getUser.profileUrl,
                             ),
                           ),
                         ),
+                      ),
+                    ],
+                  ),
+                  space(20),
+                  Expanded(
+                    child: PageView(
+                      controller: _pageController,
+                      physics: const NeverScrollableScrollPhysics(),
+                      onPageChanged: _handelPageChange,
+                      children: const [
+                        HomePage(),
+                        SearchPage(),
+                        BookmarksPage(),
+                        RentPage(),
                       ],
                     ),
-                    space(20),
-                    Flexible(
-                      child: PageView(
-                        controller: _pageController,
-                        physics: const NeverScrollableScrollPhysics(),
-                        onPageChanged: _handelPageChange,
-                        children: const [
-                          HomePage(),
-                          SearchPage(),
-                          BookmarksPage(),
-                          RentPage(),
-                        ],
-                      ),
-                    ),
-                  ],
-                )),
-          )),
+                  ),
+                ],
+              ))),
     );
   }
 }

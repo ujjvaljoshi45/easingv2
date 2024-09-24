@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:easypg/model/cache_manager.dart';
 import 'package:easypg/provider/add_property_provider.dart';
 import 'package:easypg/model/api_handler/api_handler.dart';
 import 'package:easypg/model/property.dart';
@@ -13,7 +14,8 @@ import 'package:firebase_storage/firebase_storage.dart';
 class FirebaseController extends ApiHandler {
   FirebaseFirestore instance = FirebaseFirestore.instance;
   CollectionReference userRef = FirebaseFirestore.instance.collection('users');
-  CollectionReference propertyRef = FirebaseFirestore.instance.collection('properties');
+  CollectionReference propertyRef =
+      FirebaseFirestore.instance.collection('properties');
 
   @override
   Future<AppUser?> getUser(String uid) async {
@@ -41,21 +43,28 @@ class FirebaseController extends ApiHandler {
       logError('setUser()', e.toString(), stackTrace);
     }
   }
-  
-  Future<void> saveBookMark(String id,bool add) async {
-    DataProvider.instance.manageBookmark(id,add);
+
+  Future<void> saveBookMark(String id, bool add) async {
+    DataProvider.instance.manageBookmark(id, add);
     try {
       await userRef.doc(DataProvider.instance.getUser.uid).update({
-        'bookmarks': add ? FieldValue.arrayUnion([id]) : FieldValue.arrayRemove([id])
+        'bookmarks':
+            add ? FieldValue.arrayUnion([id]) : FieldValue.arrayRemove([id])
       });
       logEvent('bookmark added');
-    } catch (e,stackTrace) {
+    } catch (e, stackTrace) {
       logError('Error Saving Bookmark', e, stackTrace);
     }
   }
 
+  //TODO: REMOVE THIS!!!
+
   Future<List<Property>> getProperties() async {
     List<Property> properties = [];
+    if (CacheManager.propertyCache.isNotEmpty) {
+      logEvent('Getting old ones...');
+      return CacheManager.propertyCache;
+    }
     try {
       List response = (await propertyRef.get()).docs;
       for (var data in response) {
@@ -64,10 +73,11 @@ class FirebaseController extends ApiHandler {
     } catch (e, stackTrace) {
       logError('getProperties() error', e, stackTrace);
     }
+    CacheManager.propertyCache = properties;
     return properties;
   }
 
-  Future<List<String>> saveImages(List<String> paths,int time) async {
+  Future<List<String>> saveImages(List<String> paths, int time) async {
     List<String> urls = [];
     for (String path in paths) {
       final ref = FirebaseStorage.instance.ref(
@@ -75,7 +85,9 @@ class FirebaseController extends ApiHandler {
       logEvent("REF:${ref.fullPath}");
       await ref.putFile(File(path));
       urls.add(await ref.getDownloadURL());
-      logEvent(FirebaseStorage.instance.refFromURL(await ref.getDownloadURL()).fullPath);
+      logEvent(FirebaseStorage.instance
+          .refFromURL(await ref.getDownloadURL())
+          .fullPath);
     }
     return urls;
   }
@@ -93,9 +105,14 @@ class FirebaseController extends ApiHandler {
     List<Property> properties = [];
     if (mine != null) {
       if (mine) {
-        final response = (await propertyRef.where('uploader_id',isEqualTo: DataProvider.instance.getUser.uid).get()).docs;
-        for(var json in response) {
-          properties.add(Property.fromJson(json.data() as Map<String,dynamic>, json.id));
+        final response = (await propertyRef
+                .where('uploader_id',
+                    isEqualTo: DataProvider.instance.getUser.uid)
+                .get())
+            .docs;
+        for (var json in response) {
+          properties.add(
+              Property.fromJson(json.data() as Map<String, dynamic>, json.id));
         }
         return properties;
       }
@@ -103,11 +120,18 @@ class FirebaseController extends ApiHandler {
     final response = await userRef.doc(DataProvider.instance.getUser.uid).get();
     final ids = response.get(bookMarksKey);
     for (var id in ids) {
-      properties.add(
-          Property.fromJson((await propertyRef.doc(id).get()).data() as Map<String, dynamic>, id));
+      properties.add(Property.fromJson(
+          (await propertyRef.doc(id).get()).data() as Map<String, dynamic>,
+          id));
     }
     return properties;
   }
 
-  Future<void> deleteProperty(String id) async => await propertyRef.doc(id).delete().whenComplete(() async => await userRef.doc(DataProvider.instance.getUser.uid).update({'property':FieldValue.arrayRemove([id])}),);
+  Future<void> deleteProperty(String id) async =>
+      await propertyRef.doc(id).delete().whenComplete(
+            () async =>
+                await userRef.doc(DataProvider.instance.getUser.uid).update({
+              'property': FieldValue.arrayRemove([id])
+            }),
+          );
 }
