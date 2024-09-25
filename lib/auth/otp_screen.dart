@@ -1,4 +1,4 @@
-import 'package:easypg/provider/auh_provider.dart';
+import 'package:easypg/provider/auth_provider.dart';
 import 'package:easypg/utils/colors.dart';
 import 'package:easypg/utils/styles.dart';
 import 'package:flutter/material.dart';

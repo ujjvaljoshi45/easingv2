@@ -16,8 +16,9 @@ class DataProvider with ChangeNotifier {
     CacheManager.user = _user;
     return _user = user;
   }
-  void manageBookmark(String id, bool add) {
+  void manageBookmark(String id, bool add)  {
     add ? _user.bookmarks.add(id) : _user.bookmarks.remove(id);
+    _user.bookmarks = _user.bookmarks.toSet().toList();
     notifyListeners();
   }
 }

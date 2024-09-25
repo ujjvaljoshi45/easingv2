@@ -83,7 +83,8 @@ class _HomeScreenState extends State<HomeScreen> {
       child: Scaffold(
           bottomNavigationBar: Container(
             margin: const EdgeInsets.only(bottom: 6, left: 12, right: 12),
-            decoration: BoxDecoration(color: Colors.transparent, borderRadius: BorderRadius.circular(12)),
+            decoration:
+                BoxDecoration(color: Colors.transparent, borderRadius: BorderRadius.circular(12)),
             child: ClipRRect(
               borderRadius: BorderRadius.circular(12),
               child: BottomNavigationBar(
@@ -123,15 +124,16 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
           ),
           floatingActionButton: Visibility(
-            visible: _currentIndex == titleWidget.length - 1 && DataProvider.instance.getUser.myProperties.isNotEmpty,
+            visible: _currentIndex == titleWidget.length - 1 &&
+                DataProvider.instance.getUser.myProperties.isNotEmpty,
             child: FloatingActionButton(
               shape: const CircleBorder(),
               backgroundColor: myOrange,
               onPressed: () => Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => const AddPropertyPage(),
-              )),
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const AddPropertyPage(),
+                  )),
               child: const Icon(
                 Icons.add,
                 color: Colors.white,
@@ -160,10 +162,11 @@ class _HomeScreenState extends State<HomeScreen> {
                             borderType: BorderType.Circle,
                             child: CircleAvatar(
                               radius: 24,
-                              backgroundImage: DataProvider.instance.getUser.profileUrl.isEmpty ?  const AssetImage('assets/user_icon.png') : CachedNetworkImageProvider(
-            
-                                DataProvider.instance.getUser.profileUrl,
-                              ),
+                              backgroundImage: DataProvider.instance.getUser.profileUrl.isEmpty
+                                  ? const AssetImage('assets/user_icon.png')
+                                  : CachedNetworkImageProvider(
+                                      DataProvider.instance.getUser.profileUrl,
+                                    ),
                             ),
                           ),
                         ),

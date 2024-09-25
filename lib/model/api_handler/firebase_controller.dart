@@ -45,7 +45,6 @@ class FirebaseController extends ApiHandler {
   }
 
   Future<void> saveBookMark(String id, bool add) async {
-    DataProvider.instance.manageBookmark(id, add);
     try {
       await userRef.doc(DataProvider.instance.getUser.uid).update({
         'bookmarks':

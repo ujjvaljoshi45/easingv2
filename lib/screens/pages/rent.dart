@@ -1,13 +1,11 @@
 import 'package:easypg/model/api_handler/api_handler.dart';
 import 'package:easypg/model/property.dart';
-import 'package:easypg/provider/data_provider.dart';
 import 'package:easypg/screens/add_property/add_property_page.dart';
 import 'package:easypg/screens/widgets/property_card.dart';
 import 'package:easypg/utils/colors.dart';
 import 'package:easypg/utils/styles.dart';
 import 'package:easypg/utils/tools.dart';
 import 'package:flutter/material.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 
 class RentPage extends StatefulWidget {
   const RentPage({super.key});
@@ -17,48 +15,7 @@ class RentPage extends StatefulWidget {
 }
 
 class _RentPageState extends State<RentPage> {
-  _handelDelete(Property property) {
-    showDialog(
-      context: context,
-      builder: (context) {
-        return AlertDialog(
-          title: const Text('Delete Property.'),
-          content: const Text("Are you sure you want to delete property\nThis Won't be undone!"),
-          actions: [
-            TextButton(
-                onPressed: () async => await ApiHandler.instance
-                    .deleteProperty(property.id)
-                    .whenComplete(
-                      () => setState(() {
-                        DataProvider.instance.getUser.myProperties.removeWhere(
-                          (element) => element == property.id,
-                        );
-                        Navigator.pop(context);
-                      }),
-                    )
-                    .onError(
-                      (error, stackTrace) => setState(() {
-                        logError('deleteError', error, stackTrace);
-                        Navigator.pop(context);
-                      }),
-                    ),
-                child: Text(
-                  "YES",
-                  style: montserrat.copyWith(
-                      fontWeight: FontWeight.bold, color: Colors.green, fontSize: 18),
-                )),
-            TextButton(
-                onPressed: () => Navigator.pop(context),
-                child: Text(
-                  "NO",
-                  style: montserrat.copyWith(
-                      fontWeight: FontWeight.bold, color: Colors.redAccent, fontSize: 18),
-                ))
-          ],
-        );
-      },
-    );
-  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -141,21 +98,7 @@ class _RentPageState extends State<RentPage> {
                   padding: const EdgeInsets.all(8.0),
                   child: PropertyCard(
                     property: properties[index],
-                    topWidget: {
-                      'callback': () {
-                        Fluttertoast.showToast(
-                          msg: 'hi',
-                        );
-                      },
-                      'widget': FloatingActionButton.small(
-                        onPressed: () => _handelDelete(properties[index]),
-                        backgroundColor: Colors.black,
-                        child: const Icon(
-                          Icons.close,
-                          color: Colors.white,
-                        ),
-                      )
-                    },
+                    topWidget: 'delete'
                   ),
                 ),
 
