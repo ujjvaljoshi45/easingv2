@@ -1,13 +1,13 @@
 {
   "project_info": {
-    "project_number": "524498097652",
-    "project_id": "easypg-316db",
-    "storage_bucket": "easypg-316db.appspot.com"
+    "project_number": "322415995757",
+    "project_id": "easy-pg-2a0d6",
+    "storage_bucket": "easy-pg-2a0d6.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:524498097652:android:395f39cc4b817b2a8315a1",
+        "mobilesdk_app_id": "1:322415995757:android:76bf99848061fd3ce48864",
         "android_client_info": {
           "package_name": "com.fuinc.easypg"
         }
@@ -15,7 +15,7 @@
       "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyBskOtseuCuslIjkS1_Fv3W-wgXxg_iq6c"
+          "current_key": "AIzaSyDEhvm944wV627IH0inZz85v4ucX-pKGYU"
         }
       ],
       "services": {
