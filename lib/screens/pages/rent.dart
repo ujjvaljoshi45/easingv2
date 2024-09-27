@@ -5,7 +5,9 @@ import 'package:easypg/screens/widgets/property_card.dart';
 import 'package:easypg/utils/colors.dart';
 import 'package:easypg/utils/styles.dart';
 import 'package:easypg/utils/tools.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:paytm_allinonesdk/paytm_allinonesdk.dart';
 
 class RentPage extends StatefulWidget {
   const RentPage({super.key});
@@ -15,8 +17,6 @@ class RentPage extends StatefulWidget {
 }
 
 class _RentPageState extends State<RentPage> {
-
-
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
@@ -25,8 +25,8 @@ class _RentPageState extends State<RentPage> {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return Center(
               child: CircularProgressIndicator(
-                color: myOrange,
-              ));
+            color: myOrange,
+          ));
         }
         if (snapshot.hasError) {
           return const Center(
@@ -77,37 +77,69 @@ class _RentPageState extends State<RentPage> {
         logEvent(snapshot.requireData.length);
         return snapshot.requireData.isEmpty
             ? const Center(
-          child: Text('Empty!'),
-        )
+                child: Text('Empty!'),
+              )
             : ListView.builder(
-          itemBuilder: (context, index) => Card(
-            shape: RoundedRectangleBorder(side: BorderSide(color: properties[index].status ? Colors.green : Colors.red),borderRadius: BorderRadius.circular(12)),
-            elevation: 1.3,
-            shadowColor: properties[index].status ? Colors.green : Colors.red,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                ListTile(
-                  leading: Text(properties[index].status ? 'Active' : 'Not Active' ,style: montserrat.copyWith( fontSize: 14, fontWeight: FontWeight.bold,color: properties[index].status ? Colors.green : Colors.red),),
-                  trailing: !properties[index].status ? ElevatedButton(
-                      style: ButtonStyle(backgroundColor: WidgetStatePropertyAll(myOrangeSecondary),shape: WidgetStatePropertyAll(RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)))),
-                      onPressed: (){
-                      }, child: Text("Activate",style: montserrat.copyWith(color: myOrange, fontWeight:  FontWeight.bold,),)): null,
-                ),
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: PropertyCard(
-                    property: properties[index],
-                    topWidget: 'delete'
+                itemBuilder: (context, index) => Card(
+                  shape: RoundedRectangleBorder(
+                      side: BorderSide(color: properties[index].status ? Colors.green : Colors.red),
+                      borderRadius: BorderRadius.circular(12)),
+                  elevation: 1.3,
+                  shadowColor: properties[index].status ? Colors.green : Colors.red,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      ListTile(
+                        leading: Text(
+                          properties[index].status ? 'Active' : 'Not Active',
+                          style: montserrat.copyWith(
+                              fontSize: 14,
+                              fontWeight: FontWeight.bold,
+                              color: properties[index].status ? Colors.green : Colors.red),
+                        ),
+                        trailing: !properties[index].status
+                            ? ElevatedButton(
+                                style: ButtonStyle(
+                                  backgroundColor: WidgetStatePropertyAll(myOrangeSecondary),
+                                  shape: WidgetStatePropertyAll(
+                                    RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(12),
+                                    ),
+                                  ),
+                                ),
+                                onPressed: () async => await _managePayment(properties[index]),
+                                child: Text(
+                                  "Activate",
+                                  style: montserrat.copyWith(
+                                    color: myOrange,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              )
+                            : null,
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: PropertyCard(property: properties[index], topWidget: 'delete'),
+                      ),
+                    ],
                   ),
                 ),
-
-              ],
-            ),
-          ),
-          itemCount: properties.length,
-        );
+                itemCount: properties.length,
+              );
       },
     );
+  }
+
+  Future<void> _managePayment(Property property) async {
+    final response = await AllInOneSdk.startTransaction(
+        'ujjval',
+        "${property.id}@${DateTime.now().millisecondsSinceEpoch}",
+        '100.00',
+        'myToken',
+        'https:localhost:3000',
+        kDebugMode,
+        false);
+    logEvent('res: $response');
   }
 }

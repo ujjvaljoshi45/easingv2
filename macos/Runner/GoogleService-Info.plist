@@ -9,7 +9,7 @@
 	<key>PLIST_VERSION</key>
 	<string>1</string>
 	<key>BUNDLE_ID</key>
-	<string>com.fuinc.easypg</string>
+	<string>com.example.easypg</string>
 	<key>PROJECT_ID</key>
 	<string>easy-pg-2a0d6</string>
 	<key>STORAGE_BUCKET</key>
@@ -25,6 +25,6 @@
 	<key>IS_SIGNIN_ENABLED</key>
 	<true></true>
 	<key>GOOGLE_APP_ID</key>
-	<string>1:322415995757:ios:4abb6f4979fa547be48864</string>
+	<string>1:322415995757:ios:1b8a30d563d65ea5e48864</string>
 </dict>
 </plist>

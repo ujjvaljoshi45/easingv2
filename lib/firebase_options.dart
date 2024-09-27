@@ -17,29 +17,17 @@ import 'package:flutter/foundation.dart'
 class DefaultFirebaseOptions {
   static FirebaseOptions get currentPlatform {
     if (kIsWeb) {
-      throw UnsupportedError(
-        'DefaultFirebaseOptions have not been configured for web - '
-        'you can reconfigure this by running the FlutterFire CLI again.',
-      );
+      return web;
     }
     switch (defaultTargetPlatform) {
       case TargetPlatform.android:
         return android;
       case TargetPlatform.iOS:
-        throw UnsupportedError(
-          'DefaultFirebaseOptions have not been configured for ios - '
-          'you can reconfigure this by running the FlutterFire CLI again.',
-        );
+        return ios;
       case TargetPlatform.macOS:
-        throw UnsupportedError(
-          'DefaultFirebaseOptions have not been configured for macos - '
-          'you can reconfigure this by running the FlutterFire CLI again.',
-        );
+        return macos;
       case TargetPlatform.windows:
-        throw UnsupportedError(
-          'DefaultFirebaseOptions have not been configured for windows - '
-          'you can reconfigure this by running the FlutterFire CLI again.',
-        );
+        return windows;
       case TargetPlatform.linux:
         throw UnsupportedError(
           'DefaultFirebaseOptions have not been configured for linux - '
@@ -53,10 +41,49 @@ class DefaultFirebaseOptions {
   }
 
   static const FirebaseOptions android = FirebaseOptions(
-    apiKey: 'AIzaSyBskOtseuCuslIjkS1_Fv3W-wgXxg_iq6c',
-    appId: '1:524498097652:android:395f39cc4b817b2a8315a1',
-    messagingSenderId: '524498097652',
-    projectId: 'easypg-316db',
-    storageBucket: 'easypg-316db.appspot.com',
+    apiKey: 'AIzaSyDEhvm944wV627IH0inZz85v4ucX-pKGYU',
+    appId: '1:322415995757:android:76bf99848061fd3ce48864',
+    messagingSenderId: '322415995757',
+    projectId: 'easy-pg-2a0d6',
+    storageBucket: 'easy-pg-2a0d6.appspot.com',
   );
+
+  static const FirebaseOptions web = FirebaseOptions(
+    apiKey: 'AIzaSyCISVuP_BovZYKqro5vCxHh3RGIjM9U7uE',
+    appId: '1:322415995757:web:06115aceafb269a1e48864',
+    messagingSenderId: '322415995757',
+    projectId: 'easy-pg-2a0d6',
+    authDomain: 'easy-pg-2a0d6.firebaseapp.com',
+    storageBucket: 'easy-pg-2a0d6.appspot.com',
+    measurementId: 'G-8VW5S4HRMH',
+  );
+
+  static const FirebaseOptions macos = FirebaseOptions(
+    apiKey: 'AIzaSyC5OVHEOV5fXr_P9--33LsCykfRE0I1o6g',
+    appId: '1:322415995757:ios:1b8a30d563d65ea5e48864',
+    messagingSenderId: '322415995757',
+    projectId: 'easy-pg-2a0d6',
+    storageBucket: 'easy-pg-2a0d6.appspot.com',
+    iosBundleId: 'com.example.easypg',
+  );
+
+  static const FirebaseOptions ios = FirebaseOptions(
+    apiKey: 'AIzaSyC5OVHEOV5fXr_P9--33LsCykfRE0I1o6g',
+    appId: '1:322415995757:ios:4abb6f4979fa547be48864',
+    messagingSenderId: '322415995757',
+    projectId: 'easy-pg-2a0d6',
+    storageBucket: 'easy-pg-2a0d6.appspot.com',
+    iosBundleId: 'com.fuinc.easypg',
+  );
+
+  static const FirebaseOptions windows = FirebaseOptions(
+    apiKey: 'AIzaSyCISVuP_BovZYKqro5vCxHh3RGIjM9U7uE',
+    appId: '1:322415995757:web:ac00794005d82303e48864',
+    messagingSenderId: '322415995757',
+    projectId: 'easy-pg-2a0d6',
+    authDomain: 'easy-pg-2a0d6.firebaseapp.com',
+    storageBucket: 'easy-pg-2a0d6.appspot.com',
+    measurementId: 'G-JHPJ1BL6R8',
+  );
+
 }

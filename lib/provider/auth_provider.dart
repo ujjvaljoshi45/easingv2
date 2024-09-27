@@ -2,6 +2,7 @@ import 'package:easypg/auth/login.dart';
 import 'package:easypg/auth/otp_screen.dart';
 import 'package:easypg/auth/register_screen.dart';
 import 'package:easypg/model/api_handler/api_handler.dart';
+import 'package:easypg/model/cache_manager.dart';
 import 'package:easypg/model/user.dart';
 import 'package:easypg/provider/data_provider.dart';
 import 'package:easypg/screens/home_screen.dart';
@@ -95,5 +96,18 @@ class AuthProvider extends ChangeNotifier {
     await ApiHandler.instance.saveUser(user);
     DataProvider.instance.initUser(user);
     Navigator.pushReplacementNamed(context, RegisterScreen.route);
+  }
+
+  Future<bool> logout(BuildContext context) async {
+    try {
+      CacheManager.user = null;
+      await FirebaseAuth.instance.signOut();
+      return true;
+    } catch (e) {
+      return false;
+    }
+    // mounted
+    //     ? Navigator.pushReplacementNamed(context, LoginScreen.route)
+    //     : null;
   }
 }

@@ -7,6 +7,7 @@ import 'package:easypg/provider/add_property_provider.dart';
 import 'package:easypg/provider/auth_provider.dart';
 import 'package:easypg/provider/data_provider.dart';
 import 'package:easypg/screens/home_screen.dart';
+import 'package:easypg/screens/pages/profile.dart';
 import 'package:easypg/screens/splash.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
@@ -47,6 +48,7 @@ class MyApp extends StatelessWidget {
         LoginScreen.route : (context) => const LoginScreen(),
         RegisterScreen.route : (context) => const RegisterScreen(),
         HomeScreen.route : (context) => const HomeScreen(),
+        ProfileScreen.route : (context) => const ProfileScreen(),
       },
     );
   }

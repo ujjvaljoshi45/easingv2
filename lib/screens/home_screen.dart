@@ -1,18 +1,16 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:dotted_border/dotted_border.dart';
-import 'package:easypg/auth/login.dart';
-import 'package:easypg/model/cache_manager.dart';
 import 'package:easypg/provider/data_provider.dart';
 import 'package:easypg/model/user.dart';
 import 'package:easypg/screens/add_property/add_property_page.dart';
 import 'package:easypg/screens/pages/bookmarks.dart';
 import 'package:easypg/screens/pages/home.dart';
+import 'package:easypg/screens/pages/profile.dart';
 import 'package:easypg/screens/pages/rent.dart';
 import 'package:easypg/screens/pages/search.dart';
 import 'package:easypg/utils/colors.dart';
 import 'package:easypg/utils/styles.dart';
 import 'package:easypg/utils/tools.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -151,13 +149,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       children: [
                         Flexible(child: titleWidget[_currentIndex]),
                         InkWell(
-                          onTap: () async {
-                            CacheManager.user = null;
-                            await FirebaseAuth.instance.signOut();
-                            mounted
-                                ? Navigator.pushReplacementNamed(context, LoginScreen.route)
-                                : null;
-                          },
+                          onTap: () => Navigator.pushNamed(context,ProfileScreen.route),
                           child: DottedBorder(
                             borderType: BorderType.Circle,
                             child: CircleAvatar(
