@@ -1,6 +1,9 @@
+import 'package:csc_picker/csc_picker.dart';
+import 'package:easypg/model/prediction.dart';
 import 'package:easypg/provider/add_property_provider.dart';
 import 'package:easypg/screens/add_property/option_elevated_button.dart';
 import 'package:easypg/screens/add_property/save_and_next_btn.dart';
+import 'package:easypg/services/api_manager.dart';
 import 'package:easypg/utils/tools.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -45,7 +48,7 @@ class _AddLocationPageState extends State<AddLocationPage> {
   @override
   void initState() {
     _selection = types.indexOf(AddPropertyProvider.instance.property.propertyType);
-    _selection < 0 ? _selection = 0: null;
+    _selection < 0 ? _selection = 0 : null;
     propertyName = AddPropertyProvider.instance.property.name;
     streetAddress = AddPropertyProvider.instance.property.streetAddress;
     pinCode = AddPropertyProvider.instance.property.pinCode;
@@ -98,52 +101,124 @@ class _AddLocationPageState extends State<AddLocationPage> {
                   width: 20,
                 ),
                 Expanded(
-                    child: OptionElevatedButton(
-                  isSelected: _selection == 3,
-                  text: types[3],
-                  onPressed: () => _manageSelection(3),
-                ))
+                  child: OptionElevatedButton(
+                    isSelected: _selection == 3,
+                    text: types[3],
+                    onPressed: () => _manageSelection(3),
+                  ),
+                ),
               ],
             ),
             space(20),
             TextFormField(
               initialValue: AddPropertyProvider.instance.property.name,
               decoration: const InputDecoration(hintText: 'Enter Property Name'),
-              onChanged: (value) => setState(()=>propertyName = value),
+              onChanged: (value) => setState(() => propertyName = value),
             ),
             space(20),
-            TextFormField(
-              initialValue: AddPropertyProvider.instance.property.streetAddress,
-              decoration: const InputDecoration(hintText: 'Enter Street Address'),
-              onChanged: (value) => setState(()=>streetAddress = value),
+            // TextFormField(
+            //   initialValue: AddPropertyProvider.instance.property.streetAddress,
+            //   decoration: const InputDecoration(hintText: 'Enter Street Address'),
+            //   onChanged: (value) => setState(()=>streetAddress = value),
+            // ),
+            // space(20),
+            // TextFormField(
+            //   initialValue: AddPropertyProvider.instance.property.pinCode,
+            //   decoration: const InputDecoration(hintText: 'Enter Pin-Code'),
+            //   onChanged: (value) => setState(()=>pinCode = value),
+            //   keyboardType: TextInputType.number,
+            // ),
+            // space(20),
+            // Row(
+            //   children: [
+            //     Expanded(
+            //         child: TextFormField(
+            //       initialValue: AddPropertyProvider.instance.property.city,
+            //       decoration: const InputDecoration(hintText: 'Enter City'),
+            //       onChanged: (value) => setState(()=>city = value),
+            //     )),
+            //     const SizedBox(
+            //       width: 20,
+            //     ),
+            //     Expanded(
+            //         child: TextFormField(
+            //       initialValue: AddPropertyProvider.instance.property.state,
+            //       decoration: const InputDecoration(hintText: 'Enter State'),
+            //       onChanged: (value) => setState(()=>state=value),
+            //     ),),
+            //   ],
+            // ),
+            CSCPicker(
+              showCities: true,
+              showStates: true,
+              disableCountry: true,
+              defaultCountry: CscCountry.India,
+              stateDropdownLabel: 'State',
+              cityDropdownLabel: 'City',
+              flagState: CountryFlag.DISABLE,
+              currentCountry: CscCountry.India.name,
+              onStateChanged: (value) => setState(() => state = value ?? state),
+              onCityChanged: (value) => setState(() => city = value ?? city),
+              currentCity: city,
+              currentState: state,
             ),
-            space(20),
-            TextFormField(
-              initialValue: AddPropertyProvider.instance.property.pinCode,
-              decoration: const InputDecoration(hintText: 'Enter Pin-Code'),
-              onChanged: (value) => setState(()=>pinCode = value),
-              keyboardType: TextInputType.number,
-            ),
-            space(20),
-            Row(
-              children: [
-                Expanded(
-                    child: TextFormField(
-                  initialValue: AddPropertyProvider.instance.property.city,
-                  decoration: const InputDecoration(hintText: 'Enter City'),
-                  onChanged: (value) => setState(()=>city = value),
-                )),
-                const SizedBox(
-                  width: 20,
-                ),
-                Expanded(
-                    child: TextFormField(
-                  initialValue: AddPropertyProvider.instance.property.state,
-                  decoration: const InputDecoration(hintText: 'Enter State'),
-                  onChanged: (value) => setState(()=>state=value),
-                )),
-              ],
-            ),
+            if (city.length > 3)
+              FutureBuilder(
+                future: ApiManager.instance.get('https://api.postalpincode.in/postoffice/$city'),
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return TextFormField(
+                      enabled: false,
+                      initialValue: 'Searching...',
+                    );
+                  }
+                  if (snapshot.hasError) {
+                    return TextFormField(
+                      enabled: false,
+                      initialValue: 'Enable To Get Pin Code',
+                    );
+                  }
+
+
+                  List<PostOffice> postOffices =
+                      PostOffice.parseResponse(snapshot.requireData.data.first, state);
+                  logEvent('len: ${postOffices.length}');
+
+                  try {
+                    return DropdownButtonFormField(
+                      // value: pinCode,
+                      decoration: const InputDecoration(label: Text('Pin-Code')),
+                      onChanged: (value) {
+                        logEvent('value:$value');
+                        pinCode = value ?? pinCode;
+                      },
+                      items: [
+                        for (int i = 0; i < postOffices.length; i++)
+                          DropdownMenuItem(
+                              value: postOffices[i].pincode,
+                              child:
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text(postOffices[i].pincode),
+                                  const SizedBox(
+                                    width: 10,
+                                  ),
+                                  Text(
+                                    postOffices[i].name,
+                                    softWrap: true,
+                                  )
+                                ],
+                              ),
+                            ),
+                      ],
+                    );
+                  } catch (e,stackTrace) {
+                    logError('-_-', e, stackTrace);
+                    return Text('ERROR: $e');
+                  }
+                },
+              ),
             const Spacer(),
             SaveAndNextBtn(onPressed: _manageSave, msg: 'Save And Next'),
             space(20),

@@ -14,8 +14,7 @@ import 'package:firebase_storage/firebase_storage.dart';
 class FirebaseController extends ApiHandler {
   FirebaseFirestore instance = FirebaseFirestore.instance;
   CollectionReference userRef = FirebaseFirestore.instance.collection('users');
-  CollectionReference propertyRef =
-      FirebaseFirestore.instance.collection('properties');
+  CollectionReference propertyRef = FirebaseFirestore.instance.collection('properties');
 
   @override
   Future<AppUser?> getUser(String uid) async {
@@ -47,16 +46,13 @@ class FirebaseController extends ApiHandler {
   Future<void> saveBookMark(String id, bool add) async {
     try {
       await userRef.doc(DataProvider.instance.getUser.uid).update({
-        'bookmarks':
-            add ? FieldValue.arrayUnion([id]) : FieldValue.arrayRemove([id])
+        'bookmarks': add ? FieldValue.arrayUnion([id]) : FieldValue.arrayRemove([id])
       });
       logEvent('bookmark added');
     } catch (e, stackTrace) {
       logError('Error Saving Bookmark', e, stackTrace);
     }
   }
-
-
 
   Future<List<Property>> getProperties() async {
     List<Property> properties = [];
@@ -65,7 +61,10 @@ class FirebaseController extends ApiHandler {
     //   return CacheManager.propertyCache;
     // }
     try {
-      List response = (await propertyRef.where('uploader_id',isNotEqualTo: DataProvider.instance.getUser.uid).get()).docs;
+      List response = (await propertyRef
+              .where('uploader_id', isNotEqualTo: DataProvider.instance.getUser.uid)
+              .get())
+          .docs;
       for (var data in response) {
         properties.add(Property.fromJson(data.data(), data.id));
       }
@@ -79,14 +78,12 @@ class FirebaseController extends ApiHandler {
   Future<List<String>> saveImages(List<String> paths, int time) async {
     List<String> urls = [];
     for (String path in paths) {
-      final ref = FirebaseStorage.instance.ref(
-          'property/${DataProvider.instance.getUser.uid}/$time/${paths.indexOf(path)}.jpg');
+      final ref = FirebaseStorage.instance
+          .ref('property/${DataProvider.instance.getUser.uid}/$time/${paths.indexOf(path)}.jpg');
       logEvent("REF:${ref.fullPath}");
       await ref.putFile(File(path));
       urls.add(await ref.getDownloadURL());
-      logEvent(FirebaseStorage.instance
-          .refFromURL(await ref.getDownloadURL())
-          .fullPath);
+      logEvent(FirebaseStorage.instance.refFromURL(await ref.getDownloadURL()).fullPath);
     }
     return urls;
   }
@@ -105,13 +102,11 @@ class FirebaseController extends ApiHandler {
     if (mine != null) {
       if (mine) {
         final response = (await propertyRef
-                .where('uploader_id',
-                    isEqualTo: DataProvider.instance.getUser.uid)
+                .where('uploader_id', isEqualTo: DataProvider.instance.getUser.uid)
                 .get())
             .docs;
         for (var json in response) {
-          properties.add(
-              Property.fromJson(json.data() as Map<String, dynamic>, json.id));
+          properties.add(Property.fromJson(json.data() as Map<String, dynamic>, json.id));
         }
         return properties;
       }
@@ -121,19 +116,26 @@ class FirebaseController extends ApiHandler {
     logEvent('ids : ${ids.length}');
     for (var id in ids) {
       logEvent('searching... id: $id');
-      properties.add(Property.fromJson(
-          (await propertyRef.doc(id).get()).data() as Map<String, dynamic>,
-          id));
+      properties.add(
+          Property.fromJson((await propertyRef.doc(id).get()).data() as Map<String, dynamic>, id));
     }
     logEvent('properties ${properties.length}');
     return properties;
   }
 
-  Future<void> deleteProperty(String id) async =>
-      await propertyRef.doc(id).delete().whenComplete(
-            () async =>
-                await userRef.doc(DataProvider.instance.getUser.uid).update({
-              'property': FieldValue.arrayRemove([id])
-            }),
-          );
+  Future<List<Property>> queryProperties(String query,String? propertyType) async {
+    try {
+      final response = await propertyRef.where('street_address',isGreaterThanOrEqualTo: query).where('city',isGreaterThanOrEqualTo: query).where('state',isGreaterThanOrEqualTo: query).where('property_type',isEqualTo: propertyType ?? "").get();
+      List<Property> properties = List.generate(response.docs.length, (index) => Property.fromJson(response.docs[index].data() as Map<String,dynamic>,response.docs[index].id));
+      return properties;
+    } catch (e, stackTrace) {
+      logError('msg$query $propertyType', e, stackTrace);
+      return [];
+    }
+  }
+  Future<void> deleteProperty(String id) async => await propertyRef.doc(id).delete().whenComplete(
+        () async => await userRef.doc(DataProvider.instance.getUser.uid).update({
+          'property': FieldValue.arrayRemove([id])
+        }),
+      );
 }
