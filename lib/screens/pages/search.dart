@@ -1,14 +1,11 @@
 import 'package:easypg/model/api_handler/api_handler.dart';
-import 'package:easypg/model/api_handler/firebase_controller.dart';
 import 'package:easypg/model/property.dart';
 import 'package:easypg/screens/add_property/option_elevated_button.dart';
-import 'package:easypg/screens/pages/places_api.dart';
 import 'package:easypg/screens/widgets/property_card.dart';
 import 'package:easypg/utils/colors.dart';
 import 'package:easypg/utils/styles.dart';
 import 'package:easypg/utils/tools.dart';
 import 'package:flutter/material.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 class SearchPage extends StatefulWidget {
   const SearchPage({super.key});
@@ -30,9 +27,10 @@ class _SearchPageState extends State<SearchPage> {
     properties = await ApiHandler.instance.queryProperties(myQuery, propertyType);
     setState(() {});
   }
+
   @override
   Widget build(BuildContext context) {
-    return InkWell(
+    return GestureDetector(
       onTap: () => _focusNode.unfocus(),
       child: CustomScrollView(
         controller: scrollController,
@@ -64,8 +62,7 @@ class _SearchPageState extends State<SearchPage> {
                             filled: true,
                             hintText: 'Search...',
                             hintStyle: montserrat.copyWith(
-                                fontWeight: FontWeight.w600,
-                                color: Colors.black),
+                                fontWeight: FontWeight.w600, color: Colors.black),
                             prefixIcon: const Icon(
                               Icons.my_location_rounded,
                               color: Colors.black,
@@ -78,17 +75,16 @@ class _SearchPageState extends State<SearchPage> {
                         for (int i = 0; i < searchCategory.length / 2; i++)
                           Expanded(
                               child: Padding(
-                                padding: const EdgeInsets.symmetric(horizontal: 5),
-                                child: OptionElevatedButton(
-                                  isSelected: _currentSelection == i,
-                                  text: searchCategory[i],
-                                  onPressed: () => setState(() =>
-                                  _currentSelection == i
-                                      ? _currentSelection = -1
-                                      : _currentSelection = i),
-                                  color: myOrange,
-                                ),
-                              ))
+                            padding: const EdgeInsets.symmetric(horizontal: 5),
+                            child: OptionElevatedButton(
+                              isSelected: _currentSelection == i,
+                              text: searchCategory[i],
+                              onPressed: () => setState(() => _currentSelection == i
+                                  ? _currentSelection = -1
+                                  : _currentSelection = i),
+                              color: myOrange,
+                            ),
+                          ))
                       ],
                     ),
                     space(10),
@@ -97,23 +93,24 @@ class _SearchPageState extends State<SearchPage> {
                         for (int i = searchCategory.length ~/ 2; i < searchCategory.length; i++)
                           Expanded(
                               child: Padding(
-                                padding: const EdgeInsets.symmetric(horizontal: 5),
-                                child: OptionElevatedButton(
-                                  isSelected: _currentSelection == i,
-                                  text: searchCategory[i],
-                                  onPressed: () => setState(() =>
-                                  _currentSelection == i
-                                      ? _currentSelection = -1
-                                      : _currentSelection = i),
-                                  color: myOrange,
-                                ),
-                              ))
+                            padding: const EdgeInsets.symmetric(horizontal: 5),
+                            child: OptionElevatedButton(
+                              isSelected: _currentSelection == i,
+                              text: searchCategory[i],
+                              onPressed: () => setState(() => _currentSelection == i
+                                  ? _currentSelection = -1
+                                  : _currentSelection = i),
+                              color: myOrange,
+                            ),
+                          ))
                       ],
                     ),
                     space(15),
                     ElevatedButton(
                         onPressed: _queryDatabase,
                         style: ButtonStyle(
+                            // splashFactory: InkSplash.splashFactory,
+                            overlayColor: const WidgetStatePropertyAll(Colors.grey),
                             backgroundColor: const WidgetStatePropertyAll(Colors.black),
                             shape: WidgetStatePropertyAll(
                               RoundedRectangleBorder(
@@ -133,10 +130,23 @@ class _SearchPageState extends State<SearchPage> {
               ),
             ),
           ),
+          SliverToBoxAdapter(
+            child: Visibility(
+              visible: properties.isNotEmpty,
+              child: Padding(
+                padding: const EdgeInsets.only(left: 8.0, top: 2.0),
+                child: Text(
+                  'Result',
+                  style: montserrat.copyWith(fontSize: 24, fontWeight: FontWeight.bold),
+                ),
+              ),
+            ),
+          ),
           SliverList(
             delegate: SliverChildBuilderDelegate(
-                  (context, index) => PropertyCard(
+              (context, index) => PropertyCard(
                 property: properties[index],
+                topWidget: 'bookmark',
               ),
               childCount: properties.length,
             ),

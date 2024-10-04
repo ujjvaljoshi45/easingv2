@@ -154,10 +154,13 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   void _manageLogin() async {
-    final authProvider = Provider.of<AuthProvider>(context, listen: false);
+
+    final authProvider = AuthProvider.instance;
     String? phNo = phoneNumber.phoneNumber;
     String? code = phoneNumber.dialCode;
+    logEvent('login $phNo $code');
     if (phNo == null || code == null || phNo.length < 12 || code.isEmpty) {
+      logEvent('its empty');
       return;
     } else {
       // Request OTP using the phone number provided
@@ -166,8 +169,8 @@ class _LoginScreenState extends State<LoginScreen> {
         await authProvider.requestOtp(phNo,context,);
         setState(()=>_isLoading=false);
       } catch (e) {
-        setState(()=>_isLoading=false);
         logEvent('Some Error $e');
+        setState(()=>_isLoading=false);
       }
 
     }

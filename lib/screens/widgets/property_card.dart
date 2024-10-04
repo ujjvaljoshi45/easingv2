@@ -168,7 +168,7 @@ class _PropertyCardState extends State<PropertyCard> {
           margin: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 8.0),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(12.0),
-            side: BorderSide(color: myOrange, width: 2),
+            side: BorderSide(color: myOrangeSecondary, width: 2),
           ),
           color: myOrangeSecondary,
           shadowColor: myOrange,
@@ -187,7 +187,7 @@ class _PropertyCardState extends State<PropertyCard> {
           margin: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 8.0),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(12.0),
-            side: BorderSide(color: myOrange, width: 2),
+            side: BorderSide(color: myOrangeSecondary, width: 2),
           ),
           color: myOrangeSecondary,
           shadowColor: myOrange,
@@ -210,7 +210,7 @@ class _PropertyCardState extends State<PropertyCard> {
           margin: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 8.0),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(12.0),
-            side: BorderSide(color: myOrange, width: 2),
+            side: BorderSide(color: myOrangeSecondary, width: 2),
           ),
           color: myOrangeSecondary,
           shadowColor: myOrange,
@@ -250,7 +250,7 @@ class _PropertyCardState extends State<PropertyCard> {
           onTap: () async {
             bool add = !DataProvider.instance.getUser.bookmarks.contains(widget.property.id);
             setState(() => DataProvider.instance.manageBookmark(widget.property.id, add));
-            await ApiHandler.instance.saveBookMark(widget.property.id,add);
+            await ApiHandler.instance.saveBookMark(widget.property.id, add);
           },
           child: Container(
             height: 35,
@@ -268,7 +268,7 @@ class _PropertyCardState extends State<PropertyCard> {
           ),
         );
       case 'delete':
-        return  FloatingActionButton.small(
+        return FloatingActionButton.small(
           onPressed: () => _handelDelete(widget.property),
           backgroundColor: Colors.black,
           child: const Icon(
@@ -280,6 +280,7 @@ class _PropertyCardState extends State<PropertyCard> {
         return const SizedBox();
     }
   }
+
   _handelDelete(Property property) {
     showDialog(
       context: context,
@@ -293,18 +294,15 @@ class _PropertyCardState extends State<PropertyCard> {
                     .deleteProperty(property.id)
                     .whenComplete(
                       () => setState(() {
-                    DataProvider.instance.getUser.myProperties.removeWhere(
+                        DataProvider.instance.getUser.myProperties.removeWhere(
                           (element) => element == property.id,
-                    );
-                    Navigator.pop(context);
-                  }),
-                )
+                        );
+                        Navigator.pop(context);
+                      }),
+                    )
                     .onError(
-                      (error, stackTrace) => setState(() {
-                    logError('deleteError', error, stackTrace);
-                    Navigator.pop(context);
-                  }),
-                ),
+                      (error, stackTrace) => setState(() => Navigator.pop(context)),
+                    ),
                 child: Text(
                   "YES",
                   style: montserrat.copyWith(

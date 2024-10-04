@@ -1,3 +1,5 @@
+import 'package:awesome_bottom_bar/awesome_bottom_bar.dart';
+import 'package:awesome_bottom_bar/widgets/inspired/inspired.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:dotted_border/dotted_border.dart';
 import 'package:easypg/provider/data_provider.dart';
@@ -12,6 +14,7 @@ import 'package:easypg/utils/colors.dart';
 import 'package:easypg/utils/styles.dart';
 import 'package:easypg/utils/tools.dart';
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class HomeScreen extends StatefulWidget {
   static String route = 'home_screen';
@@ -79,62 +82,52 @@ class _HomeScreenState extends State<HomeScreen> {
     return PopScope(
       canPop: false,
       child: Scaffold(
-          bottomNavigationBar: Container(
-            margin: const EdgeInsets.only(bottom: 6, left: 12, right: 12),
-            decoration:
-                BoxDecoration(color: Colors.transparent, borderRadius: BorderRadius.circular(12)),
-            child: ClipRRect(
-              borderRadius: BorderRadius.circular(12),
-              child: BottomNavigationBar(
-                currentIndex: _currentIndex,
-                onTap: _handelPageChange,
-                type: BottomNavigationBarType.fixed,
-                backgroundColor: Colors.black,
-                showUnselectedLabels: true,
-                showSelectedLabels: true,
-                unselectedItemColor: white,
-                selectedItemColor: myOrange,
-                selectedLabelStyle: montserrat.copyWith(color: white, fontWeight: FontWeight.bold),
-                unselectedLabelStyle:
-                    montserrat.copyWith(color: white, fontWeight: FontWeight.bold),
-                iconSize: 20,
-                items: [
-                  BottomNavigationBarItem(
-                      icon: Image.asset(
-                        'assets/home.png',
-                        color: _currentIndex == 0 ? myOrange : white,
-                      ),
-                      label: 'Home'),
-                  BottomNavigationBarItem(
-                      icon: Image.asset('assets/search.png',
-                          color: _currentIndex == 1 ? myOrange : white),
-                      label: 'Search'),
-                  BottomNavigationBarItem(
-                      icon: Image.asset('assets/bookmarks.png',
-                          color: _currentIndex == 2 ? myOrange : white),
-                      label: 'Bookmarks'),
-                  BottomNavigationBarItem(
-                      icon: Image.asset('assets/rent.png',
-                          color: _currentIndex == 3 ? myOrange : white),
-                      label: 'Rent'),
-                ],
+          bottomNavigationBar: BottomBarInspiredOutside(
+            items: const [
+              TabItem(
+                icon: FontAwesomeIcons.house,
+                title: 'Home',
               ),
+              TabItem(icon: FontAwesomeIcons.magnifyingGlassLocation, title: 'Search'),
+              TabItem(icon: FontAwesomeIcons.solidBookmark, title: 'Bookmarks'),
+              TabItem(icon: FontAwesomeIcons.solidSquarePlus, title: 'Rent'),
+            ],
+            titleStyle:
+                montserrat.copyWith(color: myOrange, fontWeight: FontWeight.bold, fontSize: 10),
+            curve: Curves.easeIn,
+            radius: 24,
+            duration: const Duration(milliseconds: 200),
+            backgroundColor: Colors.black,
+            color: myOrangeSecondary,
+            colorSelected: myOrangeSecondary,
+            isAnimated: true,
+            chipStyle: ChipStyle(
+              notchSmoothness: NotchSmoothness.softEdge,
+              background: myOrange,
             ),
+            itemStyle: ItemStyle.circle,
+            indexSelected: _currentIndex,
+            animated: true,
+            elevation: 2,
+            onTap: _handelPageChange,
           ),
-          floatingActionButton: Visibility(
-            visible: _currentIndex == titleWidget.length - 1 &&
-                DataProvider.instance.getUser.myProperties.isNotEmpty,
-            child: FloatingActionButton(
-              shape: const CircleBorder(),
-              backgroundColor: myOrange,
-              onPressed: () => Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => const AddPropertyPage(),
-                  )),
-              child: const Icon(
-                Icons.add,
-                color: Colors.white,
+          floatingActionButton: Padding(
+            padding: const EdgeInsets.only(bottom: 12.0),
+            child: Visibility(
+              visible: _currentIndex == titleWidget.length - 1 &&
+                  DataProvider.instance.getUser.myProperties.isNotEmpty,
+              child: FloatingActionButton(
+                shape: const CircleBorder(),
+                backgroundColor: myOrange,
+                onPressed: () => Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const AddPropertyPage(),
+                    )),
+                child: FaIcon(
+                  FontAwesomeIcons.plus,
+                  color: myOrangeSecondary,
+                ),
               ),
             ),
           ),
@@ -149,7 +142,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       children: [
                         Flexible(child: titleWidget[_currentIndex]),
                         InkWell(
-                          onTap: () => Navigator.pushNamed(context,ProfileScreen.route),
+                          onTap: () => Navigator.pushNamed(context, ProfileScreen.route),
                           child: DottedBorder(
                             borderType: BorderType.Circle,
                             child: CircleAvatar(

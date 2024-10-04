@@ -51,21 +51,6 @@ class _HomePageState extends State<HomePage> {
                 itemBuilder: (context, index) => PropertyCard(
                   property: properties[index],
                   topWidget: 'bookmark'
-                  // {
-                  //   'callback': () async { await ApiHandler.instance.saveBookMark(properties[index].id,!DataProvider.instance.getUser.bookmarks.contains(properties[index].id)); setState(() {
-                  //
-                  //   });},
-                  //   'widget': Container(
-                  //     height: 35,
-                  //     width: 35,
-                  //     decoration: BoxDecoration(borderRadius: BorderRadius.circular(6),color: Colors.black,),
-                  //
-                  //     child: Icon(
-                  //       !DataProvider.instance.getUser.bookmarks.contains(properties[index].id) ? Icons.bookmark_add_sharp : Icons.bookmark_remove_sharp,
-                  //       color: Colors.white,
-                  //     ),
-                  //   )
-                  // },
                 ),
                 itemCount: properties.length,
               );
