@@ -116,12 +116,12 @@ class _AddLocationPageState extends State<AddLocationPage> {
               onChanged: (value) => setState(() => propertyName = value),
             ),
             space(20),
-            // TextFormField(
-            //   initialValue: AddPropertyProvider.instance.property.streetAddress,
-            //   decoration: const InputDecoration(hintText: 'Enter Street Address'),
-            //   onChanged: (value) => setState(()=>streetAddress = value),
-            // ),
-            // space(20),
+            TextFormField(
+              initialValue: AddPropertyProvider.instance.property.streetAddress,
+              decoration: const InputDecoration(hintText: 'Enter Street Address'),
+              onChanged: (value) => setState(()=>streetAddress = value),
+            ),
+            space(20),
             // TextFormField(
             //   initialValue: AddPropertyProvider.instance.property.pinCode,
             //   decoration: const InputDecoration(hintText: 'Enter Pin-Code'),

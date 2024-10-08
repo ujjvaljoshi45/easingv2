@@ -52,13 +52,13 @@ dependencies:
   flutter_cache_manager: ^3.4.1
   carousel_slider: ^5.0.0
   paytm_allinonesdk: ^1.2.6
-  google_maps_flutter: ^2.9.0
   dio: ^5.7.0
   csc_picker: ^0.2.7
   animated_text_kit: ^4.2.2
   loading_indicator: ^3.1.1
   awesome_bottom_bar: ^1.2.4
   font_awesome_flutter: ^10.7.0
+  file_picker: ^8.1.2
 
 
 dev_dependencies:

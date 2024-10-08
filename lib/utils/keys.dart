@@ -8,3 +8,4 @@ String profileUrlKey = 'profile_url';
 String fcmKey = 'fcm';
 String bookMarksKey = 'bookmarks';
 String myPropertiesKey = 'property';
+String isAadharVerifiedKey = 'is_aadhar_verified';

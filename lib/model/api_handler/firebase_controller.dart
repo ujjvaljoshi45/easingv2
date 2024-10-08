@@ -123,16 +123,33 @@ class FirebaseController extends ApiHandler {
     return properties;
   }
 
-  Future<List<Property>> queryProperties(String query,String? propertyType) async {
+  Future<List<Property>> queryProperties(String query, String? propertyType) async {
     try {
-      final response = await propertyRef.where('street_address',isGreaterThanOrEqualTo: query).where('city',isGreaterThanOrEqualTo: query).where('state',isGreaterThanOrEqualTo: query).where('property_type',isEqualTo: propertyType ?? "").get();
-      List<Property> properties = List.generate(response.docs.length, (index) => Property.fromJson(response.docs[index].data() as Map<String,dynamic>,response.docs[index].id));
-      return properties;
+      List<Future<QuerySnapshot>> futures = [
+        propertyRef.where('name', isEqualTo: query).get(),
+        propertyRef.where('street_address', isEqualTo: query).get(),
+        propertyRef.where('city', isEqualTo: query).get(),
+        propertyRef.where('state', isEqualTo: query).get(),
+      ];
+
+      // Wait for all queries to complete
+      List<QuerySnapshot> querySnapshots = await Future.wait(futures);
+
+      // Combine results and remove duplicates
+      Set<Property> allResults = {};
+      for (var snapshot in querySnapshots) {
+        for (var data in snapshot.docs) {
+          allResults.add(Property.fromJson(data.data() as Map<String, dynamic>, data.id));
+        }
+      }
+
+      return allResults.toList();
     } catch (e, stackTrace) {
       logError('msg$query $propertyType', e, stackTrace);
       return [];
     }
   }
+
   Future<void> deleteProperty(String id) async => await propertyRef.doc(id).delete().whenComplete(
         () async => await userRef.doc(DataProvider.instance.getUser.uid).update({
           'property': FieldValue.arrayRemove([id])

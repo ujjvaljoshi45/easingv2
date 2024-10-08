@@ -20,13 +20,12 @@ class _OptInputScreenState extends State<OptInputScreen> {
     final authProvider = AuthProvider.instance;
 
     return Scaffold(
-      resizeToAvoidBottomInset: false,
       appBar: AppBar(),
       body: Padding(
         padding: const EdgeInsets.all(0.0),
         child: Center(
           child: SingleChildScrollView(
-            reverse: false,
+            reverse: true,
             child: Padding(
               padding: const EdgeInsets.all(12.0),
               child: Column(

@@ -6,9 +6,9 @@ import 'package:easypg/provider/data_provider.dart';
 import 'package:easypg/screens/add_property/save_and_next_btn.dart';
 import 'package:easypg/utils/colors.dart';
 import 'package:easypg/utils/styles.dart';
-import 'package:easypg/utils/tools.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class PropertyCard extends StatefulWidget {
   const PropertyCard({super.key, required this.property, this.topWidget});
@@ -33,6 +33,7 @@ class _PropertyCardState extends State<PropertyCard> {
         ),
         elevation: 4,
         child: ExpansionTile(
+          initiallyExpanded: false,
           showTrailingIcon: false,
           shape:
               const OutlineInputBorder(borderSide: BorderSide(width: 0, color: Colors.transparent)),
@@ -134,8 +135,8 @@ class _PropertyCardState extends State<PropertyCard> {
             const SizedBox(height: 4),
             Row(
               children: [
-                Icon(
-                  Icons.location_pin,
+                FaIcon(
+                  FontAwesomeIcons.locationPin,
                   color: pinColor,
                   size: 14,
                 ),
@@ -176,7 +177,7 @@ class _PropertyCardState extends State<PropertyCard> {
           child: ListTile(
             title: Text(
               "Address",
-              style: unSelectedOptionTextStyle,
+              style: montserrat.copyWith(fontWeight: FontWeight.bold,color: myOrange),
             ),
             subtitle: Text(
                 '${widget.property.name}, ${widget.property.streetAddress}, ${widget.property.city}, ${widget.property.streetAddress} - ${widget.property.pinCode}',
@@ -194,11 +195,11 @@ class _PropertyCardState extends State<PropertyCard> {
           elevation: 1.3,
           child: ListTile(
             // tileColor: myOrangeSecondary,
-            title: Text('Information', style: unSelectedOptionTextStyle),
+            title: Text('Information', style: montserrat.copyWith(fontWeight: FontWeight.bold,color: myOrange)),
             subtitle: Column(
               children: [
-                DisplayData(title: 'Rent', subtitle: widget.property.rent),
-                DisplayData(title: 'Deposit', subtitle: widget.property.deposit),
+                DisplayData(title: 'Rent', subtitle: "₹ ${widget.property.rent}"),
+                DisplayData(title: 'Deposit', subtitle: "₹ ${widget.property.deposit}"),
                 DisplayData(title: 'BHK', subtitle: widget.property.bhk),
                 DisplayData(title: 'Bathroom(s)', subtitle: widget.property.bathroom),
                 DisplayData(title: 'Furniture', subtitle: widget.property.furniture),
@@ -220,7 +221,7 @@ class _PropertyCardState extends State<PropertyCard> {
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(12),
             ),
-            title: Text('Amenities', style: unSelectedOptionTextStyle),
+            title: Text('Amenities', style: montserrat.copyWith(fontWeight: FontWeight.bold,color: myOrange)),
             subtitle: Wrap(
               children: [
                 for (String amenity in widget.property.amenities.where(

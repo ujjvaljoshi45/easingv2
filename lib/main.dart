@@ -7,8 +7,9 @@ import 'package:easypg/provider/add_property_provider.dart';
 import 'package:easypg/provider/auth_provider.dart';
 import 'package:easypg/provider/data_provider.dart';
 import 'package:easypg/screens/home_screen.dart';
-import 'package:easypg/screens/pages/profile.dart';
+import 'package:easypg/screens/pages/profile/profile.dart';
 import 'package:easypg/screens/splash.dart';
+import 'package:easypg/utils/colors.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -40,7 +41,7 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       showSemanticsDebugger: false,
       theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+        colorScheme: ColorScheme.fromSeed(seedColor: myOrange),
         useMaterial3: true,
       ),
      home: const Splash(),

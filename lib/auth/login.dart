@@ -50,12 +50,13 @@ class _LoginScreenState extends State<LoginScreen> {
                     space(40),
                     _buildSubmitButton(),
                     TextButton(
-                        onPressed: () {},
-                        child: Text(
-                          'Terms Of Service',
-                          style: unSelectedOptionTextStyle.copyWith(
-                              color: myOrange, fontSize: 16, fontWeight: FontWeight.bold),
-                        )),
+                      onPressed: () {},
+                      child: Text(
+                        'Terms Of Service',
+                        style: unSelectedOptionTextStyle.copyWith(
+                            color: myOrange, fontSize: 16, fontWeight: FontWeight.bold),
+                      ),
+                    ),
                     const Spacer(),
                   ],
                 ),
@@ -153,8 +154,7 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 
-  void _manageLogin() async {
-
+  Future<void> _manageLogin() async {
     final authProvider = AuthProvider.instance;
     String? phNo = phoneNumber.phoneNumber;
     String? code = phoneNumber.dialCode;
@@ -164,15 +164,10 @@ class _LoginScreenState extends State<LoginScreen> {
       return;
     } else {
       // Request OTP using the phone number provided
-      setState(()=>_isLoading=true);
-      try{
-        await authProvider.requestOtp(phNo,context,);
-        setState(()=>_isLoading=false);
-      } catch (e) {
-        logEvent('Some Error $e');
-        setState(()=>_isLoading=false);
-      }
-
+      await authProvider.requestOtp(
+        phNo,
+        context,
+      );
     }
   }
 }

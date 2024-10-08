@@ -23,7 +23,8 @@ class AuthProvider extends ChangeNotifier {
   }
 
   Future<void> requestOtp(String phoneNumber, BuildContext context) async {
-    // toggleLoading();
+    toggleLoading();
+
     try {
       await auth.verifyPhoneNumber(
         phoneNumber: phoneNumber,
@@ -39,6 +40,7 @@ class AuthProvider extends ChangeNotifier {
         },
         codeSent: (verificationId, forceResendingToken) async {
           _verificationId = verificationId;
+          toggleLoading();
           await Navigator.of(context).push(MaterialPageRoute(
             builder: (context) {
               return OptInputScreen(
@@ -53,8 +55,9 @@ class AuthProvider extends ChangeNotifier {
       );
     } catch (e, stackTrace) {
       logError('otp failed', e, stackTrace);
+      isLoading ? toggleLoading() : null;
     }
-    // toggleLoading();
+
   }
 
   Future<void> verifyOtp(String otp, BuildContext context, String phoneNumber) async {
@@ -80,7 +83,10 @@ class AuthProvider extends ChangeNotifier {
   Future<void> _signInWIthPhoneAuthCredential(
       PhoneAuthCredential credential, BuildContext context, String phoneNumber) async {
     final userCredential = await auth.signInWithCredential(credential);
-    if (userCredential.user == null) {Navigator.pushReplacementNamed(context, LoginScreen.route);return;}
+    if (userCredential.user == null) {
+      Navigator.pushReplacementNamed(context, LoginScreen.route);
+      return;
+    }
     AppUser? appUser = await ApiHandler.instance.getUser(userCredential.user!.uid);
     if (appUser == null) {
       _saveNewEntry(userCredential, context);
@@ -102,12 +108,19 @@ class AuthProvider extends ChangeNotifier {
     try {
       CacheManager.user = null;
       await FirebaseAuth.instance.signOut();
+      Navigator.pushReplacementNamed(context, LoginScreen.route);
       return true;
     } catch (e) {
       return false;
     }
-    // mounted
-    //     ? Navigator.pushReplacementNamed(context, LoginScreen.route)
-    //     : null;
   }
+
+  Future<bool> checkUser() async {
+    if (auth.currentUser == null) return false;
+    final jsonUser = await ApiHandler.instance.getUser(auth.currentUser!.uid);
+    if (jsonUser == null) return false;
+    DataProvider.instance.initUser(jsonUser);
+    return true;
+  }
+
 }
