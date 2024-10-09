@@ -7,6 +7,7 @@ import 'package:easypg/utils/styles.dart';
 import 'package:easypg/utils/tools.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class RegisterScreen extends StatefulWidget {
   static String route = 'register';
@@ -54,16 +55,16 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     Text('Welcome!',
                         style: montserrat.copyWith(
                           color: myOrange,
-                          fontSize: 22.0,
+                          fontSize: 22.0.sp,
                           fontWeight: FontWeight.bold,
                         )),
                     space(20),
                     Container(
-                      height: 70,
+                      height: 70.h,
                       width: double.infinity,
                       decoration: BoxDecoration(
                           color: Colors.black12,
-                          borderRadius: BorderRadiusDirectional.circular(10)),
+                          borderRadius: BorderRadiusDirectional.circular(10.r)),
                       child: Center(
                         child: Padding(
                           padding: const EdgeInsets.all(14.0),
@@ -77,13 +78,13 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                       color: myOrange,
                                       style: BorderStyle.none,
                                       strokeAlign: BorderSide.strokeAlignOutside,
-                                      width: 2)),
+                                      width: 2.w)),
                               enabledBorder: OutlineInputBorder(
                                   borderSide: BorderSide(
                                       color: myOrange,
                                       style: BorderStyle.none,
                                       strokeAlign: BorderSide.strokeAlignOutside,
-                                      width: 2)),
+                                      width: 2.w)),
                               labelText: 'Name',
                               labelStyle:
                                   montserrat.copyWith(fontWeight: FontWeight.w500, color: myOrange),
@@ -94,10 +95,10 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     ),
                     space(20),
                     Container(
-                      height: 70,
+                      height: 70.h,
                       decoration: BoxDecoration(
                           color: Colors.black12,
-                          borderRadius: BorderRadiusDirectional.circular(10)),
+                          borderRadius: BorderRadiusDirectional.circular(10.r)),
                       child: Padding(
                         padding: const EdgeInsets.all(14.0),
                         child: DropdownMenu(
@@ -124,13 +125,13 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                     color: myOrange,
                                     style: BorderStyle.none,
                                     strokeAlign: BorderSide.strokeAlignOutside,
-                                    width: 2)),
+                                    width: 2.w)),
                             enabledBorder: OutlineInputBorder(
                                 borderSide: BorderSide(
                                     color: myOrange,
                                     style: BorderStyle.none,
                                     strokeAlign: BorderSide.strokeAlignOutside,
-                                    width: 2)),
+                                    width: 2.w)),
                           ),
                         ),
                       ),
@@ -139,19 +140,19 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     InkWell(
                       onTap: _manageRegister,
                       child: Container(
-                        height: 70,
+                        height: 70.h,
                         width: double.infinity,
                         decoration: BoxDecoration(
                           color: myOrange,
-                          borderRadius: BorderRadiusDirectional.circular(10),
+                          borderRadius: BorderRadiusDirectional.circular(10.r),
                         ),
                         child:  Center(
                           child: Padding(
                             padding: const EdgeInsets.all(8.0),
-                            child: isLoading ? CircularProgressIndicator(color: myOrangeSecondary,) : const Text(
+                            child: isLoading ? CircularProgressIndicator(color: myOrangeSecondary,) :  Text(
                               'Save',
                               style: TextStyle(
-                                fontSize: 18,
+                                fontSize: 18.sp,
                                 fontWeight: FontWeight.w800,
                                 color: Colors.white,
                               ),

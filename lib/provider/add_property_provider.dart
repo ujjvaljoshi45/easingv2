@@ -28,10 +28,11 @@ class AddPropertyProvider extends ChangeNotifier {
     property.uploaderId = DataProvider.instance.getUser.uid;
     int time = DateTime.now().millisecondsSinceEpoch;
     logEvent(property.toJson());
-    List<String> urls = await ApiHandler.instance.saveImages(property.photos,time);
+    List<String> urls = await ApiHandler.instance.saveImages(property.photos, time);
     property.photos = urls;
     property.id = time.toString();
     await ApiHandler.instance.saveProperty(property);
   }
+
   void clear() => property = Property.empty();
 }

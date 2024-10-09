@@ -5,6 +5,7 @@ import 'package:easypg/utils/colors.dart';
 import 'package:easypg/utils/styles.dart';
 import 'package:easypg/utils/tools.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:numberpicker/numberpicker.dart';
 
@@ -86,7 +87,7 @@ class _OtherInformationPageState extends State<OtherInformationPage> {
   Widget build(BuildContext context) {
     return SingleChildScrollView(
       child: SizedBox(
-        height: getHeight(context) - kToolbarHeight - 20,
+        height: getHeight(context) - kToolbarHeight.h - 20.h,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -114,7 +115,7 @@ class _OtherInformationPageState extends State<OtherInformationPage> {
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
                   border: Border.all(
-                    width: 2,
+                    width: 2.w,
                     color: black,
                   ),
                 ),

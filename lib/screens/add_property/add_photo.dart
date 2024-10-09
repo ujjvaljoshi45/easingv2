@@ -5,6 +5,7 @@ import 'package:easypg/screens/add_property/save_and_next_btn.dart';
 import 'package:easypg/utils/colors.dart';
 import 'package:easypg/utils/tools.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:image_picker/image_picker.dart';
 
@@ -127,13 +128,13 @@ class _ImageTileState extends State<ImageTile> {
       child: DottedBorder(
         stackFit: StackFit.loose,
         child: SizedBox(
-            height: getWidth(context) * 0.4,
-            width: getWidth(context) * 0.4,
+            height: getWidth(context) * 0.4.w,
+            width: getWidth(context) * 0.4.w,
             child: url == null
-                ? const Center(
+                ? Center(
                     child: Icon(
                       Icons.add,
-                      size: 32,
+                      size: 32.sp,
                     ),
                   )
                 : Image.file(File(url!))),

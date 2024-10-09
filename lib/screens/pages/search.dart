@@ -6,6 +6,7 @@ import 'package:easypg/utils/colors.dart';
 import 'package:easypg/utils/styles.dart';
 import 'package:easypg/utils/tools.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class SearchPage extends StatefulWidget {
   const SearchPage({super.key});
@@ -51,11 +52,11 @@ class _SearchPageState extends State<SearchPage> {
                           focusNode: _focusNode,
                           decoration: InputDecoration(
                             border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(12),
+                              borderRadius: BorderRadius.circular(12.r),
                               borderSide: const BorderSide(color: Colors.transparent),
                             ),
                             enabledBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(12),
+                              borderRadius: BorderRadius.circular(12.r),
                               borderSide: const BorderSide(color: Colors.transparent),
                             ),
                             fillColor: const Color.fromRGBO(234, 234, 234, 1),
@@ -114,10 +115,10 @@ class _SearchPageState extends State<SearchPage> {
                             backgroundColor: const WidgetStatePropertyAll(Colors.black),
                             shape: WidgetStatePropertyAll(
                               RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(12),
+                                borderRadius: BorderRadius.circular(12.r),
                               ),
                             ),
-                            fixedSize: WidgetStatePropertyAll(Size(getWidth(context), 50))),
+                            fixedSize: WidgetStatePropertyAll(Size(getWidth(context), 50.h))),
                         child: Text(
                           "Search",
                           style: montserrat.copyWith(
@@ -137,7 +138,7 @@ class _SearchPageState extends State<SearchPage> {
                 padding: const EdgeInsets.only(left: 8.0, top: 2.0),
                 child: Text(
                   'Result',
-                  style: montserrat.copyWith(fontSize: 24, fontWeight: FontWeight.bold),
+                  style: montserrat.copyWith(fontSize: 24.sp, fontWeight: FontWeight.bold),
                 ),
               ),
             ),

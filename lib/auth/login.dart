@@ -3,6 +3,7 @@ import 'package:easypg/utils/colors.dart';
 import 'package:easypg/utils/styles.dart';
 import 'package:easypg/utils/tools.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl_phone_number_input/intl_phone_number_input.dart';
 import 'package:provider/provider.dart';
@@ -38,7 +39,7 @@ class _LoginScreenState extends State<LoginScreen> {
             child: SingleChildScrollView(
               reverse: true,
               child: SizedBox(
-                height: getHeight(context) - kToolbarHeight - kBottomNavigationBarHeight,
+                height: getHeight(context) - kToolbarHeight.h - kBottomNavigationBarHeight.h,
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.start,
                   crossAxisAlignment: CrossAxisAlignment.center,
@@ -54,7 +55,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       child: Text(
                         'Terms Of Service',
                         style: unSelectedOptionTextStyle.copyWith(
-                            color: myOrange, fontSize: 16, fontWeight: FontWeight.bold),
+                            color: myOrange, fontSize: 16.sp, fontWeight: FontWeight.bold),
                       ),
                     ),
                     const Spacer(),
@@ -124,14 +125,14 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                   shape: WidgetStateProperty.all(
                     RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12),
+                      borderRadius: BorderRadius.circular(12.r),
                     ),
                   ),
                 ), // Disable button when loading
                 child: _isLoading
-                    ? const SizedBox(
-                        width: 20,
-                        height: 20,
+                    ?  SizedBox(
+                        width: 20.w,
+                        height: 20.h,
                         child: CircularProgressIndicator(
                           strokeWidth: 2,
                           color: Colors.white,
@@ -143,7 +144,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           letterSpacing: 1.5,
                           color: Colors.white,
                           fontWeight: FontWeight.bold,
-                          fontSize: 14,
+                          fontSize: 14.sp,
                         ),
                       ),
               ),

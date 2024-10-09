@@ -14,6 +14,7 @@ import 'package:easypg/utils/colors.dart';
 import 'package:easypg/utils/styles.dart';
 import 'package:easypg/utils/tools.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -33,37 +34,37 @@ class _HomeScreenState extends State<HomeScreen> {
         text: TextSpan(children: [
       TextSpan(
           text: 'Find Your',
-          style: montserrat.copyWith(fontSize: 24, fontWeight: FontWeight.bold, color: black)),
+          style: montserrat.copyWith(fontSize: 24.sp, fontWeight: FontWeight.bold, color: black)),
       TextSpan(
         text: ' Dream',
-        style: montserrat.copyWith(fontSize: 24, fontWeight: FontWeight.bold, color: myOrange),
+        style: montserrat.copyWith(fontSize: 24.sp, fontWeight: FontWeight.bold, color: myOrange),
       ),
       TextSpan(
           text: '\nHome Today',
-          style: montserrat.copyWith(fontSize: 24, fontWeight: FontWeight.bold, color: black)),
+          style: montserrat.copyWith(fontSize: 24.sp, fontWeight: FontWeight.bold, color: black)),
     ])),
     RichText(
         text: TextSpan(children: [
       TextSpan(
         text: 'Search',
-        style: montserrat.copyWith(fontSize: 24, fontWeight: FontWeight.bold, color: myOrange),
+        style: montserrat.copyWith(fontSize: 24.sp, fontWeight: FontWeight.bold, color: myOrange),
       ),
     ])),
     RichText(
         text: TextSpan(children: [
       TextSpan(
         text: 'Bookmarks',
-        style: montserrat.copyWith(fontSize: 24, fontWeight: FontWeight.bold, color: myOrange),
+        style: montserrat.copyWith(fontSize: 24.sp, fontWeight: FontWeight.bold, color: myOrange),
       ),
     ])),
     RichText(
         text: TextSpan(children: [
       TextSpan(
           text: 'Your',
-          style: montserrat.copyWith(fontSize: 24, fontWeight: FontWeight.bold, color: black)),
+          style: montserrat.copyWith(fontSize: 24.sp, fontWeight: FontWeight.bold, color: black)),
       TextSpan(
         text: ' Properties',
-        style: montserrat.copyWith(fontSize: 24, fontWeight: FontWeight.bold, color: myOrange),
+        style: montserrat.copyWith(fontSize: 24.sp, fontWeight: FontWeight.bold, color: myOrange),
       ),
     ])),
   ];
@@ -93,9 +94,9 @@ class _HomeScreenState extends State<HomeScreen> {
               TabItem(icon: FontAwesomeIcons.solidSquarePlus, title: 'Rent'),
             ],
             titleStyle:
-                montserrat.copyWith(color: myOrange, fontWeight: FontWeight.bold, fontSize: 10),
+                montserrat.copyWith(color: myOrange, fontWeight: FontWeight.bold, fontSize: 10.sp),
             curve: Curves.easeIn,
-            radius: 24,
+            radius: 24.r,
             duration: const Duration(milliseconds: 200),
             backgroundColor: Colors.black,
             color: myOrangeSecondary,
@@ -146,7 +147,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           child: DottedBorder(
                             borderType: BorderType.Circle,
                             child: CircleAvatar(
-                              radius: 24,
+                              radius: 24.r,
                               backgroundImage: DataProvider.instance.getUser.profileUrl.isEmpty
                                   ? const AssetImage('assets/user_icon.png')
                                   : CachedNetworkImageProvider(

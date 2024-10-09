@@ -6,6 +6,7 @@ import 'package:easypg/screens/add_property/save_and_next_btn.dart';
 import 'package:easypg/services/api_manager.dart';
 import 'package:easypg/utils/tools.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 
 class AddLocationPage extends StatefulWidget {
@@ -61,7 +62,7 @@ class _AddLocationPageState extends State<AddLocationPage> {
   Widget build(BuildContext context) {
     return SingleChildScrollView(
       child: SizedBox(
-        height: getHeight(context) - kToolbarHeight - 40,
+        height: getHeight(context) - kToolbarHeight.h - 40.h,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -77,8 +78,8 @@ class _AddLocationPageState extends State<AddLocationPage> {
                   text: types[0],
                   onPressed: () => _manageSelection(0),
                 )),
-                const SizedBox(
-                  width: 20,
+                SizedBox(
+                  width: 20.w,
                 ),
                 Expanded(
                     child: OptionElevatedButton(
@@ -97,8 +98,8 @@ class _AddLocationPageState extends State<AddLocationPage> {
                   text: types[2],
                   onPressed: () => _manageSelection(2),
                 )),
-                const SizedBox(
-                  width: 20,
+                SizedBox(
+                  width: 20.w,
                 ),
                 Expanded(
                   child: OptionElevatedButton(
@@ -119,35 +120,9 @@ class _AddLocationPageState extends State<AddLocationPage> {
             TextFormField(
               initialValue: AddPropertyProvider.instance.property.streetAddress,
               decoration: const InputDecoration(hintText: 'Enter Street Address'),
-              onChanged: (value) => setState(()=>streetAddress = value),
+              onChanged: (value) => setState(() => streetAddress = value),
             ),
             space(20),
-            // TextFormField(
-            //   initialValue: AddPropertyProvider.instance.property.pinCode,
-            //   decoration: const InputDecoration(hintText: 'Enter Pin-Code'),
-            //   onChanged: (value) => setState(()=>pinCode = value),
-            //   keyboardType: TextInputType.number,
-            // ),
-            // space(20),
-            // Row(
-            //   children: [
-            //     Expanded(
-            //         child: TextFormField(
-            //       initialValue: AddPropertyProvider.instance.property.city,
-            //       decoration: const InputDecoration(hintText: 'Enter City'),
-            //       onChanged: (value) => setState(()=>city = value),
-            //     )),
-            //     const SizedBox(
-            //       width: 20,
-            //     ),
-            //     Expanded(
-            //         child: TextFormField(
-            //       initialValue: AddPropertyProvider.instance.property.state,
-            //       decoration: const InputDecoration(hintText: 'Enter State'),
-            //       onChanged: (value) => setState(()=>state=value),
-            //     ),),
-            //   ],
-            // ),
             CSCPicker(
               showCities: true,
               showStates: true,
@@ -179,7 +154,6 @@ class _AddLocationPageState extends State<AddLocationPage> {
                     );
                   }
 
-
                   List<PostOffice> postOffices =
                       PostOffice.parseResponse(snapshot.requireData.data.first, state);
                   logEvent('len: ${postOffices.length}');
@@ -195,25 +169,24 @@ class _AddLocationPageState extends State<AddLocationPage> {
                       items: [
                         for (int i = 0; i < postOffices.length; i++)
                           DropdownMenuItem(
-                              value: postOffices[i].pincode,
-                              child:
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Text(postOffices[i].pincode),
-                                  const SizedBox(
-                                    width: 10,
-                                  ),
-                                  Text(
-                                    postOffices[i].name,
-                                    softWrap: true,
-                                  )
-                                ],
-                              ),
+                            value: postOffices[i].pincode,
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text(postOffices[i].pincode),
+                                SizedBox(
+                                  width: 10.w,
+                                ),
+                                Text(
+                                  postOffices[i].name,
+                                  softWrap: true,
+                                )
+                              ],
                             ),
+                          ),
                       ],
                     );
-                  } catch (e,stackTrace) {
+                  } catch (e, stackTrace) {
                     logError('-_-', e, stackTrace);
                     return Text('ERROR: $e');
                   }

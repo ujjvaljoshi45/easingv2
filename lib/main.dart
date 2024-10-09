@@ -12,6 +12,7 @@ import 'package:easypg/screens/splash.dart';
 import 'package:easypg/utils/colors.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
 
 void main() async {
@@ -37,20 +38,25 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      showSemanticsDebugger: false,
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: myOrange),
-        useMaterial3: true,
+    return ScreenUtilInit(
+      designSize: Size(430,932),
+      minTextAdapt: true,
+      splitScreenMode: false,
+      child: MaterialApp(
+        debugShowCheckedModeBanner: false,
+        showSemanticsDebugger: false,
+        theme: ThemeData(
+          colorScheme: ColorScheme.fromSeed(seedColor: myOrange),
+          useMaterial3: true,
+        ),
+       home: const Splash(),
+        routes: {
+          LoginScreen.route : (context) => const LoginScreen(),
+          RegisterScreen.route : (context) => const RegisterScreen(),
+          HomeScreen.route : (context) => const HomeScreen(),
+          ProfileScreen.route : (context) => const ProfileScreen(),
+        },
       ),
-     home: const Splash(),
-      routes: {
-        LoginScreen.route : (context) => const LoginScreen(),
-        RegisterScreen.route : (context) => const RegisterScreen(),
-        HomeScreen.route : (context) => const HomeScreen(),
-        ProfileScreen.route : (context) => const ProfileScreen(),
-      },
     );
   }
 }

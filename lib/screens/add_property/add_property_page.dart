@@ -8,6 +8,7 @@ import 'package:easypg/utils/colors.dart';
 import 'package:easypg/utils/styles.dart';
 import 'package:easypg/utils/tools.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class AddPropertyPage extends StatefulWidget {
   const AddPropertyPage({super.key});
@@ -77,14 +78,14 @@ class _AddPropertyPageState extends State<AddPropertyPage> {
         iconTheme: IconThemeData(
           color: white,
         ),
-        shape: const RoundedRectangleBorder(
+        shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.only(
-                bottomLeft: Radius.circular(24),
-                bottomRight: Radius.circular(24))),
+                bottomLeft: Radius.circular(24.r),
+                bottomRight: Radius.circular(24.r))),
         title: Text(
           _appBarTitle[_currentIndex],
           style: montserrat.copyWith(
-              fontSize: 20, fontWeight: FontWeight.bold, color: white),
+              fontSize: 20.sp, fontWeight: FontWeight.bold, color: white),
         ),
       ),
       body: Padding(
@@ -110,4 +111,3 @@ class _AddPropertyPageState extends State<AddPropertyPage> {
     );
   }
 }
-

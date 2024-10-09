@@ -6,7 +6,9 @@ import 'package:easypg/provider/data_provider.dart';
 import 'package:easypg/screens/add_property/save_and_next_btn.dart';
 import 'package:easypg/utils/colors.dart';
 import 'package:easypg/utils/styles.dart';
+import 'package:easypg/utils/tools.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
@@ -22,6 +24,7 @@ class PropertyCard extends StatefulWidget {
 class _PropertyCardState extends State<PropertyCard> {
   final Duration _pageChangeDuration = const Duration(milliseconds: 150);
   int _currentPhotoIndex = 0;
+  final _expansionController = ExpansionTileController();
 
   @override
   Widget build(BuildContext context) {
@@ -29,99 +32,108 @@ class _PropertyCardState extends State<PropertyCard> {
       padding: const EdgeInsets.symmetric(vertical: 10),
       child: Card(
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(12.0),
+          borderRadius: BorderRadius.circular(12.0.r),
         ),
         elevation: 4,
-        child: ExpansionTile(
-          initiallyExpanded: false,
-          showTrailingIcon: false,
-          shape:
-              const OutlineInputBorder(borderSide: BorderSide(width: 0, color: Colors.transparent)),
-          title: _buildTitleWidget(),
-          subtitle: _buildSubTitleWidget(),
-          children: _buildChildren(),
+        child: Column(
+          children: [
+            _buildTitleWidget(),
+            ExpansionTile(
+              controller: _expansionController,
+
+              showTrailingIcon: false,
+              shape:
+                  const OutlineInputBorder(borderSide: BorderSide(width: 0, color: Colors.transparent)),
+              title:  _buildSubTitleWidget(),
+              // subtitle:,
+              children: _buildChildren(),
+            ),
+          ],
         ),
       ),
     );
   }
 
-  _buildTitleWidget() => Stack(
-        children: [
-          ClipRRect(
-            borderRadius: const BorderRadius.only(
-              topLeft: Radius.circular(12.0),
-              topRight: Radius.circular(12.0),
-            ),
-            child: CarouselSlider.builder(
-              itemCount: widget.property.photos.length,
-              itemBuilder: (context, index, realIndex) => CachedNetworkImage(
-                imageUrl: widget.property.photos[index],
-                width: double.infinity,
-                fit: BoxFit.fitHeight,
+  _buildTitleWidget() => InkWell(
+    onTap: () => setState(()=>_expansionController.isExpanded ? _expansionController.expand() : _expansionController.collapse()),
+    child: Stack(
+          children: [
+            ClipRRect(
+              borderRadius: BorderRadius.only(
+                topLeft: Radius.circular(12.0.r),
+                topRight: Radius.circular(12.0.r),
               ),
-              options: CarouselOptions(
-                  autoPlay: false,
-                  autoPlayAnimationDuration: _pageChangeDuration,
-                  onPageChanged: (index, reason) => setState(
-                        () => _currentPhotoIndex = index,
-                      ),
-                  enableInfiniteScroll: false,
-                  viewportFraction: 1,
-                  aspectRatio: 16 / 9,
-                  height: 250),
-            ),
-          ),
-          Positioned(
-            top: 10,
-            left: 10,
-            child: Container(
-              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-              decoration: BoxDecoration(
-                color: myOrangeSecondary,
-                borderRadius: BorderRadius.circular(8.0),
-              ),
-              child: Text(
-                widget.property.propertyType,
-                style: montserrat.copyWith(
-                  color: myOrange,
-                  fontSize: 13,
-                  fontWeight: FontWeight.bold,
+              child: CarouselSlider.builder(
+                itemCount: widget.property.photos.length,
+                itemBuilder: (context, index, realIndex) => CachedNetworkImage(
+                  imageUrl: widget.property.photos[index],
+                  width: double.infinity.w,
+                  fit: BoxFit.cover,
                 ),
+                options: CarouselOptions(
+                    autoPlay: false,
+                    autoPlayAnimationDuration: _pageChangeDuration,
+                    onPageChanged: (index, reason) => setState(
+                          () => _currentPhotoIndex = index,
+                        ),
+                    enableInfiniteScroll: false,
+                    viewportFraction: 1,
+                    aspectRatio: 16 / 9,
+                    height: 250.h),
               ),
             ),
-          ),
-          Positioned(
-            top: 10,
-            right: 10,
-            child: widget.topWidget != null
-                ? _buildTopWidget(widget.topWidget!)
-                : const SizedBox.shrink(),
-          ),
-          Positioned(
-              bottom: 10,
-              right: 10,
+            Positioned(
+              top: 10.h,
+              left: 10.w,
               child: Container(
-                padding: const EdgeInsets.all(2.0),
+                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                 decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(12), color: Colors.black.withOpacity(0.2)),
-                child: Row(
-                  children: [
-                    for (int i = 0; i < widget.property.photos.length; i++)
-                      AnimatedContainer(
-                        duration: _pageChangeDuration,
-                        curve: Curves.decelerate,
-                        margin: const EdgeInsets.all(2.0),
-                        width: 10,
-                        height: 10,
-                        decoration: BoxDecoration(
-                            shape: BoxShape.circle,
-                            color: i == _currentPhotoIndex ? myOrange : myOrangeSecondary),
-                      )
-                  ],
+                  color: myOrangeSecondary,
+                  borderRadius: BorderRadius.circular(8.0.r),
                 ),
-              ))
-        ],
-      );
+                child: Text(
+                  widget.property.propertyType,
+                  style: montserrat.copyWith(
+                    color: myOrange,
+                    fontSize: 13.sp,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
+            ),
+            Positioned(
+              top: 10.h,
+              right: 10.w,
+              child: widget.topWidget != null
+                  ? _buildTopWidget(widget.topWidget!)
+                  : const SizedBox.shrink(),
+            ),
+            Positioned(
+                bottom: 10.h,
+                right: 10.w,
+                child: Container(
+                  padding: const EdgeInsets.all(2.0),
+                  decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(12.r), color: Colors.black.withOpacity(0.2)),
+                  child: Row(
+                    children: [
+                      for (int i = 0; i < widget.property.photos.length; i++)
+                        AnimatedContainer(
+                          duration: _pageChangeDuration,
+                          curve: Curves.decelerate,
+                          margin: const EdgeInsets.all(2.0),
+                          width: 10.w,
+                          height: 10.h,
+                          decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              color: i == _currentPhotoIndex ? myOrange : myOrangeSecondary),
+                        )
+                    ],
+                  ),
+                ))
+          ],
+        ),
+  );
 
   _buildSubTitleWidget() => Padding(
         padding: const EdgeInsets.all(12.0),
@@ -130,33 +142,33 @@ class _PropertyCardState extends State<PropertyCard> {
           children: [
             Text(
               widget.property.name,
-              style: montserrat.copyWith(fontSize: 20, fontWeight: FontWeight.bold),
+              style: montserrat.copyWith(fontSize: 20.sp, fontWeight: FontWeight.bold),
             ),
-            const SizedBox(height: 4),
+            space(4),
             Row(
               children: [
                 FaIcon(
                   FontAwesomeIcons.locationPin,
                   color: pinColor,
-                  size: 14,
+                  size: 14.sp,
                 ),
-                const SizedBox(width: 4),
+                SizedBox(width: 4.w),
                 Text('${widget.property.streetAddress}, ${widget.property.city}',
                     style: montserrat.copyWith(
-                        fontSize: 14, color: secondaryColor, fontWeight: FontWeight.bold)),
+                        fontSize: 14.sp, color: secondaryColor, fontWeight: FontWeight.bold)),
               ],
             ),
-            const SizedBox(height: 12),
+            space(12),
             Row(
               children: [
                 Text(
                   '₹ ${widget.property.rent}',
-                  style: montserrat.copyWith(fontSize: 17, fontWeight: FontWeight.w600),
+                  style: montserrat.copyWith(fontSize: 17.sp, fontWeight: FontWeight.w600),
                 ),
                 Text(
                   ' /Month',
                   style: montserrat.copyWith(
-                      fontSize: 13, fontWeight: FontWeight.w600, color: secondaryColor),
+                      fontSize: 13.sp, fontWeight: FontWeight.w600, color: secondaryColor),
                 )
               ],
             ),
@@ -168,8 +180,8 @@ class _PropertyCardState extends State<PropertyCard> {
         Card(
           margin: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 8.0),
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(12.0),
-            side: BorderSide(color: myOrangeSecondary, width: 2),
+            borderRadius: BorderRadius.circular(12.0.r),
+            side: BorderSide(color: myOrangeSecondary, width: 2.w),
           ),
           color: myOrangeSecondary,
           shadowColor: myOrange,
@@ -187,8 +199,8 @@ class _PropertyCardState extends State<PropertyCard> {
         Card(
           margin: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 8.0),
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(12.0),
-            side: BorderSide(color: myOrangeSecondary, width: 2),
+            borderRadius: BorderRadius.circular(12.0.r),
+            side: BorderSide(color: myOrangeSecondary, width: 2.w),
           ),
           color: myOrangeSecondary,
           shadowColor: myOrange,
@@ -210,8 +222,8 @@ class _PropertyCardState extends State<PropertyCard> {
         Card(
           margin: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 8.0),
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(12.0),
-            side: BorderSide(color: myOrangeSecondary, width: 2),
+            borderRadius: BorderRadius.circular(12.0.r),
+            side: BorderSide(color: myOrangeSecondary, width: 2.w),
           ),
           color: myOrangeSecondary,
           shadowColor: myOrange,
@@ -219,7 +231,7 @@ class _PropertyCardState extends State<PropertyCard> {
           child: ListTile(
             tileColor: myOrangeSecondary,
             shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(12),
+              borderRadius: BorderRadius.circular(12.r),
             ),
             title: Text('Amenities', style: montserrat.copyWith(fontWeight: FontWeight.bold,color: myOrange)),
             subtitle: Wrap(
@@ -254,10 +266,10 @@ class _PropertyCardState extends State<PropertyCard> {
             await ApiHandler.instance.saveBookMark(widget.property.id, add);
           },
           child: Container(
-            height: 35,
-            width: 35,
+            height: 35.h,
+            width: 35.w,
             decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(6),
+              borderRadius: BorderRadius.circular(6.r),
               color: Colors.black,
             ),
             child: Icon(
@@ -307,14 +319,14 @@ class _PropertyCardState extends State<PropertyCard> {
                 child: Text(
                   "YES",
                   style: montserrat.copyWith(
-                      fontWeight: FontWeight.bold, color: Colors.green, fontSize: 18),
+                      fontWeight: FontWeight.bold, color: Colors.green, fontSize: 18.sp),
                 )),
             TextButton(
                 onPressed: () => Navigator.pop(context),
                 child: Text(
                   "NO",
                   style: montserrat.copyWith(
-                      fontWeight: FontWeight.bold, color: Colors.redAccent, fontSize: 18),
+                      fontWeight: FontWeight.bold, color: Colors.redAccent, fontSize: 18.sp),
                 ))
           ],
         );

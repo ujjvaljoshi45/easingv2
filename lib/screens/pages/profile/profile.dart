@@ -11,6 +11,7 @@ import 'package:easypg/utils/styles.dart';
 import 'package:easypg/utils/tools.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
 
@@ -67,26 +68,26 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     DottedBorder(
                       borderType: BorderType.Circle,
                       child: CircleAvatar(
-                        radius: getWidth(context) * 0.12,
+                        radius: getWidth(context) * 0.12.w,
                         backgroundImage: user.profileUrl.isEmpty
                             ? const AssetImage('assets/user_icon.png')
                             : CachedNetworkImageProvider(user.profileUrl),
                       ),
                     ),
                     Positioned(
-                      bottom: 1,
-                      right: 1,
+                      bottom: 1.h,
+                      right: 1.w,
                       child: InkWell(
                         onTap: () => _showMyModal(false),
                         child: Container(
                           decoration: BoxDecoration(
                               border: Border.all(
-                                width: 3,
+                                width: 3.w,
                                 color: myOrangeSecondary,
                               ),
-                              borderRadius: const BorderRadius.all(
+                              borderRadius: BorderRadius.all(
                                 Radius.circular(
-                                  50,
+                                  50.r,
                                 ),
                               ),
                               color: myOrangeSecondary,
@@ -94,7 +95,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                 BoxShadow(
                                   offset: const Offset(2, 4),
                                   color: myOrange.withOpacity(0.7),
-                                  blurRadius: 3,
+                                  blurRadius: 3.r,
                                 ),
                               ]),
                           child: Padding(
@@ -106,7 +107,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     ),
                   ],
                 ),
-                const SizedBox(width: 16),
+                SizedBox(width: 16.w),
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -115,30 +116,25 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         Text(
                           user.displayName,
                           style: montserrat.copyWith(
-                              color: Colors.black, fontWeight: FontWeight.bold, fontSize: 20),
+                              color: Colors.black, fontWeight: FontWeight.bold, fontSize: 20.sp),
                         ),
                         IconButton(
                             onPressed: () => _showMyModal(true),
                             icon:  FaIcon(FontAwesomeIcons.penToSquare,color: myOrange,))
                       ],
                     ),
-                    const SizedBox(height: 4),
+                    space(4),
                     Text(
                       user.phoneNo,
                       style: montserrat.copyWith(
-                          color: Colors.black, fontWeight: FontWeight.w500, fontSize: 16),
+                          color: Colors.black, fontWeight: FontWeight.w500, fontSize: 16.sp),
                     ),
-                    const SizedBox(height: 10),
-                    // ElevatedButton.icon(
-                    //   onPressed: _showEditProfileModal,
-                    //   icon: const Icon(Icons.edit, size: 20),
-                    //   label: const Text("Edit Profile"),
-                    // ),
+                    space(10),
                   ],
                 ),
               ],
             ),
-            const Divider(height: 30),
+            Divider(height: 30.h),
             ListTile(
               leading: const Icon(Icons.credit_card),
               title: const Text("Aadhar Verification"),
@@ -152,7 +148,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 ));
               },
             ),
-            const Divider(height: 20),
+            Divider(height: 20.h),
             ListTile(
               leading: const Icon(Icons.payment_outlined),
               title: const Text("Payment History"),
@@ -161,7 +157,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 // Navigate to payment history page
               },
             ),
-            const Divider(height: 20),
+            Divider(height: 20.h),
             ListTile(
               leading: const Icon(Icons.notifications_outlined),
               title: const Text("Notifications"),
@@ -170,7 +166,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 // Navigate to notification settings
               },
             ),
-            const Divider(height: 20),
+            Divider(height: 20.h),
             ListTile(
               leading: const Icon(Icons.support_agent_outlined),
               title: const Text("Contact Support"),
@@ -178,16 +174,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 // Navigate to support page
               },
             ),
-            // const Spacer(),
-            // ElevatedButton.icon(
-            //   onPressed: () {
-            //     // Navigate to help or support section
-            //   },
-            //   icon: const Icon(Icons.help_outline, size: 20),
-            //   label: const Text("Help & Support"),
-            //   style: ElevatedButton.styleFrom(
-            //       backgroundColor: Colors.blueAccent),
-            // ),
             const Spacer(),
             const Center(child: Text("Logo with Name goes here")),
           ],

@@ -1,6 +1,9 @@
 import 'dart:io';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+
+import '../../../utils/tools.dart';
 
 class AadharUploadPage extends StatefulWidget {
   const AadharUploadPage({super.key});
@@ -53,26 +56,25 @@ class _AadharUploadPageState extends State<AadharUploadPage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Text(
+             Text(
               'Upload Aadhar Card',
               style: TextStyle(
-                fontSize: 22,
+                fontSize: 22.sp,
                 fontWeight: FontWeight.bold,
               ),
             ),
-            const SizedBox(height: 15),
-            const Text(
+            space(15),
+             Text(
               'Please upload a PDF file containing both the front and back of your Aadhar card for verification.',
-              style: TextStyle(fontSize: 16),
+              style: TextStyle(fontSize: 16.sp),
             ),
-            const SizedBox(height: 20),
-
+            space(20),
             // Aadhar PDF File Display
             _aadharPdfFile != null
                 ? Column(
               children: [
-                const Icon(Icons.picture_as_pdf, size: 80, color: Colors.red),
-                const SizedBox(height: 10),
+                 Icon(Icons.picture_as_pdf, size: 80.sp, color: Colors.red),
+                space(10),
                 Text(_aadharPdfFile!.path.split('/').last),
               ],
             )
@@ -81,26 +83,26 @@ class _AadharUploadPageState extends State<AadharUploadPage> {
               icon: const Icon(Icons.upload_file),
               label: const Text('Select Aadhar PDF'),
             ),
-            const SizedBox(height: 30),
+            space(30),
 
             // Submit Button
             Center(
               child: ElevatedButton(
                 onPressed: _aadharPdfFile != null ? _submitAadhar : null,
-                child: const Text('Submit for Verification'),
                 style: ElevatedButton.styleFrom(
                   padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
                 ),
+                child: const Text('Submit for Verification'),
               ),
             ),
 
-            const SizedBox(height: 20),
+            space(20),
 
             // Display the current status
             isAadharSubmitted
-                ? const Text(
+                ?  Text(
               'Aadhar submitted successfully for verification.',
-              style: TextStyle(color: Colors.green, fontSize: 16),
+              style: TextStyle(color: Colors.green, fontSize: 16.sp),
             )
                 : const SizedBox.shrink(),
           ],

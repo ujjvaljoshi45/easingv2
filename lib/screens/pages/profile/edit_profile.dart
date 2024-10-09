@@ -1,6 +1,8 @@
 import 'package:easypg/provider/data_provider.dart';
 import 'package:easypg/utils/styles.dart';
+import 'package:easypg/utils/tools.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
 
@@ -34,9 +36,9 @@ class _EditProfileNameBottomSheetModalState extends State<EditProfileNameBottomS
   Widget build(BuildContext context) {
     return Container(
       padding: const EdgeInsets.all(16.0),
-      decoration: const BoxDecoration(
+      decoration:  BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
+        borderRadius: BorderRadius.vertical(top: Radius.circular(16.r)),
       ),
       child: Padding(
         padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
@@ -45,23 +47,11 @@ class _EditProfileNameBottomSheetModalState extends State<EditProfileNameBottomS
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              // GestureDetector(
-              //   onTap: _pickImage,
-              //   child: CircleAvatar(
-              //     radius: 50,
-              //     backgroundImage: _profileImage != null
-              //         ? FileImage(_profileImage!)
-              //         : NetworkImage(currentProfilePicture) as ImageProvider,
-              //     child: _profileImage == null
-              //         ? const Icon(Icons.camera_alt, size: 30, color: Colors.grey)
-              //         : null,
-              //   ),
-              // ),
               Text(
                 'Edit Name',
-                style: unSelectedOptionTextStyle.copyWith(fontSize: 18),
+                style: unSelectedOptionTextStyle.copyWith(fontSize: 18.sp),
               ),
-              const SizedBox(height: 16),
+              space(16),
               TextField(
                 onChanged: (value) {
                   setState(() {
@@ -75,7 +65,7 @@ class _EditProfileNameBottomSheetModalState extends State<EditProfileNameBottomS
                 ),
                 controller: TextEditingController(text: _name),
               ),
-              const SizedBox(height: 16),
+              space(16),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -129,9 +119,9 @@ class _EditProfilePictureState extends State<EditProfilePicture> {
   Widget build(BuildContext context) {
     return Container(
       padding: const EdgeInsets.all(16.0),
-      decoration: const BoxDecoration(
+      decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
+        borderRadius: BorderRadius.vertical(top: Radius.circular(16.r)),
       ),
       child: Padding(
         padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
@@ -143,17 +133,17 @@ class _EditProfilePictureState extends State<EditProfilePicture> {
               GestureDetector(
                 onTap: _pickImage,
                 child: CircleAvatar(
-                  radius: 50,
+                  radius: 50.r,
                   backgroundImage: _profileImage != null
                       ? FileImage(_profileImage!)
                       : NetworkImage(currentProfilePicture) as ImageProvider,
                   child: _profileImage == null
-                      ? const Icon(Icons.camera_alt, size: 30, color: Colors.grey)
+                      ? Icon(Icons.camera_alt, size: 30.sp, color: Colors.grey)
                       : null,
                 ),
               ),
 
-              const SizedBox(height: 16),
+              space(16),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [

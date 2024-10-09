@@ -80,10 +80,8 @@ class FirebaseController extends ApiHandler {
     for (String path in paths) {
       final ref = FirebaseStorage.instance
           .ref('property/${DataProvider.instance.getUser.uid}/$time/${paths.indexOf(path)}.jpg');
-      logEvent("REF:${ref.fullPath}");
       await ref.putFile(File(path));
       urls.add(await ref.getDownloadURL());
-      logEvent(FirebaseStorage.instance.refFromURL(await ref.getDownloadURL()).fullPath);
     }
     return urls;
   }

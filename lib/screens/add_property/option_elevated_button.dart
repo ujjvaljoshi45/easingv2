@@ -19,7 +19,7 @@ class OptionElevatedButton extends StatelessWidget {
       style:
       isSelected ? selectedOptionButtonStyle.copyWith(backgroundColor: WidgetStatePropertyAll(color ?? Colors.black)) : unSelectedOptionButtonStyle,
       child: Text(
-        text,
+        text,softWrap: true,
         style: isSelected ? selectedOptionTextStyle : unSelectedOptionTextStyle,
       ),
     );

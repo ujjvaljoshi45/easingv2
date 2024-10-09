@@ -7,6 +7,7 @@ import 'package:easypg/utils/styles.dart';
 import 'package:easypg/utils/tools.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:paytm_allinonesdk/paytm_allinonesdk.dart';
 
 class RentPage extends StatefulWidget {
@@ -39,14 +40,14 @@ class _RentPageState extends State<RentPage> {
               space(50),
               Text(
                 'List Your Property\nAnd\nEnjoy Passive Income',
-                style: montserrat.copyWith(fontSize: 28, fontWeight: FontWeight.bold),
+                style: montserrat.copyWith(fontSize: 28.sp, fontWeight: FontWeight.bold),
               ),
               const Spacer(),
               Align(
                 alignment: Alignment.center,
                 child: Text(
                   'Extra Income, Effortless',
-                  style: montserrat.copyWith(fontSize: 22, fontWeight: FontWeight.bold),
+                  style: montserrat.copyWith(fontSize: 22.sp, fontWeight: FontWeight.bold),
                 ),
               ),
               Row(
@@ -56,7 +57,7 @@ class _RentPageState extends State<RentPage> {
                           style: ButtonStyle(
                               backgroundColor: WidgetStatePropertyAll(myOrange),
                               shape: WidgetStatePropertyAll(RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(12.0)))),
+                                  borderRadius: BorderRadius.circular(12.0.r)))),
                           onPressed: () => Navigator.push(
                               context,
                               MaterialPageRoute(
@@ -65,7 +66,7 @@ class _RentPageState extends State<RentPage> {
                           child: Text(
                             'Click Here',
                             style: montserrat.copyWith(
-                                color: white, fontWeight: FontWeight.bold, fontSize: 20),
+                                color: white, fontWeight: FontWeight.bold, fontSize: 20.sp),
                           )))
                 ],
               ),
@@ -83,7 +84,7 @@ class _RentPageState extends State<RentPage> {
                 itemBuilder: (context, index) => Card(
                   shape: RoundedRectangleBorder(
                       side: BorderSide(color: properties[index].status ? Colors.green : Colors.red),
-                      borderRadius: BorderRadius.circular(12)),
+                      borderRadius: BorderRadius.circular(12.r)),
                   elevation: 1.3,
                   shadowColor: properties[index].status ? Colors.green : Colors.red,
                   child: Column(
@@ -93,7 +94,7 @@ class _RentPageState extends State<RentPage> {
                         leading: Text(
                           properties[index].status ? 'Active' : 'Not Active',
                           style: montserrat.copyWith(
-                              fontSize: 14,
+                              fontSize: 14.sp,
                               fontWeight: FontWeight.bold,
                               color: properties[index].status ? Colors.green : Colors.red),
                         ),
@@ -103,7 +104,7 @@ class _RentPageState extends State<RentPage> {
                                   backgroundColor: WidgetStatePropertyAll(myOrangeSecondary),
                                   shape: WidgetStatePropertyAll(
                                     RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(12),
+                                      borderRadius: BorderRadius.circular(12.r),
                                     ),
                                   ),
                                 ),
