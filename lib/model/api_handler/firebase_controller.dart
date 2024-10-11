@@ -122,24 +122,30 @@ class FirebaseController extends ApiHandler {
   }
 
   Future<List<Property>> queryProperties(String query, String? propertyType) async {
+
     try {
-      List<Future<QuerySnapshot>> futures = [
-        propertyRef.where('name', isEqualTo: query).get(),
-        propertyRef.where('street_address', isEqualTo: query).get(),
-        propertyRef.where('city', isEqualTo: query).get(),
-        propertyRef.where('state', isEqualTo: query).get(),
-      ];
-
-      // Wait for all queries to complete
-      List<QuerySnapshot> querySnapshots = await Future.wait(futures);
-
-      // Combine results and remove duplicates
-      Set<Property> allResults = {};
-      for (var snapshot in querySnapshots) {
-        for (var data in snapshot.docs) {
-          allResults.add(Property.fromJson(data.data() as Map<String, dynamic>, data.id));
-        }
+      List<QueryDocumentSnapshot> querySnapshots  = (await propertyRef.where('tags',arrayContainsAny: query.split(" ")).get()).docs;
+      List<Property> allResults = [];
+      for( var json in querySnapshots ) {
+        allResults.add(Property.fromJson(json.data() as Map<String,dynamic>,json.id));
       }
+      // List<Future<QuerySnapshot>> futures = [
+      //   propertyRef.where('name', isEqualTo: query).get(),
+      //   propertyRef.where('street_address', isEqualTo: query).get(),
+      //   propertyRef.where('city', isEqualTo: query).get(),
+      //   propertyRef.where('state', isEqualTo: query).get(),
+      // ];
+      //
+      // // Wait for all queries to complete
+      // List<QuerySnapshot> querySnapshots = await Future.wait(futures);
+      //
+      // // Combine results and remove duplicates
+      // Set<Property> allResults = {};
+      // for (var snapshot in querySnapshots) {
+      //   for (var data in snapshot.docs) {
+      //     allResults.add(Property.fromJson(data.data() as Map<String, dynamic>, data.id));
+      //   }
+      // }
 
       return allResults.toList();
     } catch (e, stackTrace) {

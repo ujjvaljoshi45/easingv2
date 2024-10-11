@@ -25,7 +25,7 @@ class _SearchPageState extends State<SearchPage> {
   _queryDatabase() async {
     final String? propertyType = _currentSelection > -1 ? searchCategory[_currentSelection] : null;
     final myQuery = _queryController.text;
-    properties = await ApiHandler.instance.queryProperties(myQuery, propertyType);
+    properties = await ApiHandler.instance.queryProperties(myQuery.toLowerCase(), propertyType);
     setState(() {});
   }
 

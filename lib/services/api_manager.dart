@@ -1,7 +1,5 @@
 import 'package:dio/dio.dart';
-import 'package:easypg/utils/tools.dart';
 import 'package:flutter/foundation.dart';
-
 import 'package:logger/logger.dart';
 
 class ApiManager {
@@ -31,16 +29,6 @@ class ApiManager {
     }
   }
 
-  Future<Response> postForm(String url, Map<String, dynamic> data,
-      {Map<String, dynamic>? parameters, Options? options}) async {
-    try {
-      return await dio.post(url,
-          options: options, queryParameters: parameters, data: FormData.fromMap(data));
-    } on DioException catch (error, stackTrace) {
-      logError('str', error, stackTrace);
-      return error.response ?? Response(requestOptions: RequestOptions(), data: error);
-    }
-  }
 
   Future<Response> get(String url, [Map<String, dynamic>? parameters, Options? options]) async {
     try {

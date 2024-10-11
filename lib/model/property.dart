@@ -18,6 +18,7 @@ class Property {
   bool status = false;
   DateTime createdAt = DateTime.now();
   String uploaderId = '';
+  List<String> tags = [];
 
   Property.required({
     required this.name,
@@ -56,9 +57,11 @@ class Property {
       deposit: '',
       amenities: [],
       photos: [],
-      createdAt: DateTime.now(),status: false,uploaderId: '');
+      createdAt: DateTime.now(),
+      status: false,
+      uploaderId: '');
 
-  factory Property.fromJson(Map<String, dynamic> json,id) {
+  factory Property.fromJson(Map<String, dynamic> json, id) {
     return Property.required(
         name: json[nameKey],
         position: json[positionKey],
@@ -83,8 +86,12 @@ class Property {
         ),
         createdAt: json[createdAtKey].toDate(),
         status: json[statusKey],
-        uploaderId: json[uploaderIdKey]
-    )..id=id ?? '';
+        uploaderId: json[uploaderIdKey])
+      ..id = id ?? ''
+      ..tags = List.generate(
+        json[tagsKey].length,
+        (index) => json[tagsKey][index],
+      );
   }
 
   Map<String, dynamic> toJson() => {
@@ -105,9 +112,15 @@ class Property {
         photosKey: photos,
         createdAtKey: createdAt,
         statusKey: status,
-    uploaderIdKey:uploaderId,
+        uploaderIdKey: uploaderId,
+        tagsKey: generateTags()
       };
   String getAddress() => "$streetAddress, $city,$state - $pinCode";
+  List<String> generateTags() => [pinCode, furniture] +
+      name.toLowerCase().split(' ').toList() +
+      state.toLowerCase().split(' ').toList() +
+      city.toLowerCase().split(" ").toList() +
+      streetAddress.toLowerCase().split(" ");
 }
 
 String positionKey = 'position';
@@ -128,3 +141,4 @@ String createdAtKey = 'created_at';
 String nameKey = 'name';
 String statusKey = 'status';
 String uploaderIdKey = 'uploader_id';
+String tagsKey = 'tags';

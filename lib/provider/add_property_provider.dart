@@ -22,7 +22,7 @@ class AddPropertyProvider extends ChangeNotifier {
   void setFurniture(String str) => property.furniture = str;
   void setRent(String str) => property.rent = str;
   void setDeposit(String str) => property.deposit = str;
-  void setAmenities(List<String> lis) => property.amenities = lis;
+  void setAmenities(List<String> lis) => property.amenities = lis.where((element) => element.isNotEmpty,).toList();
   void setPhotos(List<String> lis) => property.photos.addAll(lis);
   Future<void> save() async {
     property.uploaderId = DataProvider.instance.getUser.uid;
