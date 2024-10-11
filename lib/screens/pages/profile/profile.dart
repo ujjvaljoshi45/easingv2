@@ -150,7 +150,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
             ),
             Divider(height: 20.h),
             ListTile(
-              leading: const Icon(Icons.payment_outlined),
+              leading: const FaIcon(FontAwesomeIcons.clockRotateLeft),
               title: const Text("Payment History"),
               subtitle: const Text("View your past payments and manage upcoming ones."),
               onTap: () {
@@ -159,7 +159,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
             ),
             Divider(height: 20.h),
             ListTile(
-              leading: const Icon(Icons.notifications_outlined),
+              leading: const FaIcon(FontAwesomeIcons.bell),
               title: const Text("Notifications"),
               subtitle: const Text("Manage your notification preferences."),
               onTap: () {
@@ -168,7 +168,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
             ),
             Divider(height: 20.h),
             ListTile(
-              leading: const Icon(Icons.support_agent_outlined),
+              leading: const FaIcon(FontAwesomeIcons.handsHelping),
               title: const Text("Contact Support"),
               onTap: () {
                 // Navigate to support page
