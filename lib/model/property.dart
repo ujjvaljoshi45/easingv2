@@ -88,7 +88,7 @@ class Property {
         status: json[statusKey],
         uploaderId: json[uploaderIdKey])
       ..id = id ?? ''
-      ..tags = List.generate(
+      ..tags = json[tagsKey] == null ? [] : List.generate(
         json[tagsKey].length,
         (index) => json[tagsKey][index],
       );
