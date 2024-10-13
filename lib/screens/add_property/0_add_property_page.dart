@@ -4,6 +4,7 @@ import 'package:easypg/screens/add_property/5_add_photo.dart';
 import 'package:easypg/screens/add_property/4_amenities_information.dart';
 import 'package:easypg/screens/add_property/1_getting_started_page.dart';
 import 'package:easypg/screens/add_property/3_other_information.dart';
+import 'package:easypg/screens/add_property/widgets/save_and_next_btn.dart';
 import 'package:easypg/utils/colors.dart';
 import 'package:easypg/utils/styles.dart';
 import 'package:easypg/utils/tools.dart';
@@ -36,9 +37,7 @@ class _AddPropertyPageState extends State<AddPropertyPage> {
       _pageController.animateToPage(_currentIndex,
           curve: Curves.linearToEaseOut,
           duration: const Duration(milliseconds: 100));
-      setState(() {
-
-      });
+      setState(() {});
     } else {
       showToast('end', null);
       return;
@@ -55,9 +54,7 @@ class _AddPropertyPageState extends State<AddPropertyPage> {
       _pageController.animateToPage(_currentIndex,
           curve: Curves.linearToEaseOut,
           duration: const Duration(milliseconds: 250));
-      setState(() {
-
-      });
+      setState(() {});
     }
   }
 
@@ -100,14 +97,16 @@ class _AddPropertyPageState extends State<AddPropertyPage> {
             AddLocationPage(
               handelPageChange: () => _handelPageChangeChange(),
             ),
-            OtherInformationPage(handelPageChange: ()=>_handelPageChangeChange()),
-
-            AdditionInformationPage(handelPageChange: ()=>_handelPageChangeChange()),
-            AddPhotoPage(handelPageChange: ()=>_handelPageChangeChange()),
+            OtherInformationPage(
+                handelPageChange: () => _handelPageChangeChange()),
+            AdditionInformationPage(
+                handelPageChange: () => _handelPageChangeChange()),
+            AddPhotoPage(handelPageChange: () => _handelPageChangeChange()),
           ],
         ),
       ),
-
+      bottomNavigationBar: SaveAndNextBtn(
+          onPressed: _handelPageChangeChange, msg: 'Save And Next'),
     );
   }
 }

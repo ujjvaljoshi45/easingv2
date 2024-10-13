@@ -14,31 +14,31 @@ class AdditionInformationPage extends StatefulWidget {
 }
 
 class _AdditionInformationPageState extends State<AdditionInformationPage> {
-  Map<String, bool> myAmenities = {
-    "Breakfast": false,
-    "Lunch": false,
-    "Dinner": false,
-    "Drinking Water": false,
-    "AC": false,
-    "Laundry": false,
-    "Cleaning": false
-  };
+  // Map<String, bool> myAmenities = {
+  //   "Breakfast": false,
+  //   "Lunch": false,
+  //   "Dinner": false,
+  //   "Drinking Water": false,
+  //   "AC": false,
+  //   "Laundry": false,
+  //   "Cleaning": false
+  // };
   // List<bool> status = List.generate(10, (index) => false,);
   @override
   void initState() {
     for (String key in AddPropertyProvider.instance.property.amenities) {
-      myAmenities[key] = true;
+      // myAmenities[key] = true;
     }
 
     super.initState();
   }
 
   _manageSave() {
-    AddPropertyProvider.instance.setAmenities(List.generate(
-      myAmenities.length,
-      (index) =>
-          myAmenities[myAmenities.keys.toList()[index]]! ? myAmenities.keys.toList()[index] : '',
-    ));
+    // AddPropertyProvider.instance.setAmenities(List.generate(
+    //   myAmenities.length,
+    //   (index) =>
+    //       myAmenities[myAmenities.keys.toList()[index]]! ? myAmenities.keys.toList()[index] : '',
+    // ));
     widget.handelPageChange();
   }
 
@@ -49,18 +49,18 @@ class _AdditionInformationPageState extends State<AdditionInformationPage> {
       child: Column(
         children: [
           space(10),
-          for (int i = 0; i < myAmenities.length; i++)
+          for (int i = 0; i < AddPropertyProvider.instance.myAmenities.length; i++)
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  myAmenities.keys.toList()[i],
+                  AddPropertyProvider.instance.myAmenities.keys.toList()[i],
                   style: montserrat.copyWith(fontWeight: FontWeight.bold, fontSize: 18.sp),
                 ),
                 Checkbox(
-                  value: myAmenities[myAmenities.keys.toList()[i]],
-                  onChanged: (value) => setState(() => myAmenities[myAmenities.keys.toList()[i]] =
-                      value ?? myAmenities[myAmenities.keys.toList()[i]]!),
+                  value:AddPropertyProvider.instance. myAmenities[AddPropertyProvider.instance.myAmenities.keys.toList()[i]],
+                  onChanged: (value) => setState(() => AddPropertyProvider.instance.myAmenities[AddPropertyProvider.instance.myAmenities.keys.toList()[i]] =
+                      value ??AddPropertyProvider.instance.myAmenities[AddPropertyProvider.instance.myAmenities.keys.toList()[i]]!),
                 ),
               ],
             ),

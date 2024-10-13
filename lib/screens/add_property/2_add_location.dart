@@ -5,6 +5,7 @@ import 'package:easypg/screens/add_property/widgets/option_elevated_button.dart'
 import 'package:easypg/screens/add_property/widgets/save_and_next_btn.dart';
 import 'package:easypg/services/api_manager.dart';
 import 'package:easypg/utils/tools.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -17,8 +18,6 @@ class AddLocationPage extends StatefulWidget {
 }
 
 class _AddLocationPageState extends State<AddLocationPage> {
-  List<String> types = ['House', 'Pg/Hostel', 'Apartment', 'Duplex'];
-  int _selection = 0;
   String propertyName = '';
   String streetAddress = '';
   String pinCode = '';
@@ -27,12 +26,14 @@ class _AddLocationPageState extends State<AddLocationPage> {
 
   _manageSave() {
     AddPropertyProvider.instance.setName(propertyName);
-    AddPropertyProvider.instance.setPropertyType(types[_selection]);
+    // AddPropertyProvider.instance.setPropertyType(types[propertyTypeSelection]);
     AddPropertyProvider.instance.setStreetAddress(streetAddress);
     AddPropertyProvider.instance.setPinCode(pinCode);
     AddPropertyProvider.instance.setCity(city);
     AddPropertyProvider.instance.setState(state);
-    _validate() ? widget.handelPageChange() : Fluttertoast.showToast(msg: 'Fill all the fields');
+    _validate()
+        ? widget.handelPageChange()
+        : Fluttertoast.showToast(msg: 'Fill all the fields');
   }
 
   _validate() {
@@ -45,11 +46,11 @@ class _AddLocationPageState extends State<AddLocationPage> {
         AddPropertyProvider.instance.property.state.isNotEmpty;
   }
 
-  _manageSelection(int index) => setState(() => _selection = index);
+  // _manageSelection(int index) => setState(() => propertyTypeSelection = index);
   @override
   void initState() {
-    _selection = types.indexOf(AddPropertyProvider.instance.property.propertyType);
-    _selection < 0 ? _selection = 0 : null;
+    // propertyTypeSelection = types.indexOf(AddPropertyProvider.instance.property.propertyType);
+    // propertyTypeSelection < 0 ? propertyTypeSelection = 0 : null;
     propertyName = AddPropertyProvider.instance.property.name;
     streetAddress = AddPropertyProvider.instance.property.streetAddress;
     pinCode = AddPropertyProvider.instance.property.pinCode;
@@ -69,58 +70,89 @@ class _AddLocationPageState extends State<AddLocationPage> {
             space(20),
             printHeading('Property Type'),
             space(20),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Expanded(
+            Center(
+              child: Wrap(
+                runSpacing: 1,
+                children: [
+                  for (int index = 0; index < 4; index++)
+                  SizedBox(
+                    width: getWidth(context) * 0.45,
                     child: OptionElevatedButton(
-                  isSelected: _selection == 0,
-                  text: types[0],
-                  onPressed: () => _manageSelection(0),
-                )),
-                SizedBox(
-                  width: 20.w,
-                ),
-                Expanded(
-                    child: OptionElevatedButton(
-                  isSelected: _selection == 1,
-                  text: types[1],
-                  onPressed: () => _manageSelection(1),
-                ))
-              ],
+                      isSelected:
+                      AddPropertyProvider.instance.propertyTypeSelection == index,
+                      text: AddPropertyProvider.instance.types[index],
+                      onPressed: () {
+                        AddPropertyProvider.instance.propertyTypeSelection = index;
+                        AddPropertyProvider.instance.setPropertyType(AddPropertyProvider.instance.types[AddPropertyProvider.instance.propertyTypeSelection]);
+                        setState(() {});
+                      },
+                    ),
+                  )
+                ],
+              ),
             ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                Expanded(
-                    child: OptionElevatedButton(
-                  isSelected: _selection == 2,
-                  text: types[2],
-                  onPressed: () => _manageSelection(2),
-                )),
-                SizedBox(
-                  width: 20.w,
-                ),
-                Expanded(
-                  child: OptionElevatedButton(
-                    isSelected: _selection == 3,
-                    text: types[3],
-                    onPressed: () => _manageSelection(3),
-                  ),
-                ),
-              ],
-            ),
+            // Row(
+            //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            //   children: [
+            //     Expanded(
+            //         child: OptionElevatedButton(
+            //       isSelected:
+            //           AddPropertyProvider.instance.propertyTypeSelection == 0,
+            //       text: AddPropertyProvider.instance.types[0],
+            //       onPressed: () =>
+            //           AddPropertyProvider.instance.propertyTypeSelection = 0,
+            //     )),
+            //     SizedBox(
+            //       width: 20.w,
+            //     ),
+            //     Expanded(
+            //         child: OptionElevatedButton(
+            //       isSelected:
+            //           AddPropertyProvider.instance.propertyTypeSelection == 1,
+            //       text: AddPropertyProvider.instance.types[1],
+            //       onPressed: () =>
+            //           AddPropertyProvider.instance.propertyTypeSelection = 1,
+            //     ))
+            //   ],
+            // ),
+            // Row(
+            //   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            //   children: [
+            //     Expanded(
+            //         child: OptionElevatedButton(
+            //       isSelected:
+            //           AddPropertyProvider.instance.propertyTypeSelection == 2,
+            //       text: AddPropertyProvider.instance.types[2],
+            //       onPressed: () =>
+            //           AddPropertyProvider.instance.propertyTypeSelection = 2,
+            //     )),
+            //     SizedBox(
+            //       width: 20.w,
+            //     ),
+            //     Expanded(
+            //       child: OptionElevatedButton(
+            //         isSelected:
+            //             AddPropertyProvider.instance.propertyTypeSelection == 3,
+            //         text: AddPropertyProvider.instance.types[3],
+            //         onPressed: () =>
+            //             AddPropertyProvider.instance.propertyTypeSelection = 3,
+            //       ),
+            //     ),
+            //   ],
+            // ),
             space(20),
             TextFormField(
               initialValue: AddPropertyProvider.instance.property.name,
-              decoration: const InputDecoration(hintText: 'Enter Property Name'),
-              onChanged: (value) => setState(() => propertyName = value),
+              decoration:
+                  const InputDecoration(hintText: 'Enter Property Name'),
+              onChanged: (value) => AddPropertyProvider.instance.setName(value),
             ),
             space(20),
             TextFormField(
               initialValue: AddPropertyProvider.instance.property.streetAddress,
-              decoration: const InputDecoration(hintText: 'Enter Street Address'),
-              onChanged: (value) => setState(() => streetAddress = value),
+              decoration:
+                  const InputDecoration(hintText: 'Enter Street Address'),
+              onChanged: (value) => AddPropertyProvider.instance.setStreetAddress(value),
             ),
             space(20),
             CSCPicker(
@@ -132,14 +164,15 @@ class _AddLocationPageState extends State<AddLocationPage> {
               cityDropdownLabel: 'City',
               flagState: CountryFlag.DISABLE,
               currentCountry: CscCountry.India.name,
-              onStateChanged: (value) => setState(() => state = value ?? state),
-              onCityChanged: (value) => setState(() => city = value ?? city),
-              currentCity: city,
-              currentState: state,
+              onStateChanged: (value) => setState(() => AddPropertyProvider.instance.property.state = value ?? AddPropertyProvider.instance.property.state),
+              onCityChanged: (value) => setState(() => AddPropertyProvider.instance.property.city = value ?? AddPropertyProvider.instance.property.city),
+              currentCity: AddPropertyProvider.instance.property.city,
+              currentState: AddPropertyProvider.instance.property.state,
             ),
-            if (city.length > 3)
+            if (AddPropertyProvider.instance.property.city.length > 3)
               FutureBuilder(
-                future: ApiManager.instance.get('https://api.postalpincode.in/postoffice/$city'),
+                future: ApiManager.instance
+                    .get('https://api.postalpincode.in/postoffice/${AddPropertyProvider.instance.property.city}'),
                 builder: (context, snapshot) {
                   if (snapshot.connectionState == ConnectionState.waiting) {
                     return TextFormField(
@@ -154,17 +187,18 @@ class _AddLocationPageState extends State<AddLocationPage> {
                     );
                   }
 
-                  List<PostOffice> postOffices =
-                      PostOffice.parseResponse(snapshot.requireData.data.first, state);
+                  List<PostOffice> postOffices = PostOffice.parseResponse(
+                      snapshot.requireData.data.first, AddPropertyProvider.instance.property.state);
                   logEvent('len: ${postOffices.length}');
 
                   try {
                     return DropdownButtonFormField(
                       // value: pinCode,
-                      decoration: const InputDecoration(label: Text('Pin-Code')),
+                      decoration:
+                          const InputDecoration(label: Text('Pin-Code')),
                       onChanged: (value) {
                         logEvent('value:$value');
-                        pinCode = value ?? pinCode;
+                        AddPropertyProvider.instance.property.pinCode = value ?? AddPropertyProvider.instance.property.pinCode;
                       },
                       items: [
                         for (int i = 0; i < postOffices.length; i++)
@@ -192,9 +226,7 @@ class _AddLocationPageState extends State<AddLocationPage> {
                   }
                 },
               ),
-            const Spacer(),
-            SaveAndNextBtn(onPressed: _manageSave, msg: 'Save And Next'),
-            space(20),
+
           ],
         ),
       ),

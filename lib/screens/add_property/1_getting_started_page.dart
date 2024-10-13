@@ -12,25 +12,21 @@ class GettingStartedPage extends StatefulWidget {
 }
 
 class _GettingStartedPageState extends State<GettingStartedPage> {
-  List<String> ownership = ['Owner', 'Agent', 'Builder'];
 
-  List<String> motive = ['Rent / Lease', 'List as PG'];
-  int selectedOption = 0;
-  int selectedPurpose = 0;
-  @override
-  void initState() {
-    selectedOption = ownership.indexOf(AddPropertyProvider.instance.property.position);
-    selectedPurpose = motive.indexOf(AddPropertyProvider.instance.property.motive);
-
-    selectedOption < 0 ? selectedOption = 0 : null;
-    selectedPurpose < 0 ? selectedPurpose = 0 : null;
-    super.initState();
-  }
+  // @override
+  // void initState() {
+  //   selectedOption = ownership.indexOf(AddPropertyProvider.instance.property.position);
+  //   selectedPurpose = motive.indexOf(AddPropertyProvider.instance.property.motive);
+  //
+  //   selectedOption < 0 ? selectedOption = 0 : null;
+  //   selectedPurpose < 0 ? selectedPurpose = 0 : null;
+  //   super.initState();
+  // }
 
   _manageSave() {
-    AddPropertyProvider.instance.setPosition(ownership[selectedOption]);
-    AddPropertyProvider.instance.setMotive(motive[selectedPurpose]);
-    // Save and then call
+    // AddPropertyProvider.instance.setPosition(ownership[selectedOption]);
+    // AddPropertyProvider.instance.setMotive(motive[selectedPurpose]);
+    // // Save and then call
     widget.handelPageChange();
   }
 
@@ -47,21 +43,22 @@ class _GettingStartedPageState extends State<GettingStartedPage> {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
+              for (int i = 0; i < 3; i++)
               OptionElevatedButton(
-                isSelected: selectedOption == 0,
-                text: ownership[0],
-                onPressed: () => setState(() => selectedOption = 0),
+                isSelected: AddPropertyProvider.instance.selectedOption == i,
+                text: AddPropertyProvider.instance.ownership[i],
+                onPressed: () => setState(() => AddPropertyProvider.instance.selectedOption = i),
               ),
-              OptionElevatedButton(
-                isSelected: selectedOption == 1,
-                text: ownership[1],
-                onPressed: () => setState(() => selectedOption = 1),
-              ),
-              OptionElevatedButton(
-                isSelected: selectedOption == 2,
-                text: ownership[2],
-                onPressed: () => setState(() => selectedOption = 2),
-              ),
+              // OptionElevatedButton(
+              //   isSelected: AddPropertyProvider.instance.selectedOption == 1,
+              //   text: AddPropertyProvider.instance.ownership[1],
+              //   onPressed: () => setState(() => AddPropertyProvider.instance.selectedOption = 1),
+              // ),
+              // OptionElevatedButton(
+              //   isSelected: AddPropertyProvider.instance.selectedOption == 2,
+              //   text: AddPropertyProvider.instance.ownership[2],
+              //   onPressed: () => setState(() => AddPropertyProvider.instance.selectedOption = 2),
+              // ),
             ],
           ),
           space(20),
@@ -70,21 +67,22 @@ class _GettingStartedPageState extends State<GettingStartedPage> {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
+              for (int i = 0; i < 2; i++)
               OptionElevatedButton(
-                isSelected: selectedPurpose == 0,
-                text: motive[0],
-                onPressed: () => setState(() => selectedPurpose = 0),
+                isSelected: AddPropertyProvider.instance.selectedPurpose == i,
+                text: AddPropertyProvider.instance.motive[i],
+                onPressed: () => setState(() => AddPropertyProvider.instance.selectedPurpose = i),
               ),
-              OptionElevatedButton(
-                isSelected: selectedPurpose == 1,
-                text: motive[1],
-                onPressed: () => setState(() => selectedPurpose = 1),
-              ),
+              // OptionElevatedButton(
+              //   isSelected: AddPropertyProvider.instance.selectedPurpose == 1,
+              //   text: AddPropertyProvider.instance.motive[1],
+              //   onPressed: () => setState(() => AddPropertyProvider.instance.selectedPurpose = 1),
+              // ),
             ],
           ),
-          const Spacer(),
-          SaveAndNextBtn(onPressed: _manageSave, msg: 'Save And Next'),
-          space(20),
+          // const Spacer(),
+          // SaveAndNextBtn(onPressed: _manageSave, msg: 'Save And Next'),
+          // space(20),
         ],
       ),
     );

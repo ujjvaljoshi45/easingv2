@@ -17,14 +17,7 @@ class OtherInformationPage extends StatefulWidget {
 }
 
 class _OtherInformationPageState extends State<OtherInformationPage> {
-  int _currentBhkSelection = 0;
-  int _currentFurnishedSelection = 0;
-  int _bathrooms = 1;
-  List<String> furnished = [
-    'Un Furnished',
-    'Semi Furnished',
-    'Furnished',
-  ];
+
   String rent = '';
   String deposit = '';
 
@@ -32,46 +25,46 @@ class _OtherInformationPageState extends State<OtherInformationPage> {
   void initState() {
     rent = AddPropertyProvider.instance.property.rent;
     deposit = AddPropertyProvider.instance.property.deposit;
-    switch (AddPropertyProvider.instance.property.bhk) {
-      case '2':
-        _currentBhkSelection = 1;
-        break;
-      case '3':
-        _currentBhkSelection = 2;
-        break;
-      case '3+':
-        _currentBhkSelection = 3;
-        break;
-      default:
-        _currentBhkSelection = 0;
-        break;
-    }
-    switch (AddPropertyProvider.instance.property.bathroom) {
-      case '2':
-        _bathrooms = 2;
-        break;
-      case '3':
-        _bathrooms = 3;
-        break;
-      default:
-        _bathrooms = 1;
-        break;
-    }
-    for (var element in furnished) {
-      element == AddPropertyProvider.instance.property.furniture
-          ? _currentFurnishedSelection = furnished.indexOf(element)
-          : null;
-    }
-    AddPropertyProvider.instance.property.bathroom;
+    // switch (AddPropertyProvider.instance.property.bhk) {
+    //   case '2':
+    //     currentBhkSelection = 1;
+    //     break;
+    //   case '3':
+    //     currentBhkSelection = 2;
+    //     break;
+    //   case '3+':
+    //     currentBhkSelection = 3;
+    //     break;
+    //   default:
+    //     currentBhkSelection = 0;
+    //     break;
+    // }
+    // switch (AddPropertyProvider.instance.property.bathroom) {
+    //   case '2':
+    //     bathrooms = 2;
+    //     break;
+    //   case '3':
+    //     bathrooms = 3;
+    //     break;
+    //   default:
+    //     bathrooms = 1;
+    //     break;
+    // }
+    // for (var element in furnished) {
+    //   element == AddPropertyProvider.instance.property.furniture
+    //       ? currentFurnishedSelection = furnished.indexOf(element)
+    //       : null;
+    // }
+    // AddPropertyProvider.instance.property.bathroom;
     super.initState();
   }
 
   _handelSave() {
-    AddPropertyProvider.instance.setBHK(_currentBhkSelection.toString());
-    AddPropertyProvider.instance.setBathroom(_bathrooms.toString());
-    AddPropertyProvider.instance.setFurniture(furnished[_currentFurnishedSelection]);
-    AddPropertyProvider.instance.setRent(rent);
-    AddPropertyProvider.instance.setDeposit(deposit);
+    // AddPropertyProvider.instance.setBHK(currentBhkSelection.toString());
+    // AddPropertyProvider.instance.setBathroom(bathrooms.toString());
+    // AddPropertyProvider.instance.setFurniture(furnished[currentFurnishedSelection]);
+    // AddPropertyProvider.instance.setRent(rent);
+    // AddPropertyProvider.instance.setDeposit(deposit);
     _validate() ? widget.handelPageChange() : Fluttertoast.showToast(msg: 'Fill all the fields');
   }
 
@@ -99,9 +92,12 @@ class _OtherInformationPageState extends State<OtherInformationPage> {
               children: [
                 for (int i = 0; i < 4; i++)
                   OptionElevatedButton(
-                      isSelected: _currentBhkSelection == i,
+                      isSelected: AddPropertyProvider.instance.currentBhkSelection == i,
                       text: i == 3 ? '3+' : '${i + 1}',
-                      onPressed: () => setState(() => _currentBhkSelection = i))
+                      onPressed: () {
+                        setState(() => AddPropertyProvider.instance.currentBhkSelection = i);
+                        AddPropertyProvider.instance.setBHK(AddPropertyProvider.instance.currentBhkSelection.toString());
+                      })
               ],
             ),
             space(20),
@@ -119,13 +115,16 @@ class _OtherInformationPageState extends State<OtherInformationPage> {
                     color: black,
                   ),
                 ),
-                value: _bathrooms,
+                value: AddPropertyProvider.instance.bathrooms,
                 selectedTextStyle: montserrat.copyWith(
                   fontWeight: FontWeight.bold,
                 ),
-                onChanged: (value) => setState(
-                  () => _bathrooms = value,
-                ),
+                onChanged: (value) {
+                  setState(
+                  () => AddPropertyProvider.instance.bathrooms = value,
+                );
+                  AddPropertyProvider.instance.setBathroom(AddPropertyProvider.instance.bathrooms.toString());
+                },
                 haptics: true,
                 axis: Axis.horizontal,
               ),
@@ -135,14 +134,17 @@ class _OtherInformationPageState extends State<OtherInformationPage> {
             space(10),
             Column(
               children: [
-                for (int i = 0; i < furnished.length; i++)
+                for (int i = 0; i < AddPropertyProvider.instance.furnished.length; i++)
                   Row(
                     children: [
                       Expanded(
                           child: OptionElevatedButton(
-                        isSelected: _currentFurnishedSelection == i,
-                        text: furnished[i],
-                        onPressed: () => setState(() => _currentFurnishedSelection = i),
+                        isSelected: AddPropertyProvider.instance.currentFurnishedSelection == i,
+                        text: AddPropertyProvider.instance.furnished[i],
+                        onPressed: () {
+                          setState(() => AddPropertyProvider.instance.currentFurnishedSelection = i);
+                          AddPropertyProvider.instance.setFurniture(AddPropertyProvider.instance.furnished[AddPropertyProvider.instance.currentFurnishedSelection]);
+                        },
                       )),
                     ],
                   )
@@ -153,14 +155,14 @@ class _OtherInformationPageState extends State<OtherInformationPage> {
             space(20),
             TextFormField(
               initialValue: AddPropertyProvider.instance.property.rent,
-              onChanged: (value) => setState(() => rent = value),
+              onChanged: (value) => setState(() => AddPropertyProvider.instance.property.rent = value),
               decoration: const InputDecoration(hintText: 'Enter Rent Here...'),
               keyboardType: TextInputType.number,
             ),
             space(20),
             TextFormField(
               initialValue: AddPropertyProvider.instance.property.deposit,
-              onChanged: (value) => setState(() => deposit = value),
+              onChanged: (value) => setState(() => AddPropertyProvider.instance.property.deposit = value),
               decoration: const InputDecoration(hintText: 'Enter Deposit Here...'),
               keyboardType: TextInputType.number,
             ),
