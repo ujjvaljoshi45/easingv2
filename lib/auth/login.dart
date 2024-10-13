@@ -19,7 +19,7 @@ class LoginScreen extends StatefulWidget {
 class _LoginScreenState extends State<LoginScreen> {
   final FocusNode phoneFocusNode = FocusNode();
   PhoneNumber phoneNumber = PhoneNumber();
-  bool _isLoading = false;
+
 
   @override
   Widget build(BuildContext context) {
@@ -126,16 +126,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     ),
                   ),
                 ), // Disable button when loading
-                child: _isLoading
-                    ?  SizedBox(
-                        width: 20.w,
-                        height: 20.h,
-                        child: CircularProgressIndicator(
-                          strokeWidth: 2,
-                          color: Colors.white,
-                        ),
-                      )
-                    : Text(
+                child:Text(
                         'SEND OTP',
                         style: GoogleFonts.montserrat(
                           letterSpacing: 1.5,

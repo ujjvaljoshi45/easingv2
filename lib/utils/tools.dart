@@ -14,7 +14,7 @@ printHeading(String text) => Text(
       text,
       style: montserrat.copyWith(fontWeight: FontWeight.bold, fontSize: 20.sp),
     );
-showToast(msg, color) =>
+void showToast(String msg,[ Color? color]) =>
     Fluttertoast.showToast(msg: msg, backgroundColor: color);
 
 double getHeight(context) => MediaQuery.sizeOf(context).height.h;

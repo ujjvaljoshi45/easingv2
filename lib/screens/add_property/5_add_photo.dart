@@ -1,12 +1,9 @@
 import 'dart:io';
 import 'package:dotted_border/dotted_border.dart';
 import 'package:easypg/provider/add_property_provider.dart';
-import 'package:easypg/screens/add_property/widgets/save_and_next_btn.dart';
-import 'package:easypg/utils/colors.dart';
 import 'package:easypg/utils/tools.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:image_picker/image_picker.dart';
 
 class AddPhotoPage extends StatefulWidget {
@@ -18,83 +15,40 @@ class AddPhotoPage extends StatefulWidget {
 }
 
 class _AddPhotoPageState extends State<AddPhotoPage> {
-  bool isLoading = false;
-
-  @override
-  void initState() {
-    logEvent('init');
-    logEvent("e:${AddPropertyProvider.instance.property.photos.elementAtOrNull(1)}");
-    super.initState();
-  }
-
-  _validate() {
-    return AddPropertyProvider.instance.property.photos.length >= 4;
-  }
-
   @override
   Widget build(BuildContext context) {
-    return isLoading
-        ? Center(
-            child: CircularProgressIndicator(
-            color: myOrange,
-          ))
-        : Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              space(20),
-              printHeading('A good photo equals 10x more views.'),
-              space(20),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  ImageTile(
-                    url: AddPropertyProvider.instance.property.photos.elementAtOrNull(0),
-                  ),
-                  ImageTile(url: AddPropertyProvider.instance.property.photos.elementAtOrNull(1)),
-                ],
-              ),
-              space(20),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  ImageTile(url: AddPropertyProvider.instance.property.photos.elementAtOrNull(2)),
-                  ImageTile(url: AddPropertyProvider.instance.property.photos.elementAtOrNull(3)),
-                ],
-              ),
-              const Spacer(),
-              SaveAndNextBtn(
-                  onPressed: () async {
-                    _validate()
-                        ? await _save()
-                        : logEvent(
-                            'Photos Empty: ${AddPropertyProvider.instance.property.photos.length}');
-                  },
-                  msg: 'Save'),
-              space(20)
-            ],
-          );
-  }
-
-  _save() async {
-    setState(() => isLoading = true);
-    mounted
-        ? await AddPropertyProvider.instance
-            .save()
-            .then(
-              (value) => Navigator.pop(context),
-            )
-            .onError(
-            (error, stackTrace) {
-              logError('save Error', error, stackTrace);
-
-              Navigator.pop(context);
-              Fluttertoast.showToast(
-                  msg: 'Unable To Save Property!',
-                  backgroundColor: Colors.redAccent,
-                  textColor: Colors.white);
-            },
-          )
-        : null;
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        space(20),
+        printHeading('A good photo equals 10x more views.'),
+        space(20),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: [
+            ImageTile(
+              url: AddPropertyProvider.instance.property.photos
+                  .elementAtOrNull(0),
+            ),
+            ImageTile(
+                url: AddPropertyProvider.instance.property.photos
+                    .elementAtOrNull(1)),
+          ],
+        ),
+        space(20),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: [
+            ImageTile(
+                url: AddPropertyProvider.instance.property.photos
+                    .elementAtOrNull(2)),
+            ImageTile(
+                url: AddPropertyProvider.instance.property.photos
+                    .elementAtOrNull(3)),
+          ],
+        ),
+      ],
+    );
   }
 }
 
