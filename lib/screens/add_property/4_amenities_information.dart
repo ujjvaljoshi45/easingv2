@@ -1,5 +1,5 @@
 import 'package:easypg/provider/add_property_provider.dart';
-import 'package:easypg/screens/add_property/save_and_next_btn.dart';
+import 'package:easypg/screens/add_property/widgets/save_and_next_btn.dart';
 import 'package:easypg/utils/styles.dart';
 import 'package:easypg/utils/tools.dart';
 import 'package:flutter/material.dart';

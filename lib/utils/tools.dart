@@ -1,4 +1,3 @@
-import 'package:easypg/main.dart';
 import 'package:easypg/utils/styles.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';

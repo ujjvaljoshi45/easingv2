@@ -1,9 +1,9 @@
 import 'package:easypg/provider/add_property_provider.dart';
-import 'package:easypg/screens/add_property/add_location.dart';
-import 'package:easypg/screens/add_property/add_photo.dart';
-import 'package:easypg/screens/add_property/addition_information.dart';
-import 'package:easypg/screens/add_property/getting_started_page.dart';
-import 'package:easypg/screens/add_property/other_information.dart';
+import 'package:easypg/screens/add_property/2_add_location.dart';
+import 'package:easypg/screens/add_property/5_add_photo.dart';
+import 'package:easypg/screens/add_property/4_amenities_information.dart';
+import 'package:easypg/screens/add_property/1_getting_started_page.dart';
+import 'package:easypg/screens/add_property/3_other_information.dart';
 import 'package:easypg/utils/colors.dart';
 import 'package:easypg/utils/styles.dart';
 import 'package:easypg/utils/tools.dart';
@@ -104,10 +104,10 @@ class _AddPropertyPageState extends State<AddPropertyPage> {
 
             AdditionInformationPage(handelPageChange: ()=>_handelPageChangeChange()),
             AddPhotoPage(handelPageChange: ()=>_handelPageChangeChange()),
-
           ],
         ),
       ),
+
     );
   }
 }

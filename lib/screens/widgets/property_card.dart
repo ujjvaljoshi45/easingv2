@@ -3,7 +3,7 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:easypg/model/api_handler/api_handler.dart';
 import 'package:easypg/model/property.dart';
 import 'package:easypg/provider/data_provider.dart';
-import 'package:easypg/screens/add_property/save_and_next_btn.dart';
+import 'package:easypg/screens/add_property/widgets/save_and_next_btn.dart';
 import 'package:easypg/utils/colors.dart';
 import 'package:easypg/utils/styles.dart';
 import 'package:easypg/utils/tools.dart';

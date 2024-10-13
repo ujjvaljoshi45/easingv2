@@ -1,15 +1,13 @@
 import 'package:easypg/model/api_handler/api_handler.dart';
 import 'package:easypg/model/property.dart';
-import 'package:easypg/screens/add_property/add_property_page.dart';
+import 'package:easypg/screens/add_property/0_add_property_page.dart';
 import 'package:easypg/screens/widgets/property_card.dart';
 import 'package:easypg/services/payment_service.dart';
 import 'package:easypg/utils/colors.dart';
 import 'package:easypg/utils/styles.dart';
 import 'package:easypg/utils/tools.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:paytm_allinonesdk/paytm_allinonesdk.dart';
 
 class RentPage extends StatefulWidget {
   const RentPage({super.key});

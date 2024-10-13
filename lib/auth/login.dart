@@ -27,11 +27,7 @@ class _LoginScreenState extends State<LoginScreen> {
       canPop: false,
       child: Scaffold(
         resizeToAvoidBottomInset: false,
-        appBar: AppBar(
-          automaticallyImplyLeading: false,
-          // title: const Text('Easy PG'),
-          centerTitle: true,
-        ),
+
         body: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 12.0),
           child: Padding(
@@ -44,6 +40,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   mainAxisAlignment: MainAxisAlignment.start,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
+                    space(kToolbarHeight),
                     const Spacer(),
                     Image.asset('assets/login_vector.png'),
                     const Spacer(),
@@ -80,6 +77,7 @@ class _LoginScreenState extends State<LoginScreen> {
         fontWeight: FontWeight.w600,
         fontSize: 18,
       ),
+      keyboardType: TextInputType.number,
       textStyle: montserrat.copyWith(
         color: Colors.black,
         fontWeight: FontWeight.w600,
@@ -92,7 +90,6 @@ class _LoginScreenState extends State<LoginScreen> {
         ),
         filled: true,
       ),
-      formatInput: true,
       countrySelectorScrollControlled: true,
       selectorConfig: const SelectorConfig(
         showFlags: true,

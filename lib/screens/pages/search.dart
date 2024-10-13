@@ -1,6 +1,6 @@
 import 'package:easypg/model/api_handler/api_handler.dart';
 import 'package:easypg/model/property.dart';
-import 'package:easypg/screens/add_property/option_elevated_button.dart';
+import 'package:easypg/screens/add_property/widgets/option_elevated_button.dart';
 import 'package:easypg/screens/widgets/property_card.dart';
 import 'package:easypg/utils/colors.dart';
 import 'package:easypg/utils/styles.dart';

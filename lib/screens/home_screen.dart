@@ -4,7 +4,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:dotted_border/dotted_border.dart';
 import 'package:easypg/provider/data_provider.dart';
 import 'package:easypg/model/user.dart';
-import 'package:easypg/screens/add_property/add_property_page.dart';
+import 'package:easypg/screens/add_property/0_add_property_page.dart';
 import 'package:easypg/screens/pages/bookmarks.dart';
 import 'package:easypg/screens/pages/home.dart';
 import 'package:easypg/screens/pages/profile/profile.dart';

@@ -1,8 +1,8 @@
 import 'package:csc_picker/csc_picker.dart';
 import 'package:easypg/model/prediction.dart';
 import 'package:easypg/provider/add_property_provider.dart';
-import 'package:easypg/screens/add_property/option_elevated_button.dart';
-import 'package:easypg/screens/add_property/save_and_next_btn.dart';
+import 'package:easypg/screens/add_property/widgets/option_elevated_button.dart';
+import 'package:easypg/screens/add_property/widgets/save_and_next_btn.dart';
 import 'package:easypg/services/api_manager.dart';
 import 'package:easypg/utils/tools.dart';
 import 'package:flutter/material.dart';
