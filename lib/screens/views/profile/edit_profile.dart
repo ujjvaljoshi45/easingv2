@@ -21,8 +21,6 @@ class _EditProfileNameBottomSheetModalState extends State<EditProfileNameBottomS
   String? _name;
   @override
   void initState() {
-
-
     super.initState();
   }
 
@@ -36,7 +34,7 @@ class _EditProfileNameBottomSheetModalState extends State<EditProfileNameBottomS
   Widget build(BuildContext context) {
     return Container(
       padding: const EdgeInsets.all(16.0),
-      decoration:  BoxDecoration(
+      decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.vertical(top: Radius.circular(16.r)),
       ),
@@ -87,7 +85,6 @@ class _EditProfileNameBottomSheetModalState extends State<EditProfileNameBottomS
   }
 }
 
-
 class EditProfilePicture extends StatefulWidget {
   const EditProfilePicture({super.key});
 
@@ -96,7 +93,7 @@ class EditProfilePicture extends StatefulWidget {
 }
 
 class _EditProfilePictureState extends State<EditProfilePicture> {
-  String currentProfilePicture = DataProvider.instance.getUser.profileUrl ;
+  String currentProfilePicture = DataProvider.instance.getUser.profileUrl;
   final ImagePicker _picker = ImagePicker();
   File? _profileImage;
 
@@ -109,12 +106,12 @@ class _EditProfilePictureState extends State<EditProfilePicture> {
     }
   }
 
-
   void _saveProfile() {
     // Logic to save the updated profile information
     // You can replace this with your backend call
     Navigator.of(context).pop(); // Close the modal after saving
   }
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -142,7 +139,6 @@ class _EditProfilePictureState extends State<EditProfilePicture> {
                       : null,
                 ),
               ),
-
               space(16),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,

@@ -7,8 +7,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:image_picker/image_picker.dart';
 
 class AddPhotoPage extends StatefulWidget {
-  const AddPhotoPage({super.key, required this.handelPageChange});
-  final Function handelPageChange;
+  const AddPhotoPage({super.key});
 
   @override
   State<AddPhotoPage> createState() => _AddPhotoPageState();
@@ -27,24 +26,17 @@ class _AddPhotoPageState extends State<AddPhotoPage> {
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
             ImageTile(
-              url: AddPropertyProvider.instance.property.photos
-                  .elementAtOrNull(0),
+              url: AddPropertyProvider.instance.property.photos.elementAtOrNull(0),
             ),
-            ImageTile(
-                url: AddPropertyProvider.instance.property.photos
-                    .elementAtOrNull(1)),
+            ImageTile(url: AddPropertyProvider.instance.property.photos.elementAtOrNull(1)),
           ],
         ),
         space(20),
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
-            ImageTile(
-                url: AddPropertyProvider.instance.property.photos
-                    .elementAtOrNull(2)),
-            ImageTile(
-                url: AddPropertyProvider.instance.property.photos
-                    .elementAtOrNull(3)),
+            ImageTile(url: AddPropertyProvider.instance.property.photos.elementAtOrNull(2)),
+            ImageTile(url: AddPropertyProvider.instance.property.photos.elementAtOrNull(3)),
           ],
         ),
       ],

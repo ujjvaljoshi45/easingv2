@@ -8,16 +8,13 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:numberpicker/numberpicker.dart';
 
 class OtherInformationPage extends StatefulWidget {
-  const OtherInformationPage({super.key, required this.handelPageChange});
-  final Function handelPageChange;
+  const OtherInformationPage({super.key});
+
   @override
   State<OtherInformationPage> createState() => _OtherInformationPageState();
 }
 
 class _OtherInformationPageState extends State<OtherInformationPage> {
-
-
-
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
@@ -36,7 +33,7 @@ class _OtherInformationPageState extends State<OtherInformationPage> {
                     text: i == 3 ? '3+' : '${i + 1}',
                     onPressed: () {
                       setState(() => AddPropertyProvider.instance.currentBhkSelection = i);
-                      AddPropertyProvider.instance.setBHK((i+1).toString());
+                      AddPropertyProvider.instance.setBHK((i + 1).toString());
                     })
             ],
           ),
@@ -61,9 +58,10 @@ class _OtherInformationPageState extends State<OtherInformationPage> {
               ),
               onChanged: (value) {
                 setState(
-                () => AddPropertyProvider.instance.bathrooms = value,
-              );
-                AddPropertyProvider.instance.setBathroom(AddPropertyProvider.instance.bathrooms.toString());
+                  () => AddPropertyProvider.instance.bathrooms = value,
+                );
+                AddPropertyProvider.instance
+                    .setBathroom(AddPropertyProvider.instance.bathrooms.toString());
               },
               haptics: true,
               axis: Axis.horizontal,
@@ -83,7 +81,8 @@ class _OtherInformationPageState extends State<OtherInformationPage> {
                       text: AddPropertyProvider.instance.furnished[i],
                       onPressed: () {
                         setState(() => AddPropertyProvider.instance.currentFurnishedSelection = i);
-                        AddPropertyProvider.instance.setFurniture(AddPropertyProvider.instance.furnished[AddPropertyProvider.instance.currentFurnishedSelection]);
+                        AddPropertyProvider.instance.setFurniture(AddPropertyProvider.instance
+                            .furnished[AddPropertyProvider.instance.currentFurnishedSelection]);
                       },
                     )),
                   ],
@@ -95,14 +94,16 @@ class _OtherInformationPageState extends State<OtherInformationPage> {
           space(20),
           TextFormField(
             initialValue: AddPropertyProvider.instance.property.rent,
-            onChanged: (value) => setState(() => AddPropertyProvider.instance.property.rent = value),
+            onChanged: (value) =>
+                setState(() => AddPropertyProvider.instance.property.rent = value),
             decoration: const InputDecoration(hintText: 'Enter Rent Here...'),
             keyboardType: TextInputType.number,
           ),
           space(20),
           TextFormField(
             initialValue: AddPropertyProvider.instance.property.deposit,
-            onChanged: (value) => setState(() => AddPropertyProvider.instance.property.deposit = value),
+            onChanged: (value) =>
+                setState(() => AddPropertyProvider.instance.property.deposit = value),
             decoration: const InputDecoration(hintText: 'Enter Deposit Here...'),
             keyboardType: TextInputType.number,
           ),

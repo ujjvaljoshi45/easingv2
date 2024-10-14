@@ -4,28 +4,29 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:dotted_border/dotted_border.dart';
 import 'package:easypg/provider/data_provider.dart';
 import 'package:easypg/model/user.dart';
-import 'package:easypg/screens/add_property/0_add_property_page.dart';
-import 'package:easypg/screens/pages/bookmarks.dart';
-import 'package:easypg/screens/pages/home.dart';
-import 'package:easypg/screens/pages/profile/profile.dart';
-import 'package:easypg/screens/pages/rent.dart';
-import 'package:easypg/screens/pages/search.dart';
+import 'package:easypg/screens/add_property/step_0_add_property_page.dart';
+import 'package:easypg/screens/views/bookmarks.dart';
+import 'package:easypg/screens/views/home.dart';
+import 'package:easypg/screens/views/profile/profile.dart';
+import 'package:easypg/screens/views/rent.dart';
+import 'package:easypg/screens/views/search.dart';
 import 'package:easypg/utils/colors.dart';
 import 'package:easypg/utils/styles.dart';
 import 'package:easypg/utils/tools.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:provider/provider.dart';
 
-class HomeScreen extends StatefulWidget {
+class MainScreen extends StatefulWidget {
   static String route = 'home_screen';
-  const HomeScreen({super.key});
+  const MainScreen({super.key});
 
   @override
-  State<HomeScreen> createState() => _HomeScreenState();
+  State<MainScreen> createState() => _MainScreenState();
 }
 
-class _HomeScreenState extends State<HomeScreen> {
+class _MainScreenState extends State<MainScreen> {
   late AppUser appUser;
   final PageController _pageController = PageController();
   int _currentIndex = 0;
@@ -116,7 +117,7 @@ class _HomeScreenState extends State<HomeScreen> {
             padding: const EdgeInsets.only(bottom: 12.0),
             child: Visibility(
               visible: _currentIndex == titleWidget.length - 1 &&
-                  DataProvider.instance.getUser.myProperties.isNotEmpty,
+                  Provider.of<DataProvider>(context).getUser.myProperties.isNotEmpty,
               child: FloatingActionButton(
                 shape: const CircleBorder(),
                 backgroundColor: myOrange,

@@ -1,7 +1,7 @@
-import 'package:easypg/model/api_handler/api_handler.dart';
+import 'package:easypg/services/api_handler.dart';
 import 'package:easypg/provider/data_provider.dart';
 import 'package:easypg/model/user.dart';
-import 'package:easypg/screens/home_screen.dart';
+import 'package:easypg/screens/main_screen.dart';
 import 'package:easypg/utils/colors.dart';
 import 'package:easypg/utils/styles.dart';
 import 'package:easypg/utils/tools.dart';
@@ -27,12 +27,12 @@ class _RegisterScreenState extends State<RegisterScreen> {
     AppUser appUser = DataProvider.instance.getUser;
     appUser.displayName = _nameController.text;
     appUser.gender = gender;
-    setState(()=>isLoading=true);
+    setState(() => isLoading = true);
     await ApiHandler.instance.saveUser(appUser);
     await FirebaseAuth.instance.currentUser!.updateDisplayName(_nameController.text);
-    setState(()=>isLoading=false);
+    setState(() => isLoading = false);
     mounted ? DataProvider.instance.setUser(appUser) : null;
-    mounted ? Navigator.pushNamed(context, HomeScreen.route) : null;
+    mounted ? Navigator.pushNamed(context, MainScreen.route) : null;
   }
 
   @override
@@ -105,7 +105,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
                           initialSelection: gender,
                           label: Text(
                             'Gender',
-                            style: montserrat.copyWith(fontWeight: FontWeight.w500, color: myOrange),
+                            style:
+                                montserrat.copyWith(fontWeight: FontWeight.w500, color: myOrange),
                           ),
                           onSelected: (value) => setState(() => gender = value ?? gender),
                           dropdownMenuEntries: const [
@@ -146,17 +147,21 @@ class _RegisterScreenState extends State<RegisterScreen> {
                           color: myOrange,
                           borderRadius: BorderRadiusDirectional.circular(10.r),
                         ),
-                        child:  Center(
+                        child: Center(
                           child: Padding(
                             padding: const EdgeInsets.all(8.0),
-                            child: isLoading ? CircularProgressIndicator(color: myOrangeSecondary,) :  Text(
-                              'Save',
-                              style: TextStyle(
-                                fontSize: 18.sp,
-                                fontWeight: FontWeight.w800,
-                                color: Colors.white,
-                              ),
-                            ),
+                            child: isLoading
+                                ? CircularProgressIndicator(
+                                    color: myOrangeSecondary,
+                                  )
+                                : Text(
+                                    'Save',
+                                    style: TextStyle(
+                                      fontSize: 18.sp,
+                                      fontWeight: FontWeight.w800,
+                                      color: Colors.white,
+                                    ),
+                                  ),
                           ),
                         ),
                       ),

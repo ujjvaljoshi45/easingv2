@@ -4,8 +4,8 @@ import 'package:easypg/utils/tools.dart';
 import 'package:flutter/material.dart';
 
 class GettingStartedPage extends StatefulWidget {
-  const GettingStartedPage({super.key, required this.handelPageChange});
-  final Function handelPageChange;
+  const GettingStartedPage({super.key});
+
   @override
   State<GettingStartedPage> createState() => _GettingStartedPageState();
 }
@@ -27,11 +27,9 @@ class _GettingStartedPageState extends State<GettingStartedPage> {
                 isSelected: AddPropertyProvider.instance.selectedOption == i,
                 text: AddPropertyProvider.instance.ownership[i],
                 onPressed: () {
-                  setState(
-                      () => AddPropertyProvider.instance.selectedOption = i);
+                  setState(() => AddPropertyProvider.instance.selectedOption = i);
                   AddPropertyProvider.instance.setPosition(AddPropertyProvider
-                      .instance
-                      .ownership[AddPropertyProvider.instance.selectedOption]);
+                      .instance.ownership[AddPropertyProvider.instance.selectedOption]);
                 },
               ),
           ],
@@ -47,11 +45,9 @@ class _GettingStartedPageState extends State<GettingStartedPage> {
                 isSelected: AddPropertyProvider.instance.selectedPurpose == i,
                 text: AddPropertyProvider.instance.motive[i],
                 onPressed: () {
-                  setState(
-                      () => AddPropertyProvider.instance.selectedPurpose = i);
+                  setState(() => AddPropertyProvider.instance.selectedPurpose = i);
                   AddPropertyProvider.instance.setMotive(AddPropertyProvider
-                      .instance
-                      .motive[AddPropertyProvider.instance.selectedPurpose]);
+                      .instance.motive[AddPropertyProvider.instance.selectedPurpose]);
                 },
               ),
           ],

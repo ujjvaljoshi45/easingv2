@@ -88,10 +88,12 @@ class Property {
         status: json[statusKey],
         uploaderId: json[uploaderIdKey])
       ..id = id ?? ''
-      ..tags = json[tagsKey] == null ? [] : List.generate(
-        json[tagsKey].length,
-        (index) => json[tagsKey][index],
-      );
+      ..tags = json[tagsKey] == null
+          ? []
+          : List.generate(
+              json[tagsKey].length,
+              (index) => json[tagsKey][index],
+            );
   }
 
   Map<String, dynamic> toJson() => {
@@ -116,7 +118,8 @@ class Property {
         tagsKey: generateTags()
       };
   String getAddress() => "$streetAddress, $city,$state - $pinCode";
-  List<String> generateTags() => [pinCode, furniture] +
+  List<String> generateTags() =>
+      [pinCode, furniture] +
       name.toLowerCase().split(' ').toList() +
       state.toLowerCase().split(' ').toList() +
       city.toLowerCase().split(" ").toList() +

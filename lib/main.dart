@@ -6,9 +6,9 @@ import 'package:easypg/firebase_options.dart';
 import 'package:easypg/provider/add_property_provider.dart';
 import 'package:easypg/provider/auth_provider.dart';
 import 'package:easypg/provider/data_provider.dart';
-import 'package:easypg/screens/home_screen.dart';
-import 'package:easypg/screens/pages/profile/profile.dart';
+import 'package:easypg/screens/main_screen.dart';
 import 'package:easypg/screens/splash.dart';
+import 'package:easypg/screens/views/profile/profile.dart';
 import 'package:easypg/utils/colors.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
@@ -24,13 +24,20 @@ void main() async {
   } else {
     await Firebase.initializeApp();
   }
-  runApp(
-    MultiProvider(providers: [
-      ChangeNotifierProvider(create: (context) => AuthProvider.instance,),
-      ChangeNotifierProvider(create: (context) => DataProvider.instance,),
-      ChangeNotifierProvider(create: (context) => AddPropertyProvider.instance,),
-    ],child: const MyApp(),)
-  );
+  runApp(MultiProvider(
+    providers: [
+      ChangeNotifierProvider(
+        create: (context) => AuthDataProvider.instance,
+      ),
+      ChangeNotifierProvider(
+        create: (context) => DataProvider.instance,
+      ),
+      ChangeNotifierProvider(
+        create: (context) => AddPropertyProvider.instance,
+      ),
+    ],
+    child: const MyApp(),
+  ));
 }
 
 class MyApp extends StatelessWidget {
@@ -39,7 +46,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ScreenUtilInit(
-      designSize: Size(430,932),
+      designSize: Size(430, 932),
       minTextAdapt: true,
       splitScreenMode: false,
       child: MaterialApp(
@@ -49,12 +56,12 @@ class MyApp extends StatelessWidget {
           colorScheme: ColorScheme.fromSeed(seedColor: myOrange),
           useMaterial3: true,
         ),
-       home: const Splash(),
+        home: const Splash(),
         routes: {
-          LoginScreen.route : (context) => const LoginScreen(),
-          RegisterScreen.route : (context) => const RegisterScreen(),
-          HomeScreen.route : (context) => const HomeScreen(),
-          ProfileScreen.route : (context) => const ProfileScreen(),
+          LoginScreen.route: (context) => const LoginScreen(),
+          RegisterScreen.route: (context) => const RegisterScreen(),
+          MainScreen.route: (context) => const MainScreen(),
+          ProfileScreen.route: (context) => const ProfileScreen(),
         },
       ),
     );

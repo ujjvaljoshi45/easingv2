@@ -29,7 +29,6 @@ class ApiManager {
     }
   }
 
-
   Future<Response> get(String url, [Map<String, dynamic>? parameters, Options? options]) async {
     try {
       return await dio.get(

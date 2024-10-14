@@ -20,14 +20,12 @@ class _LoginScreenState extends State<LoginScreen> {
   final FocusNode phoneFocusNode = FocusNode();
   PhoneNumber phoneNumber = PhoneNumber();
 
-
   @override
   Widget build(BuildContext context) {
     return PopScope(
       canPop: false,
       child: Scaffold(
         resizeToAvoidBottomInset: false,
-
         body: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 12.0),
           child: Padding(
@@ -35,16 +33,16 @@ class _LoginScreenState extends State<LoginScreen> {
             child: SingleChildScrollView(
               reverse: true,
               child: SizedBox(
-                height: getHeight(context) - kToolbarHeight.h - kBottomNavigationBarHeight.h,
+                height: getHeight(context),
                 child: Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    space(kToolbarHeight),
+                    space(kToolbarHeight.h),
                     const Spacer(),
                     Image.asset('assets/login_vector.png'),
                     const Spacer(),
-                    FractionallySizedBox(widthFactor: 0.9, child: _buildPhoneInputField()),
+                    FractionallySizedBox(widthFactor: 0.9.w, child: _buildPhoneInputField()),
                     space(40),
                     _buildSubmitButton(),
                     TextButton(
@@ -104,7 +102,7 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   _buildSubmitButton() {
-    return Consumer<AuthProvider>(
+    return Consumer<AuthDataProvider>(
       builder: (context, authProvider, child) {
         return Row(
           children: [
@@ -126,15 +124,15 @@ class _LoginScreenState extends State<LoginScreen> {
                     ),
                   ),
                 ), // Disable button when loading
-                child:Text(
-                        'SEND OTP',
-                        style: GoogleFonts.montserrat(
-                          letterSpacing: 1.5,
-                          color: Colors.white,
-                          fontWeight: FontWeight.bold,
-                          fontSize: 14.sp,
-                        ),
-                      ),
+                child: Text(
+                  'SEND OTP',
+                  style: GoogleFonts.montserrat(
+                    letterSpacing: 1.5,
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 14.sp,
+                  ),
+                ),
               ),
             ),
           ],
@@ -144,7 +142,8 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   Future<void> _manageLogin() async {
-    final authProvider = AuthProvider.instance;
+    phoneFocusNode.unfocus();
+    final authProvider = AuthDataProvider.instance;
     String? phNo = phoneNumber.phoneNumber;
     String? code = phoneNumber.dialCode;
     logEvent('login $phNo $code');
@@ -152,7 +151,6 @@ class _LoginScreenState extends State<LoginScreen> {
       logEvent('its empty');
       return;
     } else {
-      // Request OTP using the phone number provided
       await authProvider.requestOtp(
         phNo,
         context,

@@ -3,7 +3,7 @@ import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:easypg/model/cache_manager.dart';
 import 'package:easypg/provider/add_property_provider.dart';
-import 'package:easypg/model/api_handler/api_handler.dart';
+import 'package:easypg/services/api_handler.dart';
 import 'package:easypg/model/property.dart';
 import 'package:easypg/model/user.dart';
 import 'package:easypg/provider/data_provider.dart';
@@ -16,6 +16,7 @@ class FirebaseController extends ApiHandler {
   CollectionReference userRef = FirebaseFirestore.instance.collection('users');
   CollectionReference propertyRef = FirebaseFirestore.instance.collection('properties');
 
+  // Fetches a user by their UID
   @override
   Future<AppUser?> getUser(String uid) async {
     try {
@@ -28,10 +29,10 @@ class FirebaseController extends ApiHandler {
     } catch (e, stackTrace) {
       logError('getUser()', e.toString(), stackTrace);
     }
-
     return null;
   }
 
+  // Saves a user's data to Firestore
   @override
   Future<void> saveUser(AppUser user) async {
     try {
@@ -43,6 +44,7 @@ class FirebaseController extends ApiHandler {
     }
   }
 
+  // Updates user's bookmark list
   Future<void> saveBookMark(String id, bool add) async {
     try {
       await userRef.doc(DataProvider.instance.getUser.uid).update({
@@ -54,16 +56,13 @@ class FirebaseController extends ApiHandler {
     }
   }
 
+  // Fetches properties not uploaded by the current user
   Future<List<Property>> getProperties() async {
     List<Property> properties = [];
-    // if (CacheManager.propertyCache.isNotEmpty) {
-    //   logEvent('Getting old ones...');
-    //   return CacheManager.propertyCache;
-    // }
     try {
       List response = (await propertyRef
-              .where('uploader_id', isNotEqualTo: DataProvider.instance.getUser.uid)
-              .get())
+          .where('uploader_id', isNotEqualTo: DataProvider.instance.getUser.uid)
+          .get())
           .docs;
       for (var data in response) {
         properties.add(Property.fromJson(data.data(), data.id));
@@ -75,6 +74,7 @@ class FirebaseController extends ApiHandler {
     return properties;
   }
 
+  // Uploads images and returns their URLs
   Future<List<String>> saveImages(List<String> paths, int time) async {
     List<String> urls = [];
     for (String path in paths) {
@@ -86,6 +86,7 @@ class FirebaseController extends ApiHandler {
     return urls;
   }
 
+  // Saves a property and updates the user's property list
   Future<void> saveProperty(Property property) async {
     Map res = property.toJson();
     await propertyRef.doc(property.id).set(res);
@@ -95,13 +96,14 @@ class FirebaseController extends ApiHandler {
     AddPropertyProvider.instance.clear();
   }
 
+  // Fetches properties by ID, filtering by ownership if specified
   Future<List<Property>> getPropertiesById([bool? mine]) async {
     List<Property> properties = [];
     if (mine != null) {
       if (mine) {
         final response = (await propertyRef
-                .where('uploader_id', isEqualTo: DataProvider.instance.getUser.uid)
-                .get())
+            .where('uploader_id', isEqualTo: DataProvider.instance.getUser.uid)
+            .get())
             .docs;
         for (var json in response) {
           properties.add(Property.fromJson(json.data() as Map<String, dynamic>, json.id));
@@ -121,32 +123,17 @@ class FirebaseController extends ApiHandler {
     return properties;
   }
 
+  // Searches properties based on tags and optional property type
   Future<List<Property>> queryProperties(String query, String? propertyType) async {
-
     try {
-      List<QueryDocumentSnapshot> querySnapshots  = (await propertyRef.where('tags',arrayContainsAny: query.split(" ")).get()).docs;
+      List<QueryDocumentSnapshot> querySnapshots = (await propertyRef
+          .where('tags', arrayContainsAny: query.split(" "))
+          .get())
+          .docs;
       List<Property> allResults = [];
-      for( var json in querySnapshots ) {
-        allResults.add(Property.fromJson(json.data() as Map<String,dynamic>,json.id));
+      for (var json in querySnapshots) {
+        allResults.add(Property.fromJson(json.data() as Map<String, dynamic>, json.id));
       }
-      // List<Future<QuerySnapshot>> futures = [
-      //   propertyRef.where('name', isEqualTo: query).get(),
-      //   propertyRef.where('street_address', isEqualTo: query).get(),
-      //   propertyRef.where('city', isEqualTo: query).get(),
-      //   propertyRef.where('state', isEqualTo: query).get(),
-      // ];
-      //
-      // // Wait for all queries to complete
-      // List<QuerySnapshot> querySnapshots = await Future.wait(futures);
-      //
-      // // Combine results and remove duplicates
-      // Set<Property> allResults = {};
-      // for (var snapshot in querySnapshots) {
-      //   for (var data in snapshot.docs) {
-      //     allResults.add(Property.fromJson(data.data() as Map<String, dynamic>, data.id));
-      //   }
-      // }
-
       return allResults.toList();
     } catch (e, stackTrace) {
       logError('msg$query $propertyType', e, stackTrace);
@@ -154,9 +141,10 @@ class FirebaseController extends ApiHandler {
     }
   }
 
+  // Deletes a property and updates the user's list
   Future<void> deleteProperty(String id) async => await propertyRef.doc(id).delete().whenComplete(
         () async => await userRef.doc(DataProvider.instance.getUser.uid).update({
-          'property': FieldValue.arrayRemove([id])
-        }),
-      );
+      'property': FieldValue.arrayRemove([id])
+    }),
+  );
 }

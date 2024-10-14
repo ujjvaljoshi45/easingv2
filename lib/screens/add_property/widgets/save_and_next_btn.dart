@@ -4,8 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class SaveAndNextBtn extends StatelessWidget {
-  const SaveAndNextBtn({super.key, required this.onPressed, required this.msg});
+  const SaveAndNextBtn({super.key, required this.onPressed, required this.msg, this.style});
   final void Function()? onPressed;
+  final ButtonStyle? style;
   final String msg;
 
   @override
@@ -14,7 +15,7 @@ class SaveAndNextBtn extends StatelessWidget {
       children: [
         Expanded(
             child: ElevatedButton(
-                style: ButtonStyle(
+                style: style ?? ButtonStyle(
                   backgroundColor: WidgetStatePropertyAll(myOrange),
                   shape: WidgetStatePropertyAll(
                     RoundedRectangleBorder(

@@ -56,7 +56,7 @@ class _AadharUploadPageState extends State<AadharUploadPage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-             Text(
+            Text(
               'Upload Aadhar Card',
               style: TextStyle(
                 fontSize: 22.sp,
@@ -64,7 +64,7 @@ class _AadharUploadPageState extends State<AadharUploadPage> {
               ),
             ),
             space(15),
-             Text(
+            Text(
               'Please upload a PDF file containing both the front and back of your Aadhar card for verification.',
               style: TextStyle(fontSize: 16.sp),
             ),
@@ -72,17 +72,17 @@ class _AadharUploadPageState extends State<AadharUploadPage> {
             // Aadhar PDF File Display
             _aadharPdfFile != null
                 ? Column(
-              children: [
-                 Icon(Icons.picture_as_pdf, size: 80.sp, color: Colors.red),
-                space(10),
-                Text(_aadharPdfFile!.path.split('/').last),
-              ],
-            )
+                    children: [
+                      Icon(Icons.picture_as_pdf, size: 80.sp, color: Colors.red),
+                      space(10),
+                      Text(_aadharPdfFile!.path.split('/').last),
+                    ],
+                  )
                 : ElevatedButton.icon(
-              onPressed: _pickPdfFile,
-              icon: const Icon(Icons.upload_file),
-              label: const Text('Select Aadhar PDF'),
-            ),
+                    onPressed: _pickPdfFile,
+                    icon: const Icon(Icons.upload_file),
+                    label: const Text('Select Aadhar PDF'),
+                  ),
             space(30),
 
             // Submit Button
@@ -100,10 +100,10 @@ class _AadharUploadPageState extends State<AadharUploadPage> {
 
             // Display the current status
             isAadharSubmitted
-                ?  Text(
-              'Aadhar submitted successfully for verification.',
-              style: TextStyle(color: Colors.green, fontSize: 16.sp),
-            )
+                ? Text(
+                    'Aadhar submitted successfully for verification.',
+                    style: TextStyle(color: Colors.green, fontSize: 16.sp),
+                  )
                 : const SizedBox.shrink(),
           ],
         ),
