@@ -9,6 +9,7 @@ import 'package:easypg/provider/data_provider.dart';
 import 'package:easypg/screens/main_screen.dart';
 import 'package:easypg/screens/splash.dart';
 import 'package:easypg/screens/views/profile/profile.dart';
+import 'package:easypg/services/ad_service.dart';
 import 'package:easypg/services/app_configs.dart';
 import 'package:easypg/utils/colors.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -26,6 +27,7 @@ void main() async {
     await Firebase.initializeApp();
   }
   await AppConfigs.instance.getConfigs();
+  await AdService.instance.loadAd();
   runApp(MultiProvider(
     providers: [
       ChangeNotifierProvider(

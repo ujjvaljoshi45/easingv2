@@ -4,6 +4,7 @@ import 'package:easypg/provider/add_property_provider.dart';
 import 'package:easypg/screens/add_property/step_0_add_property_page.dart';
 import 'package:easypg/screens/widgets/bookmark_button.dart';
 import 'package:easypg/screens/widgets/display_data_tile.dart';
+import 'package:easypg/services/ad_service.dart';
 import 'package:easypg/services/api_handler.dart';
 import 'package:easypg/model/property.dart';
 import 'package:easypg/provider/data_provider.dart';
@@ -437,6 +438,11 @@ class _PropertyCardState extends State<PropertyCard> {
     // Fist start ad
     // Then Update Database
 
+    try {
+      await AdService.instance.showAd();
+    }catch (e) {
+      debugPrint(".........Error...... $e");
+    }
     final bal = (await ApiHandler.instance.walletStream.first)[AppKeys.currentBalance];
     logEvent(bal);
     final charges = await AppConfigs.instance.getPerCallCharges();
