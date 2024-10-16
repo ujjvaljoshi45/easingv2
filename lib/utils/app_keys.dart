@@ -16,6 +16,7 @@ abstract class AppKeys {
 
   static final String perCallCharge = "PER_CALL_CHARGE";
   static final String razorPayAPI = "RAZORPAY_API";
+  static final String activationCharges = "ACTIVATION_CHARGE";
 
   // Wallet Related Keys
   static final String currentBalance = "current_balance";
@@ -42,6 +43,4 @@ abstract class AppKeys {
   static final String statusKey = 'status';
   static final String uploaderIdKey = 'uploader_id';
   static final String tagsKey = 'tags';
-
-
 }

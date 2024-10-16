@@ -10,7 +10,12 @@ class AdService {
   RewardedAd? rewardedAd;
 
   Future loadAd() async {
-    await RewardedAd.load(adUnitId: adUnitId, request: AdRequest(), rewardedAdLoadCallback: RewardedAdLoadCallback(onAdLoaded: (ad) => rewardedAd = ad, onAdFailedToLoad: (error) => logError('some_error', error, StackTrace.current),),);
+    try {
+      await RewardedAd.load(adUnitId: adUnitId, request: AdRequest(), rewardedAdLoadCallback: RewardedAdLoadCallback(onAdLoaded: (ad) => rewardedAd = ad, onAdFailedToLoad: (error) => logError('some_error', error, StackTrace.current),),);
+    } catch ( e, stackTrace) {
+      logError('ad error', e, stackTrace);
+    }
+
   }
 
   Future<int> showAd() async {

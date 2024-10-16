@@ -4,6 +4,7 @@ import 'package:easypg/provider/add_property_provider.dart';
 import 'package:easypg/screens/add_property/step_0_add_property_page.dart';
 import 'package:easypg/screens/widgets/bookmark_button.dart';
 import 'package:easypg/screens/widgets/display_data_tile.dart';
+import 'package:easypg/screens/widgets/phone_number_dialog.dart';
 import 'package:easypg/services/ad_service.dart';
 import 'package:easypg/services/api_handler.dart';
 import 'package:easypg/model/property.dart';
@@ -31,6 +32,12 @@ class _PropertyCardState extends State<PropertyCard> {
   final Duration _pageChangeDuration = const Duration(milliseconds: 150);
   int _currentPhotoIndex = 0;
   final _expansionController = ExpansionTileController();
+  int callPrice = 0;
+  @override
+  void didChangeDependencies() async {
+    callPrice = await AppConfigs.instance.getPerCallCharges();
+    super.didChangeDependencies();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -137,7 +144,9 @@ class _PropertyCardState extends State<PropertyCard> {
                         height: 10.h,
                         decoration: BoxDecoration(
                             shape: BoxShape.circle,
-                            color: i == _currentPhotoIndex ? myOrange : myOrangeSecondary),
+                            color: i == _currentPhotoIndex
+                                ? myOrange
+                                : myOrangeSecondary),
                       )
                   ],
                 ),
@@ -179,9 +188,11 @@ class _PropertyCardState extends State<PropertyCard> {
                     style: montserrat.copyWith(
                       fontSize: 14.sp,
                       color: secondaryColor,
-                      fontWeight: FontWeight.w600, // Increase weight slightly for clarity
+                      fontWeight: FontWeight
+                          .w600, // Increase weight slightly for clarity
                     ),
-                    overflow: TextOverflow.ellipsis, // Handle overflow text gracefully
+                    overflow: TextOverflow
+                        .ellipsis, // Handle overflow text gracefully
                   ),
                 ),
               ],
@@ -205,7 +216,8 @@ class _PropertyCardState extends State<PropertyCard> {
                   style: montserrat.copyWith(
                     fontSize: 13.sp,
                     fontWeight: FontWeight.w600,
-                    color: secondaryColor, // Slightly lighter color for less emphasis
+                    color:
+                        secondaryColor, // Slightly lighter color for less emphasis
                   ),
                 ),
               ],
@@ -225,7 +237,8 @@ class _PropertyCardState extends State<PropertyCard> {
           shadowColor: Colors.grey.withOpacity(0.5),
           elevation: 3.0,
           child: ListTile(
-            contentPadding: const EdgeInsets.symmetric(vertical: 12.0, horizontal: 16.0),
+            contentPadding:
+                const EdgeInsets.symmetric(vertical: 12.0, horizontal: 16.0),
             title: Text(
               "Address",
               style: montserrat.copyWith(
@@ -252,7 +265,8 @@ class _PropertyCardState extends State<PropertyCard> {
           shadowColor: Colors.grey.withOpacity(0.5),
           elevation: 3.0,
           child: ListTile(
-            contentPadding: const EdgeInsets.symmetric(vertical: 12.0, horizontal: 16.0),
+            contentPadding:
+                const EdgeInsets.symmetric(vertical: 12.0, horizontal: 16.0),
             title: Text(
               'Information',
               style: montserrat.copyWith(
@@ -265,15 +279,19 @@ class _PropertyCardState extends State<PropertyCard> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 SizedBox(height: 8.h),
-                DisplayData(title: 'Rent', subtitle: "₹ ${widget.property.rent}"),
+                DisplayData(
+                    title: 'Rent', subtitle: "₹ ${widget.property.rent}"),
                 SizedBox(height: 4.h),
-                DisplayData(title: 'Deposit', subtitle: "₹ ${widget.property.deposit}"),
+                DisplayData(
+                    title: 'Deposit', subtitle: "₹ ${widget.property.deposit}"),
                 SizedBox(height: 4.h),
                 DisplayData(title: 'BHK', subtitle: widget.property.bhk),
                 SizedBox(height: 4.h),
-                DisplayData(title: 'Bathroom(s)', subtitle: widget.property.bathroom),
+                DisplayData(
+                    title: 'Bathroom(s)', subtitle: widget.property.bathroom),
                 SizedBox(height: 4.h),
-                DisplayData(title: 'Furniture', subtitle: widget.property.furniture),
+                DisplayData(
+                    title: 'Furniture', subtitle: widget.property.furniture),
               ],
             ),
           ),
@@ -290,7 +308,8 @@ class _PropertyCardState extends State<PropertyCard> {
           shadowColor: Colors.grey.withOpacity(0.5),
           elevation: 3.0,
           child: ListTile(
-            contentPadding: const EdgeInsets.symmetric(vertical: 12.0, horizontal: 16.0),
+            contentPadding:
+                const EdgeInsets.symmetric(vertical: 12.0, horizontal: 16.0),
             title: Text(
               'Amenities',
               style: montserrat.copyWith(
@@ -306,7 +325,8 @@ class _PropertyCardState extends State<PropertyCard> {
                   .where((element) => element.isNotEmpty)
                   .map((amenity) => Chip(
                         label: Text(amenity,
-                            style: unSelectedOptionTextStyle.copyWith(fontSize: 12.sp)),
+                            style: unSelectedOptionTextStyle.copyWith(
+                                fontSize: 12.sp)),
                         backgroundColor: myOrangeSecondary.withOpacity(0.2),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(8.r),
@@ -319,12 +339,14 @@ class _PropertyCardState extends State<PropertyCard> {
 
         // Contact Button
         Visibility(
-          visible: widget.property.uploaderId != DataProvider.instance.getUser.uid,
+          visible:
+              widget.property.uploaderId != DataProvider.instance.getUser.uid,
           child: Padding(
-            padding: const EdgeInsets.symmetric(vertical: 12.0, horizontal: 10.0),
+            padding:
+                const EdgeInsets.symmetric(vertical: 12.0, horizontal: 10.0),
             child: SaveAndNextBtn(
               onPressed: _managePropertySelect,
-              msg: 'Contact @ ₹50',
+              msg: 'Contact @ $callPrice',
               style: ElevatedButton.styleFrom(
                 backgroundColor: myOrange,
                 textStyle: montserrat.copyWith(
@@ -344,10 +366,13 @@ class _PropertyCardState extends State<PropertyCard> {
     switch (widgetName) {
       case 'bookmark':
         return BookmarkWidget(
-          isBookmarked: DataProvider.instance.getUser.bookmarks.contains(widget.property.id),
+          isBookmarked: DataProvider.instance.getUser.bookmarks
+              .contains(widget.property.id),
           onBookmarkToggle: () async {
-            bool add = !DataProvider.instance.getUser.bookmarks.contains(widget.property.id);
-            setState(() => DataProvider.instance.manageBookmark(widget.property.id, add));
+            bool add = !DataProvider.instance.getUser.bookmarks
+                .contains(widget.property.id);
+            setState(() =>
+                DataProvider.instance.manageBookmark(widget.property.id, add));
             await ApiHandler.instance.saveBookMark(widget.property.id, add);
           },
         );
@@ -400,7 +425,8 @@ class _PropertyCardState extends State<PropertyCard> {
       builder: (context) {
         return AlertDialog(
           title: const Text('Delete Property.'),
-          content: const Text("Are you sure you want to delete property\nThis Won't be undone!"),
+          content: const Text(
+              "Are you sure you want to delete property\nThis Won't be undone!"),
           actions: [
             TextButton(
                 onPressed: () async => await ApiHandler.instance
@@ -414,19 +440,24 @@ class _PropertyCardState extends State<PropertyCard> {
                       }),
                     )
                     .onError(
-                      (error, stackTrace) => setState(() => Navigator.pop(context)),
+                      (error, stackTrace) =>
+                          setState(() => Navigator.pop(context)),
                     ),
                 child: Text(
                   "YES",
                   style: montserrat.copyWith(
-                      fontWeight: FontWeight.bold, color: Colors.green, fontSize: 18.sp),
+                      fontWeight: FontWeight.bold,
+                      color: Colors.green,
+                      fontSize: 18.sp),
                 )),
             TextButton(
                 onPressed: () => Navigator.pop(context),
                 child: Text(
                   "NO",
                   style: montserrat.copyWith(
-                      fontWeight: FontWeight.bold, color: Colors.redAccent, fontSize: 18.sp),
+                      fontWeight: FontWeight.bold,
+                      color: Colors.redAccent,
+                      fontSize: 18.sp),
                 ))
           ],
         );
@@ -438,17 +469,38 @@ class _PropertyCardState extends State<PropertyCard> {
     // Fist start ad
     // Then Update Database
 
+    final balance =
+        (await ApiHandler.instance.walletStream.first)[AppKeys.currentBalance];
+    if (balance < callPrice) {
+      showInsufficientBalanceSnackBar(context);
+      return;
+    }
     try {
       await AdService.instance.showAd();
-    }catch (e) {
+    } catch (e) {
       debugPrint(".........Error...... $e");
     }
-    final bal = (await ApiHandler.instance.walletStream.first)[AppKeys.currentBalance];
-    logEvent(bal);
+    String? phoneNo =
+        (await ApiHandler.instance.getUser(widget.property.uploaderId))
+            ?.phoneNo;
+    if (phoneNo == null) {
+      showToast('Error occurred while receiving information', Colors.redAccent,
+          Colors.white);
+      return;
+    }
+    logEvent(balance);
     final charges = await AppConfigs.instance.getPerCallCharges();
-    showToast('Money Deducted from your wallet current balance ${bal - charges}');
-    await ApiHandler.instance.updateMoneyToWallet(-1*charges);
+    showToast(
+        'Money Deducted from your wallet current balance ${balance - charges}');
+    await ApiHandler.instance.updateMoneyToWallet(-1 * charges);
+
     // Then Provide Info
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return PhoneNumberDialog(phoneNumber: phoneNo);
+      },
+    );
   }
 }
 

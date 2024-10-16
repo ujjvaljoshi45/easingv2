@@ -195,4 +195,13 @@ class FirebaseController extends ApiHandler {
       .doc(DataProvider.instance.getUser.uid)
       .collection(AppKeys.history)
       .get();
+
+  Future<bool> updateActivation(String id) async {
+    try {
+      await propertyRef.doc(id).update({AppKeys.statusKey: true});
+      return true;
+    } catch (e) {
+      return false;
+    }
+  }
 }

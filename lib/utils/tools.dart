@@ -1,3 +1,4 @@
+import 'package:easypg/screens/views/profile/profile.dart';
 import 'package:easypg/utils/styles.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -19,3 +20,19 @@ void showToast(String msg,[ Color? color, Color? textColor]) =>
 
 double getHeight(context) => MediaQuery.sizeOf(context).height.h;
 double getWidth(context) => MediaQuery.sizeOf(context).width.w;
+
+
+showInsufficientBalanceSnackBar(BuildContext context) => ScaffoldMessenger.of(context).showSnackBar(
+  SnackBar(
+    content: Row(
+      children: [
+        Text("You Don't Have Enough Balance"),
+        TextButton(
+          onPressed: () =>
+              Navigator.pushNamed(context, ProfileScreen.route),
+          child: Text("Recharge"),
+        ),
+      ],
+    ),
+  ),
+);

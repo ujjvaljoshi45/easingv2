@@ -8,7 +8,7 @@ import 'package:easypg/screens/add_property/step_0_add_property_page.dart';
 import 'package:easypg/screens/views/bookmarks.dart';
 import 'package:easypg/screens/views/home.dart';
 import 'package:easypg/screens/views/profile/profile.dart';
-import 'package:easypg/screens/views/rent.dart';
+import 'package:easypg/screens/views/rent/rent.dart';
 import 'package:easypg/screens/views/search.dart';
 import 'package:easypg/utils/colors.dart';
 import 'package:easypg/utils/styles.dart';
