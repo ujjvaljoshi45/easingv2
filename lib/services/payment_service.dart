@@ -1,4 +1,5 @@
 import 'package:easypg/provider/data_provider.dart';
+import 'package:easypg/services/api_handler.dart';
 import 'package:easypg/utils/tools.dart';
 import 'package:razorpay_flutter/razorpay_flutter.dart';
 
@@ -13,6 +14,9 @@ class PaymentService {
   }
 
   Future<void> paymentSuccess(PaymentSuccessResponse response) async {
+
+    //TODO: after we api key
+    // ApiHandler.instance.updateMoneyToWallet(response.data[AppKeys.amountPaid])
     logEvent('done!${response.data}');
   }
 
@@ -24,14 +28,16 @@ class PaymentService {
     logEvent('idk!${response.walletName}');
   }
 
-  Future<void> openCheckout() async {
+  Future<void> openCheckout(int amount) async {
+    await ApiHandler.instance.updateMoneyToWallet(amount);
     final options = {
       'key': 'my_api_key',
-      'amount': 2000,
-      'name': 'HeHe Store',
-      'description': "he he he he!",
+      'amount': amount,
+      'name': 'Easy PG',
+      'description': "Purchase Credits",
       'prefill': {'contact': DataProvider.instance.getUser.phoneNo, 'email': null},
     };
+
     try {
       razorpay.open(options);
     } catch (e, stackTrace) {

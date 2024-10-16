@@ -88,13 +88,14 @@ class AddPropertyProvider extends ChangeNotifier {
           curve: Curves.linearToEaseOut, duration: const Duration(milliseconds: 100));
     } else {
       // Final step: Set amenities, log data, and save the property
-      AddPropertyProvider.instance.setAmenities(List.generate(
-        AddPropertyProvider.instance.myAmenities.length,
-        (index) => AddPropertyProvider.instance
-                .myAmenities[AddPropertyProvider.instance.myAmenities.keys.toList()[index]]!
-            ? AddPropertyProvider.instance.myAmenities.keys.toList()[index]
-            : '',
-      ));
+      AddPropertyProvider.instance.setAmenities(
+        (List.generate(
+            AddPropertyProvider.instance.myAmenities.length,
+            (index) => AddPropertyProvider.instance
+                    .myAmenities[AddPropertyProvider.instance.myAmenities.keys.toList()[index]]!
+                ? AddPropertyProvider.instance.myAmenities.keys.toList()[index]
+                : '')).toSet().toList(),
+      );
       logEvent(AddPropertyProvider.instance.property.toJson());
       showToast('Saving...', null);
       save().whenComplete(

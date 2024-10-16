@@ -2,15 +2,19 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:easypg/provider/add_property_provider.dart';
 import 'package:easypg/screens/add_property/step_0_add_property_page.dart';
+import 'package:easypg/screens/widgets/bookmark_button.dart';
+import 'package:easypg/screens/widgets/display_data_tile.dart';
 import 'package:easypg/services/api_handler.dart';
 import 'package:easypg/model/property.dart';
 import 'package:easypg/provider/data_provider.dart';
 import 'package:easypg/screens/add_property/widgets/save_and_next_btn.dart';
+import 'package:easypg/services/app_configs.dart';
+import 'package:easypg/utils/app_keys.dart';
 import 'package:easypg/utils/colors.dart';
 import 'package:easypg/utils/styles.dart';
+import 'package:easypg/utils/tools.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class PropertyCard extends StatefulWidget {
@@ -79,8 +83,8 @@ class _PropertyCardState extends State<PropertyCard> {
                     pauseAutoPlayInFiniteScroll: true,
                     autoPlayAnimationDuration: _pageChangeDuration,
                     onPageChanged: (index, reason) => setState(
-                            () => _currentPhotoIndex = index,
-                          ),
+                          () => _currentPhotoIndex = index,
+                        ),
                     enableInfiniteScroll: true,
                     viewportFraction: 1,
                     aspectRatio: 16 / 9,
@@ -313,19 +317,22 @@ class _PropertyCardState extends State<PropertyCard> {
         ),
 
         // Contact Button
-        Padding(
-          padding: const EdgeInsets.symmetric(vertical: 12.0, horizontal: 10.0),
-          child: SaveAndNextBtn(
-            onPressed: () => Fluttertoast.showToast(msg: 'hi'),
-            msg: 'Contact',
-            style: ElevatedButton.styleFrom(
-              backgroundColor: myOrange,
-              textStyle: montserrat.copyWith(
-                fontWeight: FontWeight.w600,
-                color: Colors.white,
-              ),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(10.r),
+        Visibility(
+          visible: widget.property.uploaderId != DataProvider.instance.getUser.uid,
+          child: Padding(
+            padding: const EdgeInsets.symmetric(vertical: 12.0, horizontal: 10.0),
+            child: SaveAndNextBtn(
+              onPressed: _managePropertySelect,
+              msg: 'Contact @ ₹50',
+              style: ElevatedButton.styleFrom(
+                backgroundColor: myOrange,
+                textStyle: montserrat.copyWith(
+                  fontWeight: FontWeight.w600,
+                  color: Colors.white,
+                ),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10.r),
+                ),
               ),
             ),
           ),
@@ -425,52 +432,17 @@ class _PropertyCardState extends State<PropertyCard> {
       },
     );
   }
-}
 
-class DisplayData extends StatelessWidget {
-  const DisplayData({super.key, required this.title, required this.subtitle});
-  final String title;
-  final String subtitle;
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        Text(
-          title,
-          style: unSelectedOptionTextStyle,
-        ),
-        Text(subtitle, style: unSelectedOptionTextStyle)
-      ],
-    );
+  _managePropertySelect() async {
+    // Fist start ad
+    // Then Update Database
+
+    final bal = (await ApiHandler.instance.walletStream.first)[AppKeys.currentBalance];
+    logEvent(bal);
+    final charges = await AppConfigs.instance.getPerCallCharges();
+    showToast('Money Deducted from your wallet current balance ${bal - charges}');
+    await ApiHandler.instance.updateMoneyToWallet(-1*charges);
+    // Then Provide Info
   }
 }
 
-class BookmarkWidget extends StatelessWidget {
-  final bool isBookmarked;
-  final VoidCallback onBookmarkToggle;
-
-  const BookmarkWidget({super.key, required this.isBookmarked, required this.onBookmarkToggle});
-
-  @override
-  Widget build(BuildContext context) {
-    return InkWell(
-      onTap: onBookmarkToggle,
-      child: Container(
-        decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(6.r),
-            color: Colors.black,
-            backgroundBlendMode: BlendMode.overlay),
-        child: Center(
-          child: Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: FaIcon(
-              isBookmarked ? FontAwesomeIcons.solidBookmark : FontAwesomeIcons.bookmark,
-              color: Colors.white,
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-}

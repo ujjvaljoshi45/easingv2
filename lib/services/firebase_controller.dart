@@ -7,14 +7,26 @@ import 'package:easypg/services/api_handler.dart';
 import 'package:easypg/model/property.dart';
 import 'package:easypg/model/user.dart';
 import 'package:easypg/provider/data_provider.dart';
+import 'package:easypg/utils/app_keys.dart';
 import 'package:easypg/utils/keys.dart';
 import 'package:easypg/utils/tools.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 
 class FirebaseController extends ApiHandler {
   FirebaseFirestore instance = FirebaseFirestore.instance;
-  CollectionReference userRef = FirebaseFirestore.instance.collection('users');
-  CollectionReference propertyRef = FirebaseFirestore.instance.collection('properties');
+  CollectionReference configsRef = FirebaseFirestore.instance.collection(AppKeys.configs);
+  CollectionReference userRef = FirebaseFirestore.instance.collection(AppKeys.users);
+  CollectionReference propertyRef = FirebaseFirestore.instance.collection(AppKeys.properties);
+  CollectionReference walletRef = FirebaseFirestore.instance.collection(AppKeys.wallet);
+
+  Future<Map<String, dynamic>> getConfigs() async {
+    final jsonArray = (await configsRef.get()).docs;
+    Map<String, dynamic> configs = {};
+    for (var json in jsonArray) {
+      configs[json.id] = json.data();
+    }
+    return configs;
+  }
 
   // Fetches a user by their UID
   @override
@@ -36,7 +48,8 @@ class FirebaseController extends ApiHandler {
   @override
   Future<void> saveUser(AppUser user) async {
     try {
-      await userRef.doc(user.uid).set(user.toJson());
+      await userRef.doc(user.phoneNo).set(user.toJson());
+      await walletRef.doc(user.phoneNo).set({AppKeys.currentBalance: 150});
     } on FirebaseException catch (e, stackTrace) {
       logError('setUser()', e.toString(), stackTrace);
     } catch (e, stackTrace) {
@@ -48,7 +61,7 @@ class FirebaseController extends ApiHandler {
   Future<void> saveBookMark(String id, bool add) async {
     try {
       await userRef.doc(DataProvider.instance.getUser.uid).update({
-        'bookmarks': add ? FieldValue.arrayUnion([id]) : FieldValue.arrayRemove([id])
+        AppKeys.bookmarks: add ? FieldValue.arrayUnion([id]) : FieldValue.arrayRemove([id])
       });
       logEvent('bookmark added');
     } catch (e, stackTrace) {
@@ -61,8 +74,8 @@ class FirebaseController extends ApiHandler {
     List<Property> properties = [];
     try {
       List response = (await propertyRef
-          .where('uploader_id', isNotEqualTo: DataProvider.instance.getUser.uid)
-          .get())
+              .where(AppKeys.uploaderId, isNotEqualTo: DataProvider.instance.getUser.uid)
+              .get())
           .docs;
       for (var data in response) {
         properties.add(Property.fromJson(data.data(), data.id));
@@ -102,8 +115,8 @@ class FirebaseController extends ApiHandler {
     if (mine != null) {
       if (mine) {
         final response = (await propertyRef
-            .where('uploader_id', isEqualTo: DataProvider.instance.getUser.uid)
-            .get())
+                .where(AppKeys.uploaderId, isEqualTo: DataProvider.instance.getUser.uid)
+                .get())
             .docs;
         for (var json in response) {
           properties.add(Property.fromJson(json.data() as Map<String, dynamic>, json.id));
@@ -126,10 +139,8 @@ class FirebaseController extends ApiHandler {
   // Searches properties based on tags and optional property type
   Future<List<Property>> queryProperties(String query, String? propertyType) async {
     try {
-      List<QueryDocumentSnapshot> querySnapshots = (await propertyRef
-          .where('tags', arrayContainsAny: query.split(" "))
-          .get())
-          .docs;
+      List<QueryDocumentSnapshot> querySnapshots =
+          (await propertyRef.where(AppKeys.tags, arrayContainsAny: query.split(" ")).get()).docs;
       List<Property> allResults = [];
       for (var json in querySnapshots) {
         allResults.add(Property.fromJson(json.data() as Map<String, dynamic>, json.id));
@@ -144,7 +155,44 @@ class FirebaseController extends ApiHandler {
   // Deletes a property and updates the user's list
   Future<void> deleteProperty(String id) async => await propertyRef.doc(id).delete().whenComplete(
         () async => await userRef.doc(DataProvider.instance.getUser.uid).update({
-      'property': FieldValue.arrayRemove([id])
-    }),
-  );
+          AppKeys.property: FieldValue.arrayRemove([id])
+        }),
+      );
+  Stream<DocumentSnapshot<Object?>> get walletStream =>
+      walletRef.doc(DataProvider.instance.getUser.uid).snapshots();
+
+  Future<int?> getWallet() async {
+    try {
+      final myAmount = (await walletRef.doc(DataProvider.instance.getUser.uid).get())
+          .get(AppKeys.currentBalance) as int?;
+      return myAmount;
+    } catch (e, stackTrace) {
+      logError('getWallet', e, stackTrace);
+      return null;
+    }
+  }
+
+  Future<void> updateMoneyToWallet(int amount) async {
+    try {
+      await walletRef
+          .doc(DataProvider.instance.getUser.uid)
+          .update({AppKeys.currentBalance: FieldValue.increment(amount)});
+      await updatePaymentsHistory(amount > 0, amount);
+    } catch (e, stackTrace) {
+      await walletRef.doc(DataProvider.instance.getUser.uid).set({AppKeys.currentBalance: amount});
+      await updatePaymentsHistory(amount > 0, amount);
+      logError('updateMoneyToWallet', e, stackTrace);
+    }
+  }
+
+  Future<void> updatePaymentsHistory(bool isCredit, int amount) async => await walletRef
+      .doc(DataProvider.instance.getUser.uid)
+      .collection(AppKeys.history)
+      .doc(DateTime.now().millisecondsSinceEpoch.toString())
+      .set({AppKeys.isCredit: isCredit, AppKeys.amount: amount});
+
+  Future<QuerySnapshot<Object?>> paymentHistory() async => await walletRef
+      .doc(DataProvider.instance.getUser.uid)
+      .collection(AppKeys.history)
+      .get();
 }

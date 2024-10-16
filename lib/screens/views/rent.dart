@@ -2,7 +2,6 @@ import 'package:easypg/services/api_handler.dart';
 import 'package:easypg/model/property.dart';
 import 'package:easypg/screens/add_property/step_0_add_property_page.dart';
 import 'package:easypg/screens/widgets/property_card.dart';
-import 'package:easypg/services/payment_service.dart';
 import 'package:easypg/utils/colors.dart';
 import 'package:easypg/utils/styles.dart';
 import 'package:easypg/utils/tools.dart';
@@ -143,6 +142,6 @@ class _RentPageState extends State<RentPage> {
   }
 
   Future<void> _managePayment(Property property) async {
-    PaymentService.instance.openCheckout();
+    // PaymentService.instance.openCheckout();
   }
 }
