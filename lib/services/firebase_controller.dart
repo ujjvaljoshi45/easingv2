@@ -7,8 +7,8 @@ import 'package:easypg/services/api_handler.dart';
 import 'package:easypg/model/property.dart';
 import 'package:easypg/model/user.dart';
 import 'package:easypg/provider/data_provider.dart';
+import 'package:easypg/services/app_configs.dart';
 import 'package:easypg/utils/app_keys.dart';
-import 'package:easypg/utils/keys.dart';
 import 'package:easypg/utils/tools.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 
@@ -49,11 +49,34 @@ class FirebaseController extends ApiHandler {
   Future<void> saveUser(AppUser user) async {
     try {
       await userRef.doc(user.phoneNo).set(user.toJson());
-      await walletRef.doc(user.phoneNo).set({AppKeys.currentBalance: 150});
+      await walletRef
+          .doc(user.uid)
+          .set({AppKeys.currentBalance: (await AppConfigs.instance.getReward())});
     } on FirebaseException catch (e, stackTrace) {
       logError('setUser()', e.toString(), stackTrace);
     } catch (e, stackTrace) {
       logError('setUser()', e.toString(), stackTrace);
+    }
+  }
+
+  Future<String?> saveProfileUrl(File photo) async {
+    try {
+      final ref = FirebaseStorage.instance.ref("${DataProvider.instance.getUser.uid}/profile.jpg");
+      await ref.putFile(photo);
+      return await ref.getDownloadURL();
+    } catch (e, stackTrace) {
+      logError('image', e, stackTrace);
+      return null;
+    }
+  }
+
+  Future<void> updateUserNameOrPhoto(AppUser user, bool isPhoto) async {
+    try {
+      await userRef.doc(user.uid).update(isPhoto
+          ? {AppKeys.profileUrlKey: user.profileUrl}
+          : {AppKeys.displayNameKey: user.displayName});
+    } catch (e) {
+      return;
     }
   }
 
@@ -74,7 +97,12 @@ class FirebaseController extends ApiHandler {
     List<Property> properties = [];
     try {
       List response = (await propertyRef
-              .where(AppKeys.uploaderId, isNotEqualTo: DataProvider.instance.getUser.uid)
+              .where(
+                Filter.and(
+                  Filter(AppKeys.uploaderId, isNotEqualTo: DataProvider.instance.getUser.uid),
+                  Filter(AppKeys.statusKey, isEqualTo: true),
+                ),
+              )
               .get())
           .docs;
       for (var data in response) {
@@ -84,11 +112,12 @@ class FirebaseController extends ApiHandler {
       logError('getProperties() error', e, stackTrace);
     }
     CacheManager.propertyCache = properties;
-    return properties;
+    properties.sort((a, b) => a.createdAt.compareTo(b.createdAt));
+    return properties.reversed.toList();
   }
 
   // Uploads images and returns their URLs
-  Future<List<String>> saveImages(List<String> paths, int time) async {
+  Future<List<String>> saveImages(List<String> paths, String time) async {
     List<String> urls = [];
     for (String path in paths) {
       final ref = FirebaseStorage.instance
@@ -104,7 +133,7 @@ class FirebaseController extends ApiHandler {
     Map res = property.toJson();
     await propertyRef.doc(property.id).set(res);
     await userRef.doc(DataProvider.instance.getUser.uid).update({
-      myPropertiesKey: FieldValue.arrayUnion([property.id])
+      AppKeys.myPropertiesKey: FieldValue.arrayUnion([property.id])
     });
     AddPropertyProvider.instance.clear();
   }
@@ -121,26 +150,38 @@ class FirebaseController extends ApiHandler {
         for (var json in response) {
           properties.add(Property.fromJson(json.data() as Map<String, dynamic>, json.id));
         }
-        return properties;
+        properties.sort((a, b) => a.createdAt.compareTo(b.createdAt));
+        return properties.reversed.toList();
       }
     }
     final response = await userRef.doc(DataProvider.instance.getUser.uid).get();
-    final ids = response.get(bookMarksKey);
+    final ids = response.get(AppKeys.bookMarksKey);
     logEvent('ids : ${ids.length}');
     for (var id in ids) {
       logEvent('searching... id: $id');
       properties.add(
           Property.fromJson((await propertyRef.doc(id).get()).data() as Map<String, dynamic>, id));
     }
+    properties.removeWhere(
+      (element) => element.status != true,
+    );
     logEvent('properties ${properties.length}');
-    return properties;
+    properties.sort((a, b) => a.createdAt.compareTo(b.createdAt));
+    return properties.reversed.toList();
   }
 
   // Searches properties based on tags and optional property type
   Future<List<Property>> queryProperties(String query, String? propertyType) async {
     try {
-      List<QueryDocumentSnapshot> querySnapshots =
-          (await propertyRef.where(AppKeys.tags, arrayContainsAny: query.split(" ")).get()).docs;
+      List<QueryDocumentSnapshot> querySnapshots = (await propertyRef
+              .where(
+                Filter.and(
+                  Filter(AppKeys.tags, arrayContainsAny: query.split(" ")),
+                  Filter(AppKeys.statusKey, isEqualTo: true),
+                ),
+              )
+              .get())
+          .docs;
       List<Property> allResults = [];
       for (var json in querySnapshots) {
         allResults.add(Property.fromJson(json.data() as Map<String, dynamic>, json.id));
@@ -191,10 +232,8 @@ class FirebaseController extends ApiHandler {
       .doc(DateTime.now().millisecondsSinceEpoch.toString())
       .set({AppKeys.isCredit: isCredit, AppKeys.amount: amount});
 
-  Future<QuerySnapshot<Object?>> paymentHistory() async => await walletRef
-      .doc(DataProvider.instance.getUser.uid)
-      .collection(AppKeys.history)
-      .get();
+  Future<QuerySnapshot<Object?>> paymentHistory() async =>
+      await walletRef.doc(DataProvider.instance.getUser.uid).collection(AppKeys.history).get();
 
   Future<bool> updateActivation(String id) async {
     try {

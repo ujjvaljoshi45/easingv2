@@ -1,7 +1,6 @@
 import 'package:easypg/screens/add_property/widgets/exit_dialog.dart';
 import 'package:easypg/services/api_handler.dart';
 import 'package:easypg/model/property.dart';
-import 'package:easypg/provider/data_provider.dart';
 import 'package:easypg/utils/tools.dart';
 import 'package:flutter/material.dart';
 
@@ -76,6 +75,15 @@ class AddPropertyProvider extends ChangeNotifier {
             showToast('Please Fill All the Fields', Colors.redAccent);
             return; // Stop if validation fails
           }
+        case 3:
+          setAmenities(
+            (List.generate(
+                AddPropertyProvider.instance.myAmenities.length,
+                (index) => AddPropertyProvider.instance
+                        .myAmenities[AddPropertyProvider.instance.myAmenities.keys.toList()[index]]!
+                    ? AddPropertyProvider.instance.myAmenities.keys.toList()[index]
+                    : '')).toSet().toList(),
+          );
         case 4:
           if (!stepFiveValidation()) {
             showToast('Please Fill All the Fields', Colors.redAccent);
@@ -88,16 +96,9 @@ class AddPropertyProvider extends ChangeNotifier {
           curve: Curves.linearToEaseOut, duration: const Duration(milliseconds: 100));
     } else {
       // Final step: Set amenities, log data, and save the property
-      AddPropertyProvider.instance.setAmenities(
-        (List.generate(
-            AddPropertyProvider.instance.myAmenities.length,
-            (index) => AddPropertyProvider.instance
-                    .myAmenities[AddPropertyProvider.instance.myAmenities.keys.toList()[index]]!
-                ? AddPropertyProvider.instance.myAmenities.keys.toList()[index]
-                : '')).toSet().toList(),
-      );
       logEvent(AddPropertyProvider.instance.property.toJson());
       showToast('Saving...', null);
+
       save().whenComplete(
         () => Navigator.pop(context), // Close the form after saving
       );
@@ -147,16 +148,26 @@ class AddPropertyProvider extends ChangeNotifier {
   void setDeposit(String str) => property.deposit = str;
   void setAmenities(List<String> lis) =>
       property.amenities = lis.where((element) => element.trim().isNotEmpty).toList();
-  void setPhotos(List<String> lis) => property.photos.addAll(lis);
+  void setPhotos(photo, index) => property.photos[index] = photo;
 
   // Saves the property data
   Future<void> save() async {
     toggleLoading(); // Start loading
-    property.uploaderId = DataProvider.instance.getUser.uid;
-    int time = DateTime.now().millisecondsSinceEpoch;
+    String time =
+        property.id.isNotEmpty ? property.id : DateTime.now().millisecondsSinceEpoch.toString();
     logEvent(property.toJson());
-    List<String> urls = await ApiHandler.instance.saveImages(property.photos, time);
-    property.photos = urls; // Update property with image URLs
+    List<String> localImages = [];
+    List<String> networkImages = [];
+    for (String myUrls in property.photos) {
+      if (!myUrls.startsWith("https")) {
+        localImages.add(myUrls);
+      } else {
+        networkImages.add(myUrls);
+      }
+    }
+    networkImages.addAll(await ApiHandler.instance.saveImages(localImages, time));
+
+    property.photos = networkImages; // Update property with image URLs
     property.id = time.toString(); // Set the property ID
     await ApiHandler.instance.saveProperty(property); // Save property details
     toggleLoading(); // Stop loading
@@ -165,23 +176,23 @@ class AddPropertyProvider extends ChangeNotifier {
 
   // Validates the first step
   bool stepOneValidation() =>
-      AddPropertyProvider.instance.property.name.isNotEmpty &&
-      AddPropertyProvider.instance.property.propertyType.isNotEmpty &&
-      AddPropertyProvider.instance.property.streetAddress.isNotEmpty &&
-      AddPropertyProvider.instance.property.pinCode.isNotEmpty &&
-      AddPropertyProvider.instance.property.city.isNotEmpty &&
-      AddPropertyProvider.instance.property.state.isNotEmpty;
+      property.name.isNotEmpty &&
+      property.propertyType.isNotEmpty &&
+      property.streetAddress.isNotEmpty &&
+      property.pinCode.isNotEmpty &&
+      property.city.isNotEmpty &&
+      property.state.isNotEmpty;
 
   // Validates the third step
   bool stepThreeValidation() =>
-      AddPropertyProvider.instance.property.bhk.isNotEmpty &&
-      AddPropertyProvider.instance.property.bathroom.isNotEmpty &&
-      AddPropertyProvider.instance.property.furniture.isNotEmpty &&
-      AddPropertyProvider.instance.property.rent.isNotEmpty &&
-      AddPropertyProvider.instance.property.deposit.isNotEmpty;
+      property.bhk.isNotEmpty &&
+      property.bathroom.isNotEmpty &&
+      property.furniture.isNotEmpty &&
+      property.rent.isNotEmpty &&
+      property.deposit.isNotEmpty;
 
   // Validates the fifth step
-  bool stepFiveValidation() => AddPropertyProvider.instance.property.photos.length >= 4;
+  bool stepFiveValidation() => property.photos.length >= 4;
 
   // Clears all the form data
   void clear() {
@@ -189,6 +200,7 @@ class AddPropertyProvider extends ChangeNotifier {
     selectedOption = 0;
     currentIndex = 0;
     bathrooms = 1;
+    isLoading = false;
     for (var element in myAmenities.keys) {
       myAmenities[element] = false;
     }

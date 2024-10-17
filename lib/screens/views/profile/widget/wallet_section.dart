@@ -1,3 +1,5 @@
+import 'package:easypg/utils/app_keys.dart';
+import 'package:easypg/utils/tools.dart';
 import 'package:flutter/material.dart';
 import 'package:easypg/utils/styles.dart';
 import 'package:easypg/utils/colors.dart';
@@ -26,17 +28,21 @@ class WalletSection extends StatelessWidget {
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            StreamBuilder(
-              stream: ApiHandler.instance.walletStream,
-              builder: (context, snapshot) {
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  return _buildText("Loading...");
-                }
-                if (snapshot.hasError || !snapshot.hasData) {
-                  return _buildText("Unable to Fetch Balance");
-                }
-                return _buildText("₹${snapshot.requireData.get('current_balance')}");
-              },
+            Flexible(
+              child: StreamBuilder(
+                stream: ApiHandler.instance.walletStream,
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return _buildText("Loading...");
+                  }
+                  if (snapshot.hasError || !snapshot.hasData || !snapshot.requireData.exists) {
+                    return _buildText("Unable to Fetch Balance");
+                  }
+                  logEvent(snapshot.requireData.data());
+              
+                  return _buildText("₹${snapshot.requireData.get(AppKeys.currentBalance) ?? ""}");
+                },
+              ),
             ),
             ElevatedButton(
               style: ElevatedButton.styleFrom(
@@ -67,7 +73,7 @@ class WalletSection extends StatelessWidget {
       style: montserrat.copyWith(
         color: myOrange,
         fontWeight: FontWeight.bold,
-        fontSize: 24.sp,
+        fontSize: 18.sp,
       ),
     );
   }

@@ -1,4 +1,5 @@
 import 'package:easypg/provider/auth_provider.dart';
+import 'package:easypg/services/app_configs.dart';
 import 'package:easypg/utils/colors.dart';
 import 'package:easypg/utils/styles.dart';
 import 'package:easypg/utils/tools.dart';
@@ -46,7 +47,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     space(40),
                     _buildSubmitButton(),
                     TextButton(
-                      onPressed: () {},
+                      onPressed:() async => await manageUrl(await AppConfigs.instance.getTermsLink()),
                       child: Text(
                         'Terms Of Service',
                         style: unSelectedOptionTextStyle.copyWith(

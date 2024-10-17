@@ -1,4 +1,6 @@
 import 'package:easypg/screens/views/profile/payment_history.dart';
+import 'package:easypg/services/app_configs.dart';
+import 'package:easypg/utils/tools.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -14,7 +16,7 @@ class ActionItems extends StatelessWidget {
         ListTile(
           leading: const FaIcon(FontAwesomeIcons.clockRotateLeft),
           title: const Text("Payment History"),
-          subtitle: const Text("View your past payments and manage upcoming ones."),
+          subtitle: const Text("View your past payments."),
           onTap: () {
             Navigator.push(context, MaterialPageRoute(builder: (context) => PaymentHistoryScreen(),));
           },
@@ -23,9 +25,7 @@ class ActionItems extends StatelessWidget {
         ListTile(
           leading: const FaIcon(FontAwesomeIcons.headset),
           title: const Text("Contact Support"),
-          onTap: () {
-            // Navigate to support page
-          },
+          onTap: () async => await manageUrl(await AppConfigs.instance.getSupportLink()),
         ),
       ],
     );

@@ -1,4 +1,5 @@
 import 'package:easypg/screens/views/rent/activate_dialog.dart';
+import 'package:easypg/screens/widgets/empty_widget.dart';
 import 'package:easypg/services/api_handler.dart';
 import 'package:easypg/model/property.dart';
 import 'package:easypg/screens/add_property/step_0_add_property_page.dart';
@@ -40,9 +41,7 @@ class _RentPageState extends State<RentPage> {
             ));
           }
           if (snapshot.hasError) {
-            return const Center(
-              child: Text('No Data Found!'),
-            );
+            return EmptyScreen(message: "Add Properties for listing",);
           }
           if (snapshot.requireData.isEmpty || !snapshot.hasData) {
             return Column(
@@ -150,7 +149,7 @@ class _RentPageState extends State<RentPage> {
                         Padding(
                           padding: const EdgeInsets.all(8.0),
                           child: PropertyCard(
-                              property: properties[index], topWidget: 'delete'),
+                              property: properties[index], topWidget: 'delete',parentCallback: ()=>setState((){}),),
                         ),
                       ],
                     ),

@@ -75,8 +75,8 @@ class PhoneNumberDialog extends StatelessWidget {
               ElevatedButton(
                 onPressed: () async {
                   final Uri launchUri = Uri(
-                    scheme: 'whatsapp',
-                    path: phoneNumber,
+                    scheme: "https",
+                    path: "wa.me/$phoneNumber",
                   );
                   await launchUrl(launchUri);
                 },

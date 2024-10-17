@@ -58,7 +58,7 @@ class Property {
       rent: '',
       deposit: '',
       amenities: [],
-      photos: [],
+      photos: ["","","",""],
       createdAt: DateTime.now(),
       status: false,
       uploaderId: '');

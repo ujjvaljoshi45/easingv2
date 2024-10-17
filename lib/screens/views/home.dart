@@ -1,3 +1,4 @@
+import 'package:easypg/screens/widgets/empty_widget.dart';
 import 'package:easypg/services/api_handler.dart';
 import 'package:easypg/model/cache_manager.dart';
 import 'package:easypg/model/property.dart';
@@ -35,15 +36,9 @@ class _HomePageState extends State<HomePage> {
               color: myOrange,
             ));
           }
-          if (snapshot.hasError) {
+          if (snapshot.hasError || !snapshot.hasData || snapshot.requireData.isEmpty) {
             return const Center(
-              child: Text('No Data Found!'),
-            );
-          }
-
-          if (!snapshot.hasData || snapshot.requireData.isEmpty) {
-            return const Center(
-              child: Text('No Data Found!'),
+              child: EmptyScreen(message: "No Properties Found",),
             );
           }
 

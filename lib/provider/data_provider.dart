@@ -20,6 +20,7 @@ class DataProvider with ChangeNotifier {
   // Setter for the current user, also updates the cache
   AppUser setUser(AppUser user) {
     CacheManager.user = _user; // Update cache with current user
+    notifyListeners();
     return _user = user; // Update the user and return the new user
   }
 

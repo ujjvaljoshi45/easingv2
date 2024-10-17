@@ -66,6 +66,7 @@ class _AddLocationPageState extends State<AddLocationPage> {
           cityDropdownLabel: 'City',
           flagState: CountryFlag.DISABLE,
           currentCountry: CscCountry.India.name,
+          onCountryChanged: (value) => value,
           onStateChanged: (value) => setState(() => AddPropertyProvider.instance.property.state =
               value ?? AddPropertyProvider.instance.property.state),
           onCityChanged: (value) => setState(() => AddPropertyProvider.instance.property.city =
@@ -91,11 +92,10 @@ class _AddLocationPageState extends State<AddLocationPage> {
                 );
               }
 
-              List<PostOffice> postOffices = PostOffice.parseResponse(
-                  snapshot.requireData.data.first, AddPropertyProvider.instance.property.state);
-              logEvent('len: ${postOffices.length}');
-
               try {
+                List<PostOffice> postOffices = PostOffice.parseResponse(
+                    snapshot.requireData.data.first, AddPropertyProvider.instance.property.state);
+                logEvent('len: ${postOffices.length}');
                 return DropdownButtonFormField(
                   // value: AddPropertyProvider.instance.property.pinCode.isNotEmpty ? AddPropertyProvider.instance.property.pinCode : "000000",
                   decoration: const InputDecoration(label: Text('Pin-Code')),
@@ -126,7 +126,13 @@ class _AddLocationPageState extends State<AddLocationPage> {
                 );
               } catch (e, stackTrace) {
                 logError('-_-', e, stackTrace);
-                return Text('ERROR: $e');
+                return TextField(
+                  maxLength: 6,
+                  onChanged: (value) => AddPropertyProvider.instance.property.pinCode = value,
+                  autocorrect: false,
+                  keyboardType: TextInputType.number,
+                  decoration: InputDecoration(hintText: 'Enter Pincode Manually'),
+                );
               }
             },
           ),

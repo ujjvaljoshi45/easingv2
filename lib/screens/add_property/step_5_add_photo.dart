@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:dotted_border/dotted_border.dart';
 import 'package:easypg/provider/add_property_provider.dart';
 import 'package:easypg/utils/tools.dart';
@@ -26,17 +27,17 @@ class _AddPhotoPageState extends State<AddPhotoPage> {
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
             ImageTile(
-              url: AddPropertyProvider.instance.property.photos.elementAtOrNull(0),
+              url: AddPropertyProvider.instance.property.photos.elementAtOrNull(0),index: 0,
             ),
-            ImageTile(url: AddPropertyProvider.instance.property.photos.elementAtOrNull(1)),
+            ImageTile(url: AddPropertyProvider.instance.property.photos.elementAtOrNull(1),index: 1,),
           ],
         ),
         space(20),
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
-            ImageTile(url: AddPropertyProvider.instance.property.photos.elementAtOrNull(2)),
-            ImageTile(url: AddPropertyProvider.instance.property.photos.elementAtOrNull(3)),
+            ImageTile(url: AddPropertyProvider.instance.property.photos.elementAtOrNull(2),index: 2,),
+            ImageTile(url: AddPropertyProvider.instance.property.photos.elementAtOrNull(3),index: 3,),
           ],
         ),
       ],
@@ -45,17 +46,20 @@ class _AddPhotoPageState extends State<AddPhotoPage> {
 }
 
 class ImageTile extends StatefulWidget {
-  const ImageTile({super.key, this.url});
+  const ImageTile({super.key, this.url, required this.index});
   final String? url;
+  final int index;
   @override
   State<ImageTile> createState() => _ImageTileState();
 }
 
 class _ImageTileState extends State<ImageTile> {
   String? url;
+  late int index;
   @override
   void initState() {
     url = widget.url;
+    index = widget.index;
     super.initState();
   }
 
@@ -63,7 +67,7 @@ class _ImageTileState extends State<ImageTile> {
     XFile? file = (await ImagePicker().pickImage(source: ImageSource.gallery));
     if (file != null) {
       setState(() => url = file.path);
-      AddPropertyProvider.instance.setPhotos([url!]);
+      AddPropertyProvider.instance.setPhotos(url!,index);
     }
   }
 
@@ -76,14 +80,14 @@ class _ImageTileState extends State<ImageTile> {
         child: SizedBox(
             height: getWidth(context) * 0.4.w,
             width: getWidth(context) * 0.4.w,
-            child: url == null
+            child: url!.isEmpty
                 ? Center(
                     child: Icon(
                       Icons.add,
                       size: 32.sp,
                     ),
                   )
-                : Image.file(File(url!))),
+                : url!.startsWith('http') ? CachedNetworkImage(imageUrl: url!) : Image.file(File(url!))),
       ),
     );
   }

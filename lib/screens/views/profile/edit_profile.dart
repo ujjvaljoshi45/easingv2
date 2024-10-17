@@ -1,4 +1,7 @@
+import 'package:easypg/model/user.dart';
 import 'package:easypg/provider/data_provider.dart';
+import 'package:easypg/services/api_handler.dart';
+import 'package:easypg/utils/colors.dart';
 import 'package:easypg/utils/styles.dart';
 import 'package:easypg/utils/tools.dart';
 import 'package:flutter/material.dart';
@@ -24,10 +27,13 @@ class _EditProfileNameBottomSheetModalState extends State<EditProfileNameBottomS
     super.initState();
   }
 
-  void _saveProfile() {
-    // Logic to save the updated profile information
-    // You can replace this with your backend call
-    Navigator.of(context).pop(); // Close the modal after saving
+  void _saveProfile() async {
+    if (_name == null) return;
+    Navigator.of(context).pop();
+    AppUser newUser =DataProvider.instance.getUser;
+    newUser.displayName = _name!;
+    DataProvider.instance.setUser(newUser);
+    await ApiHandler.instance.updateUserNameOrPhoto(newUser,false);
   }
 
   @override
@@ -50,7 +56,7 @@ class _EditProfileNameBottomSheetModalState extends State<EditProfileNameBottomS
                 style: unSelectedOptionTextStyle.copyWith(fontSize: 18.sp),
               ),
               space(16),
-              TextField(
+              TextFormField(
                 onChanged: (value) {
                   setState(() {
                     _name = value; // Update name as user types
@@ -61,7 +67,7 @@ class _EditProfileNameBottomSheetModalState extends State<EditProfileNameBottomS
                   hintText: 'Enter your name',
                   border: OutlineInputBorder(),
                 ),
-                controller: TextEditingController(text: _name),
+                initialValue: DataProvider.instance.getUser.displayName,
               ),
               space(16),
               Row(
@@ -96,6 +102,7 @@ class _EditProfilePictureState extends State<EditProfilePicture> {
   String currentProfilePicture = DataProvider.instance.getUser.profileUrl;
   final ImagePicker _picker = ImagePicker();
   File? _profileImage;
+  bool _isLoading = false;
 
   Future<void> _pickImage() async {
     final pickedFile = await _picker.pickImage(source: ImageSource.gallery);
@@ -106,9 +113,19 @@ class _EditProfilePictureState extends State<EditProfilePicture> {
     }
   }
 
-  void _saveProfile() {
-    // Logic to save the updated profile information
-    // You can replace this with your backend call
+  void _saveProfile() async {
+    if (_profileImage == null) return;
+    setState(() => _isLoading = true);
+    String? file = await ApiHandler.instance.saveProfileUrl(_profileImage!);
+    if (file == null){
+      showToast('Unable to Save Image',Colors.redAccent,Colors.white);
+    } else {
+      AppUser newUser = DataProvider.instance.getUser;
+      newUser.profileUrl = file;
+      DataProvider.instance.setUser(newUser);
+      await ApiHandler.instance.updateUserNameOrPhoto(newUser, true);
+      setState(() => _isLoading = false);
+    }
     Navigator.of(context).pop(); // Close the modal after saving
   }
 
@@ -127,7 +144,7 @@ class _EditProfilePictureState extends State<EditProfilePicture> {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              GestureDetector(
+              _isLoading ? Center(child: CircularProgressIndicator(color: myOrange,),) : GestureDetector(
                 onTap: _pickImage,
                 child: CircleAvatar(
                   radius: 50.r,

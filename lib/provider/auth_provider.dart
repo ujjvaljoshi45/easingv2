@@ -100,12 +100,14 @@ class AuthDataProvider extends ChangeNotifier {
           context,
           phoneNumber,
         );
+        // toggleOtpLoading();
       }
     } catch (e, stackTrace) {
       showToast('Unable to Verify OTP!', Colors.red, Colors.white); // Show error message
       logError('verify failed', e, stackTrace); // Log verification error
+      toggleOtpLoading();
     }
-    toggleOtpLoading(); // Stop OTP loading
+
   }
 
   // Signs in using the provided PhoneAuthCredential

@@ -6,6 +6,9 @@ import 'package:easypg/utils/styles.dart';
 import 'package:easypg/utils/colors.dart';
 import 'package:easypg/utils/tools.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:provider/provider.dart';
+
+import '../../../../provider/data_provider.dart';
 
 class ProfileHeader extends StatelessWidget {
   final AppUser user;
@@ -26,7 +29,7 @@ class ProfileHeader extends StatelessWidget {
             Row(
               children: [
                 Text(
-                  user.displayName,
+                  Provider.of<DataProvider>(context, listen: true).getUser.displayName,
                   style: montserrat.copyWith(
                     color: Colors.black,
                     fontWeight: FontWeight.bold,
@@ -61,7 +64,7 @@ class ProfileHeader extends StatelessWidget {
           borderType: BorderType.Circle,
           child: CircleAvatar(
             radius: getWidth(context) * 0.12.w,
-            backgroundImage: user.profileUrl.isEmpty
+            backgroundImage: Provider.of<DataProvider>(context, listen: true).getUser.profileUrl.isEmpty
                 ? const AssetImage('assets/user_icon.png')
                 : CachedNetworkImageProvider(user.profileUrl),
           ),

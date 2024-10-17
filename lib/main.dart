@@ -1,33 +1,19 @@
-import 'dart:io';
 
 import 'package:easypg/auth/login.dart';
 import 'package:easypg/auth/register_screen.dart';
-import 'package:easypg/firebase_options.dart';
 import 'package:easypg/provider/add_property_provider.dart';
 import 'package:easypg/provider/auth_provider.dart';
 import 'package:easypg/provider/data_provider.dart';
 import 'package:easypg/screens/main_screen.dart';
 import 'package:easypg/screens/splash.dart';
 import 'package:easypg/screens/views/profile/profile.dart';
-import 'package:easypg/services/ad_service.dart';
-import 'package:easypg/services/app_configs.dart';
 import 'package:easypg/utils/colors.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  if (Platform.isAndroid) {
-    await Firebase.initializeApp(
-      options: DefaultFirebaseOptions.currentPlatform,
-    );
-  } else {
-    await Firebase.initializeApp();
-  }
-  await AppConfigs.instance.getConfigs();
-  await AdService.instance.loadAd();
   runApp(MultiProvider(
     providers: [
       ChangeNotifierProvider(

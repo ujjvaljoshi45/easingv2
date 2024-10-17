@@ -1,3 +1,4 @@
+import 'package:easypg/screens/widgets/empty_widget.dart';
 import 'package:easypg/services/api_handler.dart';
 import 'package:easypg/model/property.dart';
 import 'package:easypg/provider/data_provider.dart';
@@ -35,15 +36,11 @@ class _BookmarksPageState extends State<BookmarksPage> {
                 ));
               }
               if (snapshot.hasError || !snapshot.hasData) {
-                return const Center(
-                  child: Text('No Data Found!'),
-                );
+                return EmptyScreen(message: "Add Properties to Bookmark",);
               }
               List<Property> properties = snapshot.requireData;
               return snapshot.requireData.isEmpty
-                  ? const Center(
-                      child: Text('Empty!'),
-                    )
+                  ? EmptyScreen(message: "Add Properties to Bookmark",)
                   : ListView.builder(
                       itemBuilder: (context, index) =>
                           PropertyCard(property: properties[index], topWidget: 'bookmark'),

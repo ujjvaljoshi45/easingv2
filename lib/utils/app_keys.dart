@@ -11,12 +11,16 @@ abstract class AppKeys {
   static final String property = "property";
   static final String wallet = "wallet";
 
-  static final String charge = "charge";
-  static final String api = "api";
-
+  static final String rewardAmount = "REWARD_AMOUNT";
   static final String perCallCharge = "PER_CALL_CHARGE";
   static final String razorPayAPI = "RAZORPAY_API";
   static final String activationCharges = "ACTIVATION_CHARGE";
+  static final String supportLink = "SUPPORT_LINK";
+  static final String termsLink = "TERMS_URL";
+  static final String brandingLink = "BRANDING_LINK";
+  static final String charge = "charge";
+  static final String api = "api";
+  static final String link = "link";
 
   // Wallet Related Keys
   static final String currentBalance = "current_balance";
@@ -43,4 +47,18 @@ abstract class AppKeys {
   static final String statusKey = 'status';
   static final String uploaderIdKey = 'uploader_id';
   static final String tagsKey = 'tags';
+
+  static final String uidKey = 'uid';
+  static final String displayNameKey = 'display_name';
+  static final String bDateKey = 'birth_date';
+  static final String phoneNoKey = 'phone_no';
+  static final String genderKey = 'gender';
+  static final String profileUrlKey = 'profile_url';
+  static final String fcmKey = 'fcm';
+  static final String bookMarksKey = 'bookmarks';
+  static final String myPropertiesKey = 'property';
+  static final String isAadharVerifiedKey = 'is_aadhar_verified';
 }
+
+
+
