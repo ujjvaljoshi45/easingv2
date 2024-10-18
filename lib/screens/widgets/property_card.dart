@@ -1,19 +1,31 @@
+import 'dart:io';
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:carousel_slider/carousel_slider.dart';
-import 'package:easypg/model/api_handler/api_handler.dart';
+import 'package:easypg/screens/widgets/bookmark_button.dart';
+import 'package:easypg/screens/widgets/display_data_tile.dart';
+import 'package:easypg/screens/widgets/phone_number_dialog.dart';
+import 'package:easypg/services/ad_service.dart';
+import 'package:easypg/services/api_handler.dart';
 import 'package:easypg/model/property.dart';
 import 'package:easypg/provider/data_provider.dart';
-import 'package:easypg/screens/add_property/save_and_next_btn.dart';
+import 'package:easypg/screens/add_property/widgets/save_and_next_btn.dart';
+import 'package:easypg/services/app_configs.dart';
+import 'package:easypg/utils/app_keys.dart';
 import 'package:easypg/utils/colors.dart';
 import 'package:easypg/utils/styles.dart';
 import 'package:easypg/utils/tools.dart';
 import 'package:flutter/material.dart';
-import 'package:fluttertoast/fluttertoast.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class PropertyCard extends StatefulWidget {
-  const PropertyCard({super.key, required this.property, this.topWidget});
+  const PropertyCard(
+      {super.key, required this.property, this.topWidget, this.isOverview, this.parentCallback});
   final Property property;
   final String? topWidget;
+  final bool? isOverview;
+  final Function? parentCallback;
 
   @override
   State<PropertyCard> createState() => _PropertyCardState();
@@ -22,6 +34,14 @@ class PropertyCard extends StatefulWidget {
 class _PropertyCardState extends State<PropertyCard> {
   final Duration _pageChangeDuration = const Duration(milliseconds: 150);
   int _currentPhotoIndex = 0;
+  final _expansionController = ExpansionTileController();
+  int callPrice = 0;
+  bool isLoading = false;
+  @override
+  void didChangeDependencies() async {
+    callPrice = await AppConfigs.instance.getPerCallCharges();
+    super.didChangeDependencies();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -29,80 +49,104 @@ class _PropertyCardState extends State<PropertyCard> {
       padding: const EdgeInsets.symmetric(vertical: 10),
       child: Card(
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(12.0),
+          borderRadius: BorderRadius.circular(12.0.r),
         ),
         elevation: 4,
-        child: ExpansionTile(
-          showTrailingIcon: false,
-          shape:
-              const OutlineInputBorder(borderSide: BorderSide(width: 0, color: Colors.transparent)),
-          title: _buildTitleWidget(),
-          subtitle: _buildSubTitleWidget(),
-          children: _buildChildren(),
+        child: Column(
+          children: [
+            _buildTitleWidget(),
+            ExpansionTile(
+              controller: _expansionController,
+              initiallyExpanded: widget.isOverview != null && widget.isOverview!,
+              showTrailingIcon: false,
+              shape: const OutlineInputBorder(
+                  borderSide: BorderSide(width: 0, color: Colors.transparent)),
+              title: _buildSubTitleWidget(),
+              // subtitle:,
+              children: _buildChildren(),
+            ),
+          ],
         ),
       ),
     );
   }
 
-  _buildTitleWidget() => Stack(
-        children: [
-          ClipRRect(
-            borderRadius: const BorderRadius.only(
-              topLeft: Radius.circular(12.0),
-              topRight: Radius.circular(12.0),
-            ),
-            child: CarouselSlider.builder(
-              itemCount: widget.property.photos.length,
-              itemBuilder: (context, index, realIndex) => CachedNetworkImage(
-                imageUrl: widget.property.photos[index],
-                width: double.infinity,
-                fit: BoxFit.fitHeight,
+  _buildTitleWidget() => InkWell(
+        onTap: () => setState(() => _expansionController.isExpanded
+            ? _expansionController.expand()
+            : _expansionController.collapse()),
+        child: Stack(
+          children: [
+            ClipRRect(
+              borderRadius: BorderRadius.only(
+                topLeft: Radius.circular(12.0.r),
+                topRight: Radius.circular(12.0.r),
               ),
-              options: CarouselOptions(
-                  autoPlay: false,
-                  autoPlayAnimationDuration: _pageChangeDuration,
-                  onPageChanged: (index, reason) => setState(
-                        () => _currentPhotoIndex = index,
-                      ),
-                  enableInfiniteScroll: false,
-                  viewportFraction: 1,
-                  aspectRatio: 16 / 9,
-                  height: 250),
-            ),
-          ),
-          Positioned(
-            top: 10,
-            left: 10,
-            child: Container(
-              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-              decoration: BoxDecoration(
-                color: myOrangeSecondary,
-                borderRadius: BorderRadius.circular(8.0),
+              child: CarouselSlider.builder(
+                itemCount: widget.property.photos.length,
+                itemBuilder: (context, index, realIndex) =>
+                    !widget.property.photos[index].startsWith('https')
+                        ? Image.file(
+                            File(
+                              widget.property.photos[index],
+                            ),
+                            width: double.infinity.w,
+                            fit: BoxFit.cover)
+                        : CachedNetworkImage(
+                            imageUrl: widget.property.photos[index],
+                            width: double.infinity.w,
+                            fit: BoxFit.cover,
+                            errorWidget: (context, url, error) =>
+                                Text("Unable to load Image (you can still continue)"),
+                          ),
+                options: CarouselOptions(
+                    autoPlay: true,
+                    autoPlayCurve: Easing.linear,
+                    pauseAutoPlayInFiniteScroll: true,
+                    autoPlayAnimationDuration: _pageChangeDuration,
+                    onPageChanged: (index, reason) => setState(
+                          () => _currentPhotoIndex = index,
+                        ),
+                    enableInfiniteScroll: true,
+                    viewportFraction: 1,
+                    aspectRatio: 16 / 9,
+                    height: 250.h),
               ),
-              child: Text(
-                widget.property.propertyType,
-                style: montserrat.copyWith(
-                  color: myOrange,
-                  fontSize: 13,
-                  fontWeight: FontWeight.bold,
+            ),
+            Positioned(
+              top: 10.h,
+              left: 10.w,
+              child: Container(
+                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                decoration: BoxDecoration(
+                  color: myOrangeSecondary,
+                  borderRadius: BorderRadius.circular(8.0.r),
+                ),
+                child: Text(
+                  widget.property.propertyType,
+                  style: montserrat.copyWith(
+                    color: myOrange,
+                    fontSize: 13.sp,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
               ),
             ),
-          ),
-          Positioned(
-            top: 10,
-            right: 10,
-            child: widget.topWidget != null
-                ? _buildTopWidget(widget.topWidget!)
-                : const SizedBox.shrink(),
-          ),
-          Positioned(
-              bottom: 10,
-              right: 10,
+            Positioned(
+              top: 10.h,
+              right: 10.w,
+              child: widget.topWidget != null
+                  ? _buildTopWidget(widget.topWidget!)
+                  : const SizedBox.shrink(),
+            ),
+            Positioned(
+              bottom: 10.h,
+              right: 10.w,
               child: Container(
                 padding: const EdgeInsets.all(2.0),
                 decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(12), color: Colors.black.withOpacity(0.2)),
+                    borderRadius: BorderRadius.circular(12.r),
+                    color: Colors.black.withOpacity(0.2)),
                 child: Row(
                   children: [
                     for (int i = 0; i < widget.property.photos.length; i++)
@@ -110,16 +154,18 @@ class _PropertyCardState extends State<PropertyCard> {
                         duration: _pageChangeDuration,
                         curve: Curves.decelerate,
                         margin: const EdgeInsets.all(2.0),
-                        width: 10,
-                        height: 10,
+                        width: 10.w,
+                        height: 10.h,
                         decoration: BoxDecoration(
                             shape: BoxShape.circle,
                             color: i == _currentPhotoIndex ? myOrange : myOrangeSecondary),
                       )
                   ],
                 ),
-              ))
-        ],
+              ),
+            ),
+          ],
+        ),
       );
 
   _buildSubTitleWidget() => Padding(
@@ -127,36 +173,62 @@ class _PropertyCardState extends State<PropertyCard> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            // Property Name
             Text(
               widget.property.name,
-              style: montserrat.copyWith(fontSize: 20, fontWeight: FontWeight.bold),
+              style: montserrat.copyWith(
+                fontSize: 20.sp,
+                fontWeight: FontWeight.bold,
+                color: Colors.black87, // Darker shade for the title
+              ),
             ),
-            const SizedBox(height: 4),
+            SizedBox(height: 4.h), // Spacing between elements
+
+            // Location with Icon
             Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                Icon(
-                  Icons.location_pin,
+                FaIcon(
+                  FontAwesomeIcons.locationPin,
                   color: pinColor,
-                  size: 14,
+                  size: 16.sp, // Slightly larger icon for better visibility
                 ),
-                const SizedBox(width: 4),
-                Text('${widget.property.streetAddress}, ${widget.property.city}',
+                SizedBox(width: 6.w), // Adjust spacing for better balance
+                Expanded(
+                  child: Text(
+                    '${widget.property.streetAddress}, ${widget.property.city}',
                     style: montserrat.copyWith(
-                        fontSize: 14, color: secondaryColor, fontWeight: FontWeight.bold)),
+                      fontSize: 14.sp,
+                      color: secondaryColor,
+                      fontWeight: FontWeight.w600, // Increase weight slightly for clarity
+                    ),
+                    overflow: TextOverflow.ellipsis, // Handle overflow text gracefully
+                  ),
+                ),
               ],
             ),
-            const SizedBox(height: 12),
+            SizedBox(height: 10.h), // Adjust spacing for cleaner separation
+
+            // Rent Information
             Row(
               children: [
                 Text(
                   '₹ ${widget.property.rent}',
-                  style: montserrat.copyWith(fontSize: 17, fontWeight: FontWeight.w600),
-                ),
-                Text(
-                  ' /Month',
                   style: montserrat.copyWith(
-                      fontSize: 13, fontWeight: FontWeight.w600, color: secondaryColor),
-                )
+                    fontSize: 18.sp, // Increase size slightly for emphasis
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black87,
+                  ),
+                ),
+                SizedBox(width: 4.w), // Space between Rent and "/Month"
+                Text(
+                  '/Month',
+                  style: montserrat.copyWith(
+                    fontSize: 13.sp,
+                    fontWeight: FontWeight.w600,
+                    color: secondaryColor, // Slightly lighter color for less emphasis
+                  ),
+                ),
               ],
             ),
           ],
@@ -165,79 +237,126 @@ class _PropertyCardState extends State<PropertyCard> {
 
   _buildChildren() => <Widget>[
         Card(
-          margin: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 8.0),
+          margin: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 12.0),
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(12.0),
-            side: BorderSide(color: myOrange, width: 2),
+            borderRadius: BorderRadius.circular(16.0.r),
+            side: BorderSide(color: myOrange, width: 1.5.w),
           ),
           color: myOrangeSecondary,
-          shadowColor: myOrange,
-          elevation: 1.3,
+          shadowColor: Colors.grey.withOpacity(0.5),
+          elevation: 3.0,
           child: ListTile(
+            contentPadding: const EdgeInsets.symmetric(vertical: 12.0, horizontal: 16.0),
             title: Text(
               "Address",
-              style: unSelectedOptionTextStyle,
+              style: montserrat.copyWith(
+                fontSize: 18.sp,
+                fontWeight: FontWeight.w600,
+                color: myOrange,
+              ),
             ),
             subtitle: Text(
-                '${widget.property.name}, ${widget.property.streetAddress}, ${widget.property.city}, ${widget.property.streetAddress} - ${widget.property.pinCode}',
-                style: unSelectedOptionTextStyle),
+              '${widget.property.name}, ${widget.property.streetAddress}, ${widget.property.city}, ${widget.property.streetAddress} - ${widget.property.pinCode}',
+              style: unSelectedOptionTextStyle.copyWith(fontSize: 14.sp),
+            ),
           ),
         ),
+
+        // Information Card
         Card(
-          margin: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 8.0),
+          margin: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 12.0),
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(12.0),
-            side: BorderSide(color: myOrange, width: 2),
+            borderRadius: BorderRadius.circular(16.0.r),
+            side: BorderSide(color: myOrange, width: 1.5.w),
           ),
           color: myOrangeSecondary,
-          shadowColor: myOrange,
-          elevation: 1.3,
+          shadowColor: Colors.grey.withOpacity(0.5),
+          elevation: 3.0,
           child: ListTile(
-            // tileColor: myOrangeSecondary,
-            title: Text('Information', style: unSelectedOptionTextStyle),
+            contentPadding: const EdgeInsets.symmetric(vertical: 12.0, horizontal: 16.0),
+            title: Text(
+              'Information',
+              style: montserrat.copyWith(
+                fontSize: 18.sp,
+                fontWeight: FontWeight.w600,
+                color: myOrange,
+              ),
+            ),
             subtitle: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                DisplayData(title: 'Rent', subtitle: widget.property.rent),
-                DisplayData(title: 'Deposit', subtitle: widget.property.deposit),
+                SizedBox(height: 8.h),
+                DisplayData(title: 'Rent', subtitle: "₹ ${widget.property.rent}"),
+                SizedBox(height: 4.h),
+                DisplayData(title: 'Deposit', subtitle: "₹ ${widget.property.deposit}"),
+                SizedBox(height: 4.h),
                 DisplayData(title: 'BHK', subtitle: widget.property.bhk),
+                SizedBox(height: 4.h),
                 DisplayData(title: 'Bathroom(s)', subtitle: widget.property.bathroom),
+                SizedBox(height: 4.h),
                 DisplayData(title: 'Furniture', subtitle: widget.property.furniture),
               ],
             ),
           ),
         ),
+
+        // Amenities Card
         Card(
-          margin: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 8.0),
+          margin: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 12.0),
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(12.0),
-            side: BorderSide(color: myOrange, width: 2),
+            borderRadius: BorderRadius.circular(16.0.r),
+            side: BorderSide(color: myOrange, width: 1.5.w),
           ),
           color: myOrangeSecondary,
-          shadowColor: myOrange,
-          elevation: 1.3,
+          shadowColor: Colors.grey.withOpacity(0.5),
+          elevation: 3.0,
           child: ListTile(
-            tileColor: myOrangeSecondary,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(12),
+            contentPadding: const EdgeInsets.symmetric(vertical: 12.0, horizontal: 16.0),
+            title: Text(
+              'Amenities',
+              style: montserrat.copyWith(
+                fontSize: 18.sp,
+                fontWeight: FontWeight.w600,
+                color: myOrange,
+              ),
             ),
-            title: Text('Amenities', style: unSelectedOptionTextStyle),
             subtitle: Wrap(
-              children: [
-                for (String amenity in widget.property.amenities.where(
-                  (element) => element.isNotEmpty,
-                ))
-                  Text('$amenity,\t', style: unSelectedOptionTextStyle)
-              ],
+              spacing: 4.0,
+              runSpacing: 4.0,
+              children: widget.property.amenities
+                  .where((element) => element.isNotEmpty)
+                  .map((amenity) => Chip(
+                        label: Text(amenity,
+                            style: unSelectedOptionTextStyle.copyWith(fontSize: 12.sp)),
+                        backgroundColor: myOrangeSecondary.withOpacity(0.2),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(8.r),
+                        ),
+                      ))
+                  .toList(),
             ),
           ),
         ),
-        Focus(
-          autofocus: true,
+
+        // Contact Button
+        Visibility(
+          visible: widget.property.uploaderId != DataProvider.instance.getUser.uid,
           child: Padding(
-            padding: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 8.0),
+            padding: const EdgeInsets.symmetric(vertical: 12.0, horizontal: 10.0),
             child: SaveAndNextBtn(
-              onPressed: () => Fluttertoast.showToast(msg: 'hi'),
-              msg: 'Contact',
+              onPressed: _managePropertySelect,
+              isLoading: isLoading,
+              msg: 'Contact Now',
+              style: ElevatedButton.styleFrom(
+                backgroundColor: myOrange,
+                textStyle: montserrat.copyWith(
+                  fontWeight: FontWeight.w600,
+                  color: Colors.white,
+                ),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10.r),
+                ),
+              ),
             ),
           ),
         ),
@@ -246,41 +365,49 @@ class _PropertyCardState extends State<PropertyCard> {
   _buildTopWidget(String widgetName) {
     switch (widgetName) {
       case 'bookmark':
-        return InkWell(
-          onTap: () async {
+        return BookmarkWidget(
+          isBookmarked: DataProvider.instance.getUser.bookmarks.contains(widget.property.id),
+          onBookmarkToggle: () async {
             bool add = !DataProvider.instance.getUser.bookmarks.contains(widget.property.id);
             setState(() => DataProvider.instance.manageBookmark(widget.property.id, add));
-            await ApiHandler.instance.saveBookMark(widget.property.id,add);
+            await ApiHandler.instance.saveBookMark(widget.property.id, add);
           },
-          child: Container(
-            height: 35,
-            width: 35,
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(6),
-              color: Colors.black,
-            ),
-            child: Icon(
-              (!DataProvider.instance.getUser.bookmarks.contains(widget.property.id))
-                  ? Icons.bookmark_add_sharp
-                  : Icons.bookmark_remove_sharp,
-              color: Colors.white,
-            ),
-          ),
         );
       case 'delete':
-        return  FloatingActionButton.small(
-          onPressed: () => _handelDelete(widget.property),
-          backgroundColor: Colors.black,
-          child: const Icon(
-            Icons.close,
-            color: Colors.white,
-          ),
-        );
+        return _buildMenu();
       default:
         return const SizedBox();
     }
   }
-  _handelDelete(Property property) {
+
+  _buildMenu() => InkWell(
+        onTap: _handelDelete,
+        child: Container(
+          decoration: BoxDecoration(
+              color: Colors.black,
+              borderRadius: BorderRadius.circular(6.r),
+              backgroundBlendMode: BlendMode.overlay),
+          child: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Center(
+              child: const FaIcon(
+                FontAwesomeIcons.x,
+                color: Colors.white,
+              ),
+            ),
+          ),
+        ),
+      );
+  // _handleEdit() {
+  //   AddPropertyProvider.instance.property = widget.property;
+  //   Navigator.push(
+  //       context,
+  //       MaterialPageRoute(
+  //         builder: (context) => AddPropertyPage(),
+  //       ));
+  // }
+
+  _handelDelete() {
     showDialog(
       context: context,
       builder: (context) {
@@ -290,55 +417,128 @@ class _PropertyCardState extends State<PropertyCard> {
           actions: [
             TextButton(
                 onPressed: () async => await ApiHandler.instance
-                    .deleteProperty(property.id)
+                    .deleteProperty(widget.property.id)
                     .whenComplete(
                       () => setState(() {
-                    DataProvider.instance.getUser.myProperties.removeWhere(
-                          (element) => element == property.id,
-                    );
-                    Navigator.pop(context);
-                  }),
-                )
+                        DataProvider.instance.getUser.myProperties.removeWhere(
+                          (element) => element == widget.property.id,
+                        );
+                        widget.parentCallback != null ? widget.parentCallback!() : null;
+                        Navigator.pop(context);
+                      }),
+                    )
                     .onError(
-                      (error, stackTrace) => setState(() {
-                    logError('deleteError', error, stackTrace);
-                    Navigator.pop(context);
-                  }),
-                ),
+                      (error, stackTrace) => setState(() => Navigator.pop(context)),
+                    ),
                 child: Text(
                   "YES",
                   style: montserrat.copyWith(
-                      fontWeight: FontWeight.bold, color: Colors.green, fontSize: 18),
+                      fontWeight: FontWeight.bold, color: Colors.green, fontSize: 18.sp),
                 )),
             TextButton(
                 onPressed: () => Navigator.pop(context),
                 child: Text(
                   "NO",
                   style: montserrat.copyWith(
-                      fontWeight: FontWeight.bold, color: Colors.redAccent, fontSize: 18),
+                      fontWeight: FontWeight.bold, color: Colors.redAccent, fontSize: 18.sp),
                 ))
           ],
         );
       },
     );
   }
-}
 
-class DisplayData extends StatelessWidget {
-  const DisplayData({super.key, required this.title, required this.subtitle});
-  final String title;
-  final String subtitle;
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        Text(
-          title,
-          style: unSelectedOptionTextStyle,
-        ),
-        Text(subtitle, style: unSelectedOptionTextStyle)
-      ],
+  _managePropertySelect() async {
+    // Check if the user has already purchased the property
+    if (!widget.property.purchasedBy.contains(DataProvider.instance.getUser.uid)) {
+      bool isPaid = await _showMoneyWarning();
+      if (!isPaid) {
+        return; // Exit if payment was not successful
+      }
+    }
+
+    // Retrieve phone number of the uploader
+    String? phoneNo = (await ApiHandler.instance.getUser(widget.property.uploaderId))?.phoneNo;
+    if (phoneNo == null) {
+      showToast('Error occurred while receiving information', Colors.redAccent, Colors.white);
+      return; // Exit the function if phone number retrieval fails
+    }
+
+    // Show the phone number dialog
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return PhoneNumberDialog(phoneNumber: phoneNo);
+      },
     );
+  }
+
+  Future<bool> _showMoneyWarning() async {
+    setState(() => isLoading = true);
+    int prices = await AppConfigs.instance.getPerCallCharges();
+    bool res = false;
+    bool internalLoading = false;
+    try {
+      await showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text('Confirm Payment'),
+            content: Text('Do you really want to pay $prices INR?'),
+            actions: [
+              TextButton(
+                onPressed: () {
+                  res = false;
+                  Navigator.of(context).pop(); // Close the dialog
+                },
+                child: Text('No'),
+              ),
+              TextButton(
+                onPressed: () async {
+                  // Close the dialog
+                  setState(() => internalLoading = true);
+                  res = await _deductMoney();
+                  setState(() => internalLoading = false);
+                  Navigator.of(context).pop();
+                },
+                child: internalLoading
+                    ? Center(
+                        child: CircularProgressIndicator(
+                          color: myOrange,
+                        ),
+                      )
+                    : Text('Yes'),
+              ),
+            ],
+          );
+        },
+      );
+    } finally {
+      setState(() => isLoading = false);
+    }
+    return res;
+  }
+
+  Future<bool> _deductMoney() async {
+    final balance = (await ApiHandler.instance.walletStream.first)[AppKeys.currentBalance];
+    final charges = await AppConfigs.instance.getPerCallCharges(); // Fetch charges here
+    if (balance < charges) {
+      showInsufficientBalanceSnackBar(context);
+      return false;
+    }
+
+    try {
+      int val = await AdService.instance.showAd();
+      logEvent('val: $val');
+    } catch (e) {
+      debugPrint(".........Error...... $e");
+    }
+
+    logEvent(balance);
+    showToast('Money Deducted from your wallet. Current balance: ${balance - charges}');
+    await ApiHandler.instance.updateMoneyToWallet(-1 * charges);
+    widget.property.purchasedBy.add(DataProvider.instance.getUser.uid);
+    await ApiHandler.instance.managePropertyContactPurchase(widget.property.id);
+    return true;
   }
 }

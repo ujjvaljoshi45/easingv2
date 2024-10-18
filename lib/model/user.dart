@@ -1,4 +1,4 @@
-import 'package:easypg/utils/keys.dart';
+import 'package:easypg/utils/app_keys.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 class AppUser {
@@ -11,6 +11,8 @@ class AppUser {
   List<dynamic> fcm = [];
   List<String> bookmarks = [];
   List<String> myProperties = [];
+  bool isAadharVerified = false;
+  List<String> purchasedProperty = [];
   AppUser({
     required this.uid,
     required this.displayName,
@@ -18,18 +20,8 @@ class AppUser {
     required this.phoneNo,
     required this.bDate,
     required this.gender,
+    required this.isAadharVerified,
   });
-
-  Map<String, dynamic> toJson() => {
-        uidKey: uid,
-        displayNameKey: displayName,
-        phoneNoKey: phoneNo,
-        profileUrlKey: profileUrl,
-        genderKey: gender,
-        bDateKey: bDate,
-        fcmKey: fcm,
-        bookMarksKey: bookmarks,
-      };
 
   factory AppUser.fromFirebaseUser(User user) {
     return AppUser(
@@ -38,21 +30,49 @@ class AppUser {
         profileUrl: user.photoURL ?? '',
         phoneNo: user.phoneNumber!,
         bDate: DateTime.now(),
-        gender: 'NOT SET');
+        gender: 'NOT SET',
+        isAadharVerified: false);
   }
 
   factory AppUser.fromJson(Map<String, dynamic> json) => AppUser(
-        uid: json[uidKey],
-        displayName: json[displayNameKey],
-        profileUrl: json[profileUrlKey],
-        phoneNo: json[phoneNoKey],
-        bDate: json[bDateKey].runtimeType == DateTime ? json[bDateKey] : json[bDateKey].toDate(),
-        gender: json[genderKey],
-      )
-        ..fcm = json[fcmKey]
-        ..bookmarks = json[bookMarksKey] == null ? [] : List.generate(
-          json[bookMarksKey].length,
-          (index) => json[bookMarksKey][index],
-        )
-      ..myProperties = json[myPropertiesKey] == null ? [] : List.generate(json[myPropertiesKey].length, (index) => json[myPropertiesKey][index],);
+      uid: json[AppKeys.uidKey],
+      displayName: json[AppKeys.displayNameKey],
+      profileUrl: json[AppKeys.profileUrlKey],
+      phoneNo: json[AppKeys.phoneNoKey],
+      bDate: json[AppKeys.bDateKey].runtimeType == DateTime
+          ? json[AppKeys.bDateKey]
+          : json[AppKeys.bDateKey].toDate(),
+      gender: json[AppKeys.genderKey],
+      isAadharVerified: json[AppKeys.isAadharVerifiedKey])
+    ..fcm = json[AppKeys.fcmKey]
+    ..bookmarks = json[AppKeys.bookMarksKey] == null
+        ? []
+        : List.generate(
+            json[AppKeys.bookMarksKey].length,
+            (index) => json[AppKeys.bookMarksKey][index],
+          )
+    ..myProperties = json[AppKeys.myPropertiesKey] == null
+        ? []
+        : List.generate(
+            json[AppKeys.myPropertiesKey].length,
+            (index) => json[AppKeys.myPropertiesKey][index],
+          )
+    ..purchasedProperty = json[AppKeys.purchasedPropertyKey] == null
+        ? []
+        : List.generate(
+            json[AppKeys.purchasedPropertyKey].length,
+            (index) => json[AppKeys.purchasedPropertyKey][index],
+          );
+
+  Map<String, dynamic> toJson() => {
+        AppKeys.uidKey: uid,
+        AppKeys.displayNameKey: displayName,
+        AppKeys.phoneNoKey: phoneNo,
+        AppKeys.profileUrlKey: profileUrl,
+        AppKeys.genderKey: gender,
+        AppKeys.bDateKey: bDate,
+        AppKeys.fcmKey: fcm,
+        AppKeys.bookMarksKey: bookmarks,
+        AppKeys.isAadharVerifiedKey: isAadharVerified
+      };
 }
