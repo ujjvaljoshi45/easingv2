@@ -16,7 +16,6 @@ class PaymentService {
   }
 
   Future<void> paymentSuccess(PaymentSuccessResponse response) async {
-
     //TODO: after we api key
     ApiHandler.instance.updateMoneyToWallet(response.data![AppKeys.amountPaid]);
     logEvent('done!${response.data}');

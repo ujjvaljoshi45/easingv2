@@ -28,7 +28,7 @@ class _AddPropertyPageState extends State<AddPropertyPage> {
   @override
   void initState() {
     AddPropertyProvider.instance.property.uploaderId = DataProvider.instance.getUser.uid;
-    if (widget.property != null) AddPropertyProvider.instance.property=widget.property!;
+    if (widget.property != null) AddPropertyProvider.instance.property = widget.property!;
     super.initState();
   }
 
@@ -82,11 +82,15 @@ class _AddPropertyPageState extends State<AddPropertyPage> {
             ),
             bottomNavigationBar: Padding(
               padding: const EdgeInsets.all(8.0),
-              child: SaveAndNextBtn(
-                  onPressed: () => myProvider.handelPageChangeChange(context),
-                  msg: myProvider.currentIndex < myProvider.totalLength
-                      ? 'Save And Next'
-                      : 'Publish'),
+              child: SizedBox(
+                height: 50,
+                child: SaveAndNextBtn(
+                    isLoading: myProvider.isLoading,
+                    onPressed: () => myProvider.handelPageChangeChange(context),
+                    msg: myProvider.currentIndex < myProvider.totalLength
+                        ? 'Save And Next'
+                        : 'Publish'),
+              ),
             ),
           ),
         );

@@ -1,7 +1,5 @@
-
 import 'package:easypg/provider/add_property_provider.dart';
 import 'package:easypg/screens/widgets/property_card.dart';
-import 'package:easypg/utils/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -20,21 +18,15 @@ class _OverviewScreenState extends State<OverviewScreen> {
         return SingleChildScrollView(
           child: Padding(
             padding: const EdgeInsets.all(16.0),
-            child: value.isLoading
-                ? Center(
-                    child: CircularProgressIndicator(
-                      color: myOrange,
-                    ),
-                  )
-                : Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      PropertyCard(
-                        property: value.property,
-                        isOverview: true,
-                      ),
-                    ],
-                  ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                PropertyCard(
+                  property: value.property,
+                  isOverview: true,
+                ),
+              ],
+            ),
           ),
         );
       },

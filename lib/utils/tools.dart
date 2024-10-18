@@ -6,7 +6,6 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:logger/logger.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 
-
 logEvent(msg) => Logger().d(msg, time: DateTime.now());
 logError(msg, e, StackTrace stackTrace) =>
     Logger().e(msg, error: e, stackTrace: stackTrace, time: DateTime.now());
@@ -43,3 +42,8 @@ Future<void> manageUrl(String myUrl) async => await launchUrlString(
       browserConfiguration: BrowserConfiguration(showTitle: true),
       webOnlyWindowName: 'Easy PG',
     );
+
+Color getPrimary(BuildContext context) => Theme.of(context).colorScheme.primary;
+Color getOnPrimary(BuildContext context) => Theme.of(context).colorScheme.onPrimary;
+Color getSecondary(BuildContext context) => Theme.of(context).colorScheme.secondary;
+Color getOnSecondary(BuildContext context) => Theme.of(context).colorScheme.onSecondary;

@@ -5,11 +5,9 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 class EmptyScreen extends StatelessWidget {
   final String message;
 
-
   const EmptyScreen({
     super.key,
     this.message = "Nothing to see here!",
-
   });
 
   @override

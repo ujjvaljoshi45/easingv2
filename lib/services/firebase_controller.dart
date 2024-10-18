@@ -2,7 +2,6 @@ import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:easypg/model/cache_manager.dart';
-import 'package:easypg/provider/add_property_provider.dart';
 import 'package:easypg/services/api_handler.dart';
 import 'package:easypg/model/property.dart';
 import 'package:easypg/model/user.dart';
@@ -48,7 +47,7 @@ class FirebaseController extends ApiHandler {
   @override
   Future<void> saveUser(AppUser user) async {
     try {
-      await userRef.doc(user.phoneNo).set(user.toJson());
+      await userRef.doc(user.uid).set(user.toJson());
       await walletRef
           .doc(user.uid)
           .set({AppKeys.currentBalance: (await AppConfigs.instance.getReward())});
@@ -135,24 +134,26 @@ class FirebaseController extends ApiHandler {
     await userRef.doc(DataProvider.instance.getUser.uid).update({
       AppKeys.myPropertiesKey: FieldValue.arrayUnion([property.id])
     });
-    AddPropertyProvider.instance.clear();
+    await DataProvider.instance.refreshUser();
   }
 
   // Fetches properties by ID, filtering by ownership if specified
-  Future<List<Property>> getPropertiesById([bool? mine]) async {
+  Future<List<Property>> getPropertiesById([bool? myListings]) async {
     List<Property> properties = [];
-    if (mine != null) {
-      if (mine) {
-        final response = (await propertyRef
-                .where(AppKeys.uploaderId, isEqualTo: DataProvider.instance.getUser.uid)
-                .get())
-            .docs;
-        for (var json in response) {
-          properties.add(Property.fromJson(json.data() as Map<String, dynamic>, json.id));
-        }
-        properties.sort((a, b) => a.createdAt.compareTo(b.createdAt));
-        return properties.reversed.toList();
+    if (myListings != null) {
+      final List<QueryDocumentSnapshot<Object?>> response = (await propertyRef
+              .where((myListings
+                  ? Filter(AppKeys.uploaderId, isEqualTo: DataProvider.instance.getUser.uid)
+                  : Filter(AppKeys.purchasedByKey,
+                      arrayContains: DataProvider.instance.getUser.uid)))
+              .get())
+          .docs;
+
+      for (var json in response) {
+        properties.add(Property.fromJson(json.data() as Map<String, dynamic>, json.id));
       }
+      properties.sort((a, b) => a.createdAt.compareTo(b.createdAt));
+      return properties.reversed.toList();
     }
     final response = await userRef.doc(DataProvider.instance.getUser.uid).get();
     final ids = response.get(AppKeys.bookMarksKey);
@@ -210,6 +211,19 @@ class FirebaseController extends ApiHandler {
     } catch (e, stackTrace) {
       logError('getWallet', e, stackTrace);
       return null;
+    }
+  }
+
+  Future<void> managePropertyContactPurchase(String id) async {
+    try {
+      await propertyRef.doc(id).update({
+        AppKeys.purchasedByKey: FieldValue.arrayUnion([DataProvider.instance.getUser.uid])
+      });
+      await userRef.doc(DataProvider.instance.getUser.uid).update({
+        AppKeys.purchasedPropertyKey: FieldValue.arrayUnion([id])
+      });
+    } catch (e, stackTrace) {
+      logError('saveError', e, stackTrace);
     }
   }
 

@@ -12,6 +12,7 @@ class AppUser {
   List<String> bookmarks = [];
   List<String> myProperties = [];
   bool isAadharVerified = false;
+  List<String> purchasedProperty = [];
   AppUser({
     required this.uid,
     required this.displayName,
@@ -38,7 +39,9 @@ class AppUser {
       displayName: json[AppKeys.displayNameKey],
       profileUrl: json[AppKeys.profileUrlKey],
       phoneNo: json[AppKeys.phoneNoKey],
-      bDate: json[AppKeys.bDateKey].runtimeType == DateTime ? json[AppKeys.bDateKey] : json[AppKeys.bDateKey].toDate(),
+      bDate: json[AppKeys.bDateKey].runtimeType == DateTime
+          ? json[AppKeys.bDateKey]
+          : json[AppKeys.bDateKey].toDate(),
       gender: json[AppKeys.genderKey],
       isAadharVerified: json[AppKeys.isAadharVerifiedKey])
     ..fcm = json[AppKeys.fcmKey]
@@ -53,6 +56,12 @@ class AppUser {
         : List.generate(
             json[AppKeys.myPropertiesKey].length,
             (index) => json[AppKeys.myPropertiesKey][index],
+          )
+    ..purchasedProperty = json[AppKeys.purchasedPropertyKey] == null
+        ? []
+        : List.generate(
+            json[AppKeys.purchasedPropertyKey].length,
+            (index) => json[AppKeys.purchasedPropertyKey][index],
           );
 
   Map<String, dynamic> toJson() => {

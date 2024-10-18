@@ -107,7 +107,6 @@ class AuthDataProvider extends ChangeNotifier {
       logError('verify failed', e, stackTrace); // Log verification error
       toggleOtpLoading();
     }
-
   }
 
   // Signs in using the provided PhoneAuthCredential
@@ -156,6 +155,7 @@ class AuthDataProvider extends ChangeNotifier {
 
   // Checks if there is a currently signed-in user
   Future<bool> checkUser() async {
+    logEvent(auth.currentUser == null);
     if (auth.currentUser == null) return false; // Return false if no user is signed in
 
     // Get the user data from the database

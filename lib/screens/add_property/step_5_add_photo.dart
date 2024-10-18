@@ -27,17 +27,27 @@ class _AddPhotoPageState extends State<AddPhotoPage> {
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
             ImageTile(
-              url: AddPropertyProvider.instance.property.photos.elementAtOrNull(0),index: 0,
+              url: AddPropertyProvider.instance.property.photos.elementAtOrNull(0),
+              index: 0,
             ),
-            ImageTile(url: AddPropertyProvider.instance.property.photos.elementAtOrNull(1),index: 1,),
+            ImageTile(
+              url: AddPropertyProvider.instance.property.photos.elementAtOrNull(1),
+              index: 1,
+            ),
           ],
         ),
         space(20),
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
-            ImageTile(url: AddPropertyProvider.instance.property.photos.elementAtOrNull(2),index: 2,),
-            ImageTile(url: AddPropertyProvider.instance.property.photos.elementAtOrNull(3),index: 3,),
+            ImageTile(
+              url: AddPropertyProvider.instance.property.photos.elementAtOrNull(2),
+              index: 2,
+            ),
+            ImageTile(
+              url: AddPropertyProvider.instance.property.photos.elementAtOrNull(3),
+              index: 3,
+            ),
           ],
         ),
       ],
@@ -67,7 +77,7 @@ class _ImageTileState extends State<ImageTile> {
     XFile? file = (await ImagePicker().pickImage(source: ImageSource.gallery));
     if (file != null) {
       setState(() => url = file.path);
-      AddPropertyProvider.instance.setPhotos(url!,index);
+      AddPropertyProvider.instance.setPhotos(url!, index);
     }
   }
 
@@ -87,7 +97,9 @@ class _ImageTileState extends State<ImageTile> {
                       size: 32.sp,
                     ),
                   )
-                : url!.startsWith('http') ? CachedNetworkImage(imageUrl: url!) : Image.file(File(url!))),
+                : url!.startsWith('http')
+                    ? CachedNetworkImage(imageUrl: url!)
+                    : Image.file(File(url!))),
       ),
     );
   }

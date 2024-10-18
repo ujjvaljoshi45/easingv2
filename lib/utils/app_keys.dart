@@ -47,6 +47,7 @@ abstract class AppKeys {
   static final String statusKey = 'status';
   static final String uploaderIdKey = 'uploader_id';
   static final String tagsKey = 'tags';
+  static final String purchasedByKey = 'purchased_by';
 
   static final String uidKey = 'uid';
   static final String displayNameKey = 'display_name';
@@ -58,7 +59,5 @@ abstract class AppKeys {
   static final String bookMarksKey = 'bookmarks';
   static final String myPropertiesKey = 'property';
   static final String isAadharVerifiedKey = 'is_aadhar_verified';
+  static final String purchasedPropertyKey = "purchased_property";
 }
-
-
-

@@ -44,13 +44,18 @@ class _SplashState extends State<Splash> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-       body: Center(
-         child: SizedBox(
-           width: getWidth(context) * 0.5,
-           height: getWidth(context),
-           child: LoadingIndicator(indicatorType: Indicator.ballScaleRippleMultiple,strokeWidth: 10.w,pathBackgroundColor: myOrange,colors: [myOrangeSecondary,myOrange,pinColor].reversed.toList(),),
-         ),
-       ),
+      body: Center(
+        child: SizedBox(
+          width: getWidth(context) * 0.5,
+          height: getWidth(context),
+          child: LoadingIndicator(
+            indicatorType: Indicator.ballScaleRippleMultiple,
+            strokeWidth: 10.w,
+            pathBackgroundColor: myOrange,
+            colors: [myOrangeSecondary, myOrange, pinColor].reversed.toList(),
+          ),
+        ),
+      ),
     );
   }
 }

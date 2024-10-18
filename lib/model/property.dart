@@ -21,6 +21,7 @@ class Property {
   DateTime createdAt = DateTime.now();
   String uploaderId = '';
   List<String> tags = [];
+  List<String> purchasedBy = [];
 
   Property.required({
     required this.name,
@@ -41,6 +42,7 @@ class Property {
     required this.createdAt,
     required this.status,
     required this.uploaderId,
+    required this.purchasedBy,
   });
 
   factory Property.empty() => Property.required(
@@ -58,9 +60,10 @@ class Property {
       rent: '',
       deposit: '',
       amenities: [],
-      photos: ["","","",""],
+      photos: ["", "", "", ""],
       createdAt: DateTime.now(),
       status: false,
+      purchasedBy: [],
       uploaderId: '');
 
   factory Property.fromJson(Map<String, dynamic> json, id) {
@@ -88,7 +91,13 @@ class Property {
         ),
         createdAt: json[AppKeys.createdAtKey].toDate(),
         status: json[AppKeys.statusKey],
-        uploaderId: json[AppKeys.uploaderIdKey])
+        uploaderId: json[AppKeys.uploaderIdKey],
+        purchasedBy: json[AppKeys.purchasedByKey] == null
+            ? []
+            : List.generate(
+                json[AppKeys.purchasedByKey].length,
+                (index) => json[AppKeys.purchasedByKey][index],
+              ))
       ..id = id ?? ''
       ..tags = json[AppKeys.tagsKey] == null
           ? []
@@ -117,7 +126,8 @@ class Property {
         AppKeys.createdAtKey: createdAt,
         AppKeys.statusKey: status,
         AppKeys.uploaderIdKey: uploaderId,
-        AppKeys.tagsKey: generateTags()
+        AppKeys.tagsKey: generateTags(),
+        AppKeys.purchasedByKey: purchasedBy,
       };
   String getAddress() => "$streetAddress, $city,$state - $pinCode";
   List<String> generateTags() =>

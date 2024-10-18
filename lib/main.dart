@@ -1,4 +1,3 @@
-
 import 'package:easypg/auth/login.dart';
 import 'package:easypg/auth/register_screen.dart';
 import 'package:easypg/provider/add_property_provider.dart';

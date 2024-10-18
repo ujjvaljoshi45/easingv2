@@ -9,25 +9,37 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
 
 class BookmarksPage extends StatefulWidget {
-  const BookmarksPage({super.key});
+  final bool? isPurchased;
+  const BookmarksPage({super.key, this.isPurchased});
 
   @override
   State<BookmarksPage> createState() => _BookmarksPageState();
 }
 
 class _BookmarksPageState extends State<BookmarksPage> {
+  late final String emptyScreenMessage;
+  @override
+  void initState() {
+    emptyScreenMessage = widget.isPurchased == null
+        ? "Add Properties to Bookmark"
+        : "Purchase Contact Info of the Properties";
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Consumer<DataProvider>(
       builder: (context, value, child) {
         return RefreshIndicator(
           triggerMode: RefreshIndicatorTriggerMode.onEdge,
-          onRefresh: () async => Future.delayed(Duration(milliseconds: 200)).whenComplete(() => setState(() {}),),
+          onRefresh: () async => Future.delayed(Duration(milliseconds: 200)).whenComplete(
+            () => setState(() {}),
+          ),
           backgroundColor: myOrangeSecondary,
           color: myOrange,
           strokeWidth: 2.5.w,
           child: FutureBuilder(
-            future: ApiHandler.instance.getPropertiesById(),
+            future: ApiHandler.instance.getPropertiesById(widget.isPurchased),
             builder: (context, snapshot) {
               if (snapshot.connectionState == ConnectionState.waiting) {
                 return Center(
@@ -36,11 +48,15 @@ class _BookmarksPageState extends State<BookmarksPage> {
                 ));
               }
               if (snapshot.hasError || !snapshot.hasData) {
-                return EmptyScreen(message: "Add Properties to Bookmark",);
+                return EmptyScreen(
+                  message: emptyScreenMessage,
+                );
               }
               List<Property> properties = snapshot.requireData;
               return snapshot.requireData.isEmpty
-                  ? EmptyScreen(message: "Add Properties to Bookmark",)
+                  ? EmptyScreen(
+                      message: emptyScreenMessage,
+                    )
                   : ListView.builder(
                       itemBuilder: (context, index) =>
                           PropertyCard(property: properties[index], topWidget: 'bookmark'),

@@ -30,10 +30,10 @@ class _EditProfileNameBottomSheetModalState extends State<EditProfileNameBottomS
   void _saveProfile() async {
     if (_name == null) return;
     Navigator.of(context).pop();
-    AppUser newUser =DataProvider.instance.getUser;
+    AppUser newUser = DataProvider.instance.getUser;
     newUser.displayName = _name!;
     DataProvider.instance.setUser(newUser);
-    await ApiHandler.instance.updateUserNameOrPhoto(newUser,false);
+    await ApiHandler.instance.updateUserNameOrPhoto(newUser, false);
   }
 
   @override
@@ -117,8 +117,8 @@ class _EditProfilePictureState extends State<EditProfilePicture> {
     if (_profileImage == null) return;
     setState(() => _isLoading = true);
     String? file = await ApiHandler.instance.saveProfileUrl(_profileImage!);
-    if (file == null){
-      showToast('Unable to Save Image',Colors.redAccent,Colors.white);
+    if (file == null) {
+      showToast('Unable to Save Image', Colors.redAccent, Colors.white);
     } else {
       AppUser newUser = DataProvider.instance.getUser;
       newUser.profileUrl = file;
@@ -144,18 +144,24 @@ class _EditProfilePictureState extends State<EditProfilePicture> {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              _isLoading ? Center(child: CircularProgressIndicator(color: myOrange,),) : GestureDetector(
-                onTap: _pickImage,
-                child: CircleAvatar(
-                  radius: 50.r,
-                  backgroundImage: _profileImage != null
-                      ? FileImage(_profileImage!)
-                      : NetworkImage(currentProfilePicture) as ImageProvider,
-                  child: _profileImage == null
-                      ? Icon(Icons.camera_alt, size: 30.sp, color: Colors.grey)
-                      : null,
-                ),
-              ),
+              _isLoading
+                  ? Center(
+                      child: CircularProgressIndicator(
+                        color: myOrange,
+                      ),
+                    )
+                  : GestureDetector(
+                      onTap: _pickImage,
+                      child: CircleAvatar(
+                        radius: 50.r,
+                        backgroundImage: _profileImage != null
+                            ? FileImage(_profileImage!)
+                            : NetworkImage(currentProfilePicture) as ImageProvider,
+                        child: _profileImage == null
+                            ? Icon(Icons.camera_alt, size: 30.sp, color: Colors.grey)
+                            : null,
+                      ),
+                    ),
               space(16),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,

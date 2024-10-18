@@ -1,5 +1,6 @@
 import 'package:easypg/model/cache_manager.dart';
 import 'package:easypg/model/user.dart';
+import 'package:easypg/services/api_handler.dart';
 import 'package:flutter/material.dart';
 
 class DataProvider with ChangeNotifier {
@@ -23,6 +24,8 @@ class DataProvider with ChangeNotifier {
     notifyListeners();
     return _user = user; // Update the user and return the new user
   }
+
+  Future<void> refreshUser() async => setUser((await ApiHandler.instance.getUser(_user.uid))!);
 
   // Manages bookmarks by adding or removing a property ID
   void manageBookmark(String id, bool add) {

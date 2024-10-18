@@ -24,8 +24,7 @@ class _RentPageState extends State<RentPage> {
   Widget build(BuildContext context) {
     return RefreshIndicator(
       triggerMode: RefreshIndicatorTriggerMode.onEdge,
-      onRefresh: () async =>
-          Future.delayed(Duration(milliseconds: 200)).whenComplete(
+      onRefresh: () async => Future.delayed(Duration(milliseconds: 200)).whenComplete(
         () => setState(() {}),
       ),
       backgroundColor: myOrangeSecondary,
@@ -41,7 +40,9 @@ class _RentPageState extends State<RentPage> {
             ));
           }
           if (snapshot.hasError) {
-            return EmptyScreen(message: "Add Properties for listing",);
+            return EmptyScreen(
+              message: "Add Properties for listing",
+            );
           }
           if (snapshot.requireData.isEmpty || !snapshot.hasData) {
             return Column(
@@ -49,16 +50,14 @@ class _RentPageState extends State<RentPage> {
                 space(50),
                 Text(
                   'List Your Property\nAnd\nEnjoy Passive Income',
-                  style: montserrat.copyWith(
-                      fontSize: 28.sp, fontWeight: FontWeight.bold),
+                  style: montserrat.copyWith(fontSize: 28.sp, fontWeight: FontWeight.bold),
                 ),
                 const Spacer(),
                 Align(
                   alignment: Alignment.center,
                   child: Text(
                     'Extra Income, Effortless',
-                    style: montserrat.copyWith(
-                        fontSize: 22.sp, fontWeight: FontWeight.bold),
+                    style: montserrat.copyWith(fontSize: 22.sp, fontWeight: FontWeight.bold),
                   ),
                 ),
                 Row(
@@ -66,26 +65,20 @@ class _RentPageState extends State<RentPage> {
                     Expanded(
                         child: ElevatedButton(
                             style: ButtonStyle(
-                                backgroundColor:
-                                    WidgetStatePropertyAll(myOrange),
-                                shape: WidgetStatePropertyAll(
-                                    RoundedRectangleBorder(
-                                        borderRadius:
-                                            BorderRadius.circular(12.0.r)))),
+                                backgroundColor: WidgetStatePropertyAll(myOrange),
+                                shape: WidgetStatePropertyAll(RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(12.0.r)))),
                             onPressed: () => Navigator.push(
                                     context,
                                     MaterialPageRoute(
-                                      builder: (context) =>
-                                          const AddPropertyPage(),
+                                      builder: (context) => const AddPropertyPage(),
                                     )).whenComplete(
                                   () => setState(() {}),
                                 ),
                             child: Text(
                               'Click Here',
                               style: montserrat.copyWith(
-                                  color: white,
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 20.sp),
+                                  color: white, fontWeight: FontWeight.bold, fontSize: 20.sp),
                             )))
                   ],
                 ),
@@ -101,14 +94,11 @@ class _RentPageState extends State<RentPage> {
               : ListView.builder(
                   itemBuilder: (context, index) => Card(
                     shape: RoundedRectangleBorder(
-                        side: BorderSide(
-                            color: properties[index].status
-                                ? Colors.green
-                                : Colors.red),
+                        side:
+                            BorderSide(color: properties[index].status ? Colors.green : Colors.red),
                         borderRadius: BorderRadius.circular(12.r)),
                     elevation: 1.3,
-                    shadowColor:
-                        properties[index].status ? Colors.green : Colors.red,
+                    shadowColor: properties[index].status ? Colors.green : Colors.red,
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
@@ -118,24 +108,19 @@ class _RentPageState extends State<RentPage> {
                             style: montserrat.copyWith(
                                 fontSize: 14.sp,
                                 fontWeight: FontWeight.bold,
-                                color: properties[index].status
-                                    ? Colors.green
-                                    : Colors.red),
+                                color: properties[index].status ? Colors.green : Colors.red),
                           ),
                           trailing: !properties[index].status
                               ? ElevatedButton(
                                   style: ButtonStyle(
-                                    backgroundColor: WidgetStatePropertyAll(
-                                        myOrangeSecondary),
+                                    backgroundColor: WidgetStatePropertyAll(myOrangeSecondary),
                                     shape: WidgetStatePropertyAll(
                                       RoundedRectangleBorder(
-                                        borderRadius:
-                                            BorderRadius.circular(12.r),
+                                        borderRadius: BorderRadius.circular(12.r),
                                       ),
                                     ),
                                   ),
-                                  onPressed: () async =>
-                                      await _managePayment(properties[index]),
+                                  onPressed: () async => await _managePayment(properties[index]),
                                   child: Text(
                                     "Activate",
                                     style: montserrat.copyWith(
@@ -149,7 +134,10 @@ class _RentPageState extends State<RentPage> {
                         Padding(
                           padding: const EdgeInsets.all(8.0),
                           child: PropertyCard(
-                              property: properties[index], topWidget: 'delete',parentCallback: ()=>setState((){}),),
+                            property: properties[index],
+                            topWidget: 'delete',
+                            parentCallback: () => setState(() {}),
+                          ),
                         ),
                       ],
                     ),
@@ -163,8 +151,7 @@ class _RentPageState extends State<RentPage> {
 
   Future<void> _managePayment(Property property) async {
     final propertyPrice = await AppConfigs.instance.getActivationCharges();
-    final currentBalance =
-        (await ApiHandler.instance.walletStream.first)[AppKeys.currentBalance];
+    final currentBalance = (await ApiHandler.instance.walletStream.first)[AppKeys.currentBalance];
 
     if (currentBalance < propertyPrice) {
       showInsufficientBalanceSnackBar(context);

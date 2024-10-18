@@ -44,14 +44,16 @@ class ActivateAdDialog extends StatelessWidget {
         ElevatedButton(
           onPressed: () async {
             Navigator.of(context).pop();
-            await ApiHandler.instance.updateMoneyToWallet(-1*amount);
+            await ApiHandler.instance.updateMoneyToWallet(-1 * amount);
             await ApiHandler.instance.updateActivation(id);
-
           },
           style: ElevatedButton.styleFrom(
             backgroundColor: myOrange, // Main color
           ),
-          child: Text('Activate',style: montserrat.copyWith(color: Colors.white),),
+          child: Text(
+            'Activate',
+            style: montserrat.copyWith(color: Colors.white),
+          ),
         ),
       ],
       backgroundColor: Color(0xFF1E1E1E), // Dialog background color

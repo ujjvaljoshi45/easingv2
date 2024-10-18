@@ -1,9 +1,10 @@
 import 'package:easypg/services/api_handler.dart';
 import 'package:easypg/utils/app_keys.dart';
 import 'package:easypg/utils/styles.dart';
+import 'package:easypg/utils/tools.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:cloud_firestore/cloud_firestore.dart'; // assuming Firestore for fetching payments
 import 'package:intl/intl.dart'; // for formatting epoch time
 
@@ -37,9 +38,16 @@ class _PaymentHistoryScreenState extends State<PaymentHistoryScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        leading: IconButton(onPressed: ()=>Navigator.pop(context), icon: FaIcon(FontAwesomeIcons.arrowLeft,color: Colors.white,)),
-        title: Text('Payment History', style: montserrat.copyWith(color: Colors.white,fontWeight: FontWeight.bold)),
-        backgroundColor: Color(0xFFFF4B15),
+        leading: IconButton(
+          onPressed: () => Navigator.pop(context),
+          icon: Icon(
+            CupertinoIcons.arrowtriangle_left_fill,
+            color: getOnPrimary(context),
+          ),
+        ),
+        title: Text('Payment History',
+            style: montserrat.copyWith(color: getOnPrimary(context), fontWeight: FontWeight.bold)),
+        backgroundColor: getPrimary(context),
       ),
       body: FutureBuilder<List<Map<String, dynamic>>>(
         future: fetchPayments(),
@@ -53,8 +61,7 @@ class _PaymentHistoryScreenState extends State<PaymentHistoryScreen> {
           }
 
           if (!snapshot.hasData || snapshot.data!.isEmpty) {
-            return Center(
-                child: Text('No payment history available', style: montserrat));
+            return Center(child: Text('No payment history available', style: montserrat));
           }
 
           final payments = snapshot.data!;

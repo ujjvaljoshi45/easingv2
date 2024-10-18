@@ -39,7 +39,7 @@ class WalletSection extends StatelessWidget {
                     return _buildText("Unable to Fetch Balance");
                   }
                   logEvent(snapshot.requireData.data());
-              
+
                   return _buildText("₹${snapshot.requireData.get(AppKeys.currentBalance) ?? ""}");
                 },
               ),

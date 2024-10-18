@@ -32,16 +32,16 @@ class AddPropertyProvider extends ChangeNotifier {
   /// Data for the 'Getting Started' step
   List<String> ownership = ['Owner', 'Agent', 'Builder'];
   List<String> motive = ['Rent / Lease', 'List as PG'];
-  int selectedOption = 0; // Selected ownership type
-  int selectedPurpose = 0; // Selected purpose for the property
+  int selectedOption = -1; // Selected ownership type
+  int selectedPurpose = -1; // Selected purpose for the property
 
   /// Data for the 'Add Location' step
   List<String> types = ['House', 'Pg/Hostel', 'Apartment', 'Duplex'];
-  int propertyTypeSelection = 0; // Selected property type
+  int propertyTypeSelection = -1; // Selected property type
 
   /// Data for the 'Other Information' step
-  int currentBhkSelection = 0; // Selected number of BHKs
-  int currentFurnishedSelection = 0; // Selected furnishing status
+  int currentBhkSelection = -1; // Selected number of BHKs
+  int currentFurnishedSelection = -1; // Selected furnishing status
   int bathrooms = 1; // Number of bathrooms
   List<String> furnished = [
     'Un Furnished',
@@ -65,6 +65,11 @@ class AddPropertyProvider extends ChangeNotifier {
     if (currentIndex < totalLength) {
       // Validates each step before proceeding to the next step
       switch (currentIndex) {
+        case 0:
+          if (!stepZeroValidation()) {
+            showToast('Please Fill All the Fields', Colors.redAccent);
+            return; // Stop if validation fails
+          }
         case 1:
           if (!stepOneValidation()) {
             showToast('Please Fill All the Fields', Colors.redAccent);
@@ -108,13 +113,16 @@ class AddPropertyProvider extends ChangeNotifier {
 
   // Handles going back to the previous step
   void manageBack(BuildContext context) {
+    if (isLoading) {
+      return;
+    }
     debugPrint("clicked : $currentIndex");
     if (currentIndex <= 0) {
       // If at the first step, show exit confirmation dialog
       showDialog(
         context: context,
         builder: (context) => ExitConfirmationDialog(onExit: () {
-          AddPropertyProvider.instance.clear(); // Clear data if exiting
+          clear(); // Clear data if exiting
           Navigator.pop(context);
         }),
       );
@@ -174,6 +182,7 @@ class AddPropertyProvider extends ChangeNotifier {
     clear(); // Clear form data after saving
   }
 
+  bool stepZeroValidation() => property.motive.isNotEmpty && property.position.isNotEmpty;
   // Validates the first step
   bool stepOneValidation() =>
       property.name.isNotEmpty &&
@@ -196,9 +205,10 @@ class AddPropertyProvider extends ChangeNotifier {
 
   // Clears all the form data
   void clear() {
-    selectedPurpose = 0;
-    selectedOption = 0;
+    selectedPurpose = -1;
+    selectedOption = -1;
     currentIndex = 0;
+    propertyTypeSelection = -1;
     bathrooms = 1;
     isLoading = false;
     for (var element in myAmenities.keys) {

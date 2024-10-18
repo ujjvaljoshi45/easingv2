@@ -47,7 +47,8 @@ class _LoginScreenState extends State<LoginScreen> {
                     space(40),
                     _buildSubmitButton(),
                     TextButton(
-                      onPressed:() async => await manageUrl(await AppConfigs.instance.getTermsLink()),
+                      onPressed: () async =>
+                          await manageUrl(await AppConfigs.instance.getTermsLink()),
                       child: Text(
                         'Terms Of Service',
                         style: unSelectedOptionTextStyle.copyWith(

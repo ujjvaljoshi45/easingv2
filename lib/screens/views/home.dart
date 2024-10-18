@@ -20,7 +20,9 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return RefreshIndicator(
       triggerMode: RefreshIndicatorTriggerMode.onEdge,
-      onRefresh: () async => Future.delayed(Duration(milliseconds: 200)).whenComplete(() => setState(() {}),),
+      onRefresh: () async => Future.delayed(Duration(milliseconds: 200)).whenComplete(
+        () => setState(() {}),
+      ),
       backgroundColor: myOrangeSecondary,
       color: myOrange,
       strokeWidth: 2.5.w,
@@ -38,7 +40,9 @@ class _HomePageState extends State<HomePage> {
           }
           if (snapshot.hasError || !snapshot.hasData || snapshot.requireData.isEmpty) {
             return const Center(
-              child: EmptyScreen(message: "No Properties Found",),
+              child: EmptyScreen(
+                message: "No Properties Found",
+              ),
             );
           }
 

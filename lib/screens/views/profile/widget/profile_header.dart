@@ -64,9 +64,10 @@ class ProfileHeader extends StatelessWidget {
           borderType: BorderType.Circle,
           child: CircleAvatar(
             radius: getWidth(context) * 0.12.w,
-            backgroundImage: Provider.of<DataProvider>(context, listen: true).getUser.profileUrl.isEmpty
-                ? const AssetImage('assets/user_icon.png')
-                : CachedNetworkImageProvider(user.profileUrl),
+            backgroundImage:
+                Provider.of<DataProvider>(context, listen: true).getUser.profileUrl.isEmpty
+                    ? const AssetImage('assets/user_icon.png')
+                    : CachedNetworkImageProvider(user.profileUrl),
           ),
         ),
         Positioned(
@@ -79,7 +80,10 @@ class ProfileHeader extends StatelessWidget {
                 border: Border.all(width: 3.w, color: myOrangeSecondary),
                 shape: BoxShape.circle,
                 color: myOrangeSecondary,
-                boxShadow: [BoxShadow(offset: const Offset(2, 4), color: myOrange.withOpacity(0.7), blurRadius: 3.r)],
+                boxShadow: [
+                  BoxShadow(
+                      offset: const Offset(2, 4), color: myOrange.withOpacity(0.7), blurRadius: 3.r)
+                ],
               ),
               child: Padding(
                 padding: const EdgeInsets.all(2.0),

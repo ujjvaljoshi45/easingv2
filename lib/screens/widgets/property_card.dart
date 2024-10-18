@@ -20,7 +20,8 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class PropertyCard extends StatefulWidget {
-  const PropertyCard({super.key, required this.property, this.topWidget, this.isOverview, this.parentCallback});
+  const PropertyCard(
+      {super.key, required this.property, this.topWidget, this.isOverview, this.parentCallback});
   final Property property;
   final String? topWidget;
   final bool? isOverview;
@@ -35,6 +36,7 @@ class _PropertyCardState extends State<PropertyCard> {
   int _currentPhotoIndex = 0;
   final _expansionController = ExpansionTileController();
   int callPrice = 0;
+  bool isLoading = false;
   @override
   void didChangeDependencies() async {
     callPrice = await AppConfigs.instance.getPerCallCharges();
@@ -83,7 +85,8 @@ class _PropertyCardState extends State<PropertyCard> {
               child: CarouselSlider.builder(
                 itemCount: widget.property.photos.length,
                 itemBuilder: (context, index, realIndex) =>
-                     !widget.property.photos[index].startsWith('https') ? Image.file(
+                    !widget.property.photos[index].startsWith('https')
+                        ? Image.file(
                             File(
                               widget.property.photos[index],
                             ),
@@ -93,7 +96,8 @@ class _PropertyCardState extends State<PropertyCard> {
                             imageUrl: widget.property.photos[index],
                             width: double.infinity.w,
                             fit: BoxFit.cover,
-                      errorWidget: (context, url, error) => Text("Unable to load Image (you can still continue)"),
+                            errorWidget: (context, url, error) =>
+                                Text("Unable to load Image (you can still continue)"),
                           ),
                 options: CarouselOptions(
                     autoPlay: true,
@@ -340,7 +344,8 @@ class _PropertyCardState extends State<PropertyCard> {
           child: Padding(
             padding: const EdgeInsets.symmetric(vertical: 12.0, horizontal: 10.0),
             child: SaveAndNextBtn(
-              onPressed: _showMoneyWarning,
+              onPressed: _managePropertySelect,
+              isLoading: isLoading,
               msg: 'Contact Now',
               style: ElevatedButton.styleFrom(
                 backgroundColor: myOrange,
@@ -376,23 +381,23 @@ class _PropertyCardState extends State<PropertyCard> {
   }
 
   _buildMenu() => InkWell(
-    onTap: _handelDelete,
-    child: Container(
-      decoration: BoxDecoration(
-          color: Colors.black,
-          borderRadius: BorderRadius.circular(6.r),
-          backgroundBlendMode: BlendMode.overlay),
-      child: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: Center(
-          child: const FaIcon(
-            FontAwesomeIcons.x,
-            color: Colors.white,
+        onTap: _handelDelete,
+        child: Container(
+          decoration: BoxDecoration(
+              color: Colors.black,
+              borderRadius: BorderRadius.circular(6.r),
+              backgroundBlendMode: BlendMode.overlay),
+          child: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Center(
+              child: const FaIcon(
+                FontAwesomeIcons.x,
+                color: Colors.white,
+              ),
+            ),
           ),
         ),
-      ),
-    ),
-  );
+      );
   // _handleEdit() {
   //   AddPropertyProvider.instance.property = widget.property;
   //   Navigator.push(
@@ -420,7 +425,6 @@ class _PropertyCardState extends State<PropertyCard> {
                         );
                         widget.parentCallback != null ? widget.parentCallback!() : null;
                         Navigator.pop(context);
-
                       }),
                     )
                     .onError(
@@ -445,30 +449,22 @@ class _PropertyCardState extends State<PropertyCard> {
   }
 
   _managePropertySelect() async {
-    // Fist start ad
-    // Then Update Database
+    // Check if the user has already purchased the property
+    if (!widget.property.purchasedBy.contains(DataProvider.instance.getUser.uid)) {
+      bool isPaid = await _showMoneyWarning();
+      if (!isPaid) {
+        return; // Exit if payment was not successful
+      }
+    }
 
-    final balance = (await ApiHandler.instance.walletStream.first)[AppKeys.currentBalance];
-    if (balance < callPrice) {
-      showInsufficientBalanceSnackBar(context);
-      return;
-    }
-    try {
-      await AdService.instance.showAd();
-    } catch (e) {
-      debugPrint(".........Error...... $e");
-    }
+    // Retrieve phone number of the uploader
     String? phoneNo = (await ApiHandler.instance.getUser(widget.property.uploaderId))?.phoneNo;
     if (phoneNo == null) {
       showToast('Error occurred while receiving information', Colors.redAccent, Colors.white);
-      return;
+      return; // Exit the function if phone number retrieval fails
     }
-    logEvent(balance);
-    final charges = await AppConfigs.instance.getPerCallCharges();
-    showToast('Money Deducted from your wallet current balance ${balance - charges}');
-    await ApiHandler.instance.updateMoneyToWallet(-1 * charges);
 
-    // Then Provide Info
+    // Show the phone number dialog
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -476,32 +472,73 @@ class _PropertyCardState extends State<PropertyCard> {
       },
     );
   }
-  _showMoneyWarning() async {
+
+  Future<bool> _showMoneyWarning() async {
+    setState(() => isLoading = true);
     int prices = await AppConfigs.instance.getPerCallCharges();
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text('Confirm Payment'),
-          content: Text('Do you really want to pay $prices INR?'),
-          actions: [
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop(); // Close the dialog
-              },
-              child: Text('No'),
-            ),
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop(); // Close the dialog
-                // Add your business logic here
-                _managePropertySelect();
-              },
-              child: Text('Yes'),
-            ),
-          ],
-        );
-      },
-    );
+    bool res = false;
+    bool internalLoading = false;
+    try {
+      await showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text('Confirm Payment'),
+            content: Text('Do you really want to pay $prices INR?'),
+            actions: [
+              TextButton(
+                onPressed: () {
+                  res = false;
+                  Navigator.of(context).pop(); // Close the dialog
+                },
+                child: Text('No'),
+              ),
+              TextButton(
+                onPressed: () async {
+                  // Close the dialog
+                  setState(() => internalLoading = true);
+                  res = await _deductMoney();
+                  setState(() => internalLoading = false);
+                  Navigator.of(context).pop();
+                },
+                child: internalLoading
+                    ? Center(
+                        child: CircularProgressIndicator(
+                          color: myOrange,
+                        ),
+                      )
+                    : Text('Yes'),
+              ),
+            ],
+          );
+        },
+      );
+    } finally {
+      setState(() => isLoading = false);
+    }
+    return res;
+  }
+
+  Future<bool> _deductMoney() async {
+    final balance = (await ApiHandler.instance.walletStream.first)[AppKeys.currentBalance];
+    final charges = await AppConfigs.instance.getPerCallCharges(); // Fetch charges here
+    if (balance < charges) {
+      showInsufficientBalanceSnackBar(context);
+      return false;
+    }
+
+    try {
+      int val = await AdService.instance.showAd();
+      logEvent('val: $val');
+    } catch (e) {
+      debugPrint(".........Error...... $e");
+    }
+
+    logEvent(balance);
+    showToast('Money Deducted from your wallet. Current balance: ${balance - charges}');
+    await ApiHandler.instance.updateMoneyToWallet(-1 * charges);
+    widget.property.purchasedBy.add(DataProvider.instance.getUser.uid);
+    await ApiHandler.instance.managePropertyContactPurchase(widget.property.id);
+    return true;
   }
 }

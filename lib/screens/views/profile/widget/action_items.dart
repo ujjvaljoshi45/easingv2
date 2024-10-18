@@ -1,10 +1,10 @@
 import 'package:easypg/screens/views/profile/payment_history.dart';
+import 'package:easypg/screens/views/profile/purchased_properties.dart';
 import 'package:easypg/services/app_configs.dart';
 import 'package:easypg/utils/tools.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-
 
 class ActionItems extends StatelessWidget {
   const ActionItems({super.key});
@@ -15,17 +15,38 @@ class ActionItems extends StatelessWidget {
       children: [
         ListTile(
           leading: const FaIcon(FontAwesomeIcons.clockRotateLeft),
+          title: const Text("My Purchases"),
+          subtitle: const Text("View your purchased property info."),
+          onTap: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => PurchasedProperties(),
+              ),
+            );
+          },
+        ),
+        Divider(height: 20.h),
+        ListTile(
+          leading: const FaIcon(FontAwesomeIcons.clockRotateLeft),
           title: const Text("Payment History"),
           subtitle: const Text("View your past payments."),
           onTap: () {
-            Navigator.push(context, MaterialPageRoute(builder: (context) => PaymentHistoryScreen(),));
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => PaymentHistoryScreen(),
+              ),
+            );
           },
         ),
         Divider(height: 20.h),
         ListTile(
           leading: const FaIcon(FontAwesomeIcons.headset),
           title: const Text("Contact Support"),
-          onTap: () async => await manageUrl(await AppConfigs.instance.getSupportLink()),
+          onTap: () async => await manageUrl(
+            await AppConfigs.instance.getSupportLink(),
+          ),
         ),
       ],
     );

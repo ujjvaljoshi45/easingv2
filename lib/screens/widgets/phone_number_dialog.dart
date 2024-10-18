@@ -70,7 +70,10 @@ class PhoneNumberDialog extends StatelessWidget {
                 style: ElevatedButton.styleFrom(
                   backgroundColor: myOrange, // Main color
                 ),
-                child: Text('Call',style: montserrat.copyWith(color: Colors.white),),
+                child: Text(
+                  'Call',
+                  style: montserrat.copyWith(color: Colors.white),
+                ),
               ),
               ElevatedButton(
                 onPressed: () async {
@@ -83,7 +86,7 @@ class PhoneNumberDialog extends StatelessWidget {
                 style: ElevatedButton.styleFrom(
                   backgroundColor: myOrange, // Main color
                 ),
-                child: Text('WhatsApp',style: montserrat.copyWith(color: Colors.white)),
+                child: Text('WhatsApp', style: montserrat.copyWith(color: Colors.white)),
               ),
             ],
           ),

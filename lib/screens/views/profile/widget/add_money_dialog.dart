@@ -61,5 +61,6 @@ class AddMoneyDialog {
     );
   }
 
-  static Future<void> _updateWallet(int amount) async => PaymentService.instance.openCheckout(amount);
+  static Future<void> _updateWallet(int amount) async =>
+      PaymentService.instance.openCheckout(amount);
 }

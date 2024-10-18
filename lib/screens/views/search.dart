@@ -34,7 +34,9 @@ class _SearchPageState extends State<SearchPage> {
   Widget build(BuildContext context) {
     return RefreshIndicator(
       triggerMode: RefreshIndicatorTriggerMode.onEdge,
-      onRefresh: () async => Future.delayed(Duration(milliseconds: 200)).whenComplete(() => setState(() {}),),
+      onRefresh: () async => Future.delayed(Duration(milliseconds: 200)).whenComplete(
+        () => setState(() {}),
+      ),
       backgroundColor: myOrangeSecondary,
       color: myOrange,
       strokeWidth: 2.5.w,
